@@ -7,10 +7,7 @@ const ProgressBar = ({ currentPage, totalPages }) => {
 
   return (
     <div className="progress-container">
-      <div
-        className="progress-bar"
-        style={{ width: `${progress}%` }}
-      ></div>
+      <div className="progress-bar" style={{ width: `${progress}%` }}></div>
     </div>
   );
 };
@@ -20,6 +17,7 @@ const QuestionnaireApp = () => {
   const [answers, setAnswers] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageData, setPageData] = useState({ title: '', instructions: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false); // State to manage submission status
 
   useEffect(() => {
     fetch('/Fixed_Questionnaire.csv')
@@ -57,9 +55,7 @@ const QuestionnaireApp = () => {
   };
 
   const getCurrentPageQuestions = () => {
-    const pageQuestions = questions.filter(q => Number(q.Page) === currentPage);
-    console.log('Questions for page', currentPage, ':', pageQuestions);
-    return pageQuestions;
+    return questions.filter(q => Number(q.Page) === currentPage);
   };
 
   const handleNext = () => {
@@ -83,11 +79,31 @@ const QuestionnaireApp = () => {
     }
   };
 
+  // Function to send answers to the backend
+  const submitAnswers = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('http://localhost:5000/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers }),
+      });
+
+      const data = await response.json();
+      console.log('✅ Response from server:', data);
+      alert('Answers submitted successfully!');
+    } catch (error) {
+      console.error('❌ Error submitting answers:', error);
+      alert('An error occurred while submitting answers.');
+    }
+    setIsSubmitting(false);
+  };
+
   const totalPages = Math.max(...questions.map(q => Number(q.Page)));
 
   return (
     <div className="container">
-      {/* Photo */}
+      {/* Logo Image */}
       <img src="/images/logo.png" alt="Logo" className="top-left-image" />
 
       <h1>{pageData.title}</h1>
@@ -97,7 +113,7 @@ const QuestionnaireApp = () => {
         <Question key={q.question_ID} question={q} handleAnswer={handleAnswer} answers={answers} />
       ))}
 
-      {/* ProgressBar */}
+      {/* Progress Bar */}
       <ProgressBar currentPage={currentPage} totalPages={totalPages} />
 
       <div className="navigation">
@@ -108,6 +124,13 @@ const QuestionnaireApp = () => {
           Next
         </button>
       </div>
+
+      {/* Submit Button - last page only*/}
+      {currentPage === totalPages && (
+        <button onClick={submitAnswers} disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit Answers'}
+        </button>
+      )}
     </div>
   );
 };
