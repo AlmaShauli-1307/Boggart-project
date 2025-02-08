@@ -1,0 +1,95 @@
+Page,Page Title,Instructions,question_ID,Question,question_type,scale_min,scale_max,left_label,right_label,scale_labels,options,picture added,Page name/subject (not visible)
+1,Welcome to the Boggart project!,"As part of a research study, you will first complete a series of questionnaires that will contribute to our understanding of chronic pain. Following this, you will experience an interactive session designed to explore and address your chronic pain in a unique and innovative way",,,,,,,,,,,Landing page
+2,,Below are several statements regarding how accurately you can perceive specific bodily sensations. Please rate on the scale how well you believe you can perceive each specific signal.,2,I can always accurately perceive when my heart is beating fast,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 1
+2,,,3,I can always accurately perceive when I am hungry,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 1
+2,,,4,I can always accurately perceive when I am breathing fast,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 1
+2,,,5,I can always accurately perceive when I am thirsty,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 1
+3,,,6,I can always accurately perceive when I need to urinate,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 2
+3,,,7,I can always accurately perceive when I need to defecate,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 2
+3,,,8,I can always accurately perceive when I encounter different tastes,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 2
+3,,,9,I can always accurately perceive when I am going to vomit,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 2
+3,,,10,I can always accurately perceive when I am going to sneeze,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 2
+4,,,11,I can always accurately perceive when I am going to cough,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 3
+4,,,12,I can always accurately perceive when I am hot/cold,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 3
+4,,,13,I can always accurately perceive when I am sexually aroused,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 3
+4,,,14,I can always accurately perceive when I am going to pass wind,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 3
+4,,,15,I can always accurately perceive when I am going to burp,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 3
+5,,,16,I can always accurately perceive when my muscles are tired/sore,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 4
+5,,,17,I can always accurately perceive when I am going to get a bruise,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 4
+5,,,18,I can always accurately perceive when I am in pain,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 4
+5,,,19,I can always accurately perceive when my blood sugar is low,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 4
+5,,,20,I can always accurately perceive when someone is touching me affectionately rather than nonaffectionately,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 4
+6,,,21,I can always accurately perceive when something is going to be ticklish,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 5
+6,,,22,I can always accurately perceive when something is going to be itchy,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 5
+7,,,23,"On a scale of 0 to 10 (0 being no pain and 10 being the worst pain you can possibly imagine), how would you currently rate your pain?",likert_scale_2,1,10,No Pain,Worst Pain,,,VAS.png,Visual Analog Scale for Pain (VAS)
+8,,,24,"Please rate how you are feeling right now, with 0 being very negative and 10 being very positive.",likert_scale_3,1,10,Very Negative,Very Positive,,,sam.png,Self-Assessment Manikin (SAM)
+8,,,25,Please describe your arousal levels with 0 being calm and peaceful and 10 being emotional and aroused,likert_scale_4,1,10,Calm and Peaceful,Emotional and Aroused,,,,Self-Assessment Manikin (SAM)
+9,,"On a scale from 0 to 5 (0 being the lowest and 5 the highest) , please specify how intense were the following emotions during an occasion you felt the strongest pain",26,Irritability (I lose my patience at the slightest thing),likert_scale_5,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 1
+9,,,27,Feeling powerless,likert_scale_6,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 1
+9,,,28,Depression (deep sadness with loss of any interest),likert_scale_7,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 1
+9,,,29,Feeling of injustice (why me?),likert_scale_8,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 1
+9,,,30,Pessimism (a negative vision of the future),likert_scale_9,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 1
+10,,"On a scale from 0 to 5 ( 0 being the lowest and 5 the highest) , please specify how intense were the following emotions during an occasion you felt the strongest pain",31,I feel anxiety,likert_scale_10,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 2
+10,,,32,I feel guilt (for example: I feel I am a burden for my family),likert_scale_11,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 2
+10,,,33,I feel frustration (I can do nothing about it and I am angry at this),likert_scale_12,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 2
+10,,,34,Lack of confidence in abilities and skills,likert_scale_13,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 2
+10,,,35,I'm afraid I will not recover,likert_scale_14,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 2
+11,,"On a scale from 0 to 5 ( 0 being the lowest and 5 the highest) , please specify how intense were the following emotions during an occasion you felt the strongest pain",36,I feel confusion  (I feel my mind is less clear),likert_scale_15,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 3
+11,,,37,I do not recognize myself,likert_scale_16,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 3
+11,,,38,I feel I have become older,likert_scale_17,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 3
+11,,,39,I feel impairment,likert_scale_18,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 3
+11,,,40,Lack of independence,likert_scale_19,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 3
+12,,"On a scale from 0 to 5 ( 0 being the lowest and 5 the highest), during your lifetime, how seriously did this pain interfere with",41,Your working performance,likert_scale_20,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 4
+12,,,42,Your capability to move,likert_scale_21,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 4
+12,,,43,Your social role,likert_scale_22,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 4
+12,,,44,Your physical activity,likert_scale_23,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 4
+12,,,45,"Mood (inner affective-emotional tone, e.g. I'm more often sad, more often cheerful)",likert_scale_24,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 4
+13,,"On a scale from 0 to 5 ( 0 being the lowest and 5 the highest), during your lifetime, how seriously did this pain interfere with",46,Interpersonal relationships,likert_scale_25,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 5
+13,,,47,Sleep,likert_scale_26,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 5
+13,,,48,The pleasure of living,likert_scale_27,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 5
+14,,"Listed below are statements describing different thoughts and feelings that may be associated with pain. Using the following scale, please indicate the degree to which you have these thoughts and feelings when you are experiencing pain.",49,I worry all the time about whether my pain will end,likert_scale_2,0,4,,,,,PCS,Pain Catastrophizing Scale (PCS) 1
+14,,,50,I feel like I can't go on,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 1
+14,,,51,It/'s terrible and I think it's never going to get any better,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 1
+14,,,52,It's awful and I feel that it overwhelms me,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 1
+15,,,53,I feel I can't stand it anymore,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 2
+15,,,54,I become afraid that the pain will get worse,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 2
+15,,,55,I keep thinking of other painful events,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 2
+15,,,56,I anxiously want the pain to go away,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 2
+15,,,57,I can't seem to keep the pain out of my mind,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 2
+16,,,58,I keep thinking about how much it hurts,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 3
+16,,,59,I keep thinking about how badly I want the pain to stop,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 3
+16,,,60,There's nothing I can do to reduce the intensity of the pain,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 3
+16,,,61,I wonder whether something serious may happen,likert_scale_2,0,4,,,,,,Pain Catastrophizing Scale (PCS) 3
+17,Self Reflection,"You will now be guided through a self-reflective questionnaire, allowing an introspective view of your ongoing pain.
+Please take a couple of minutes to sit in a quiet place and focus on your pain before we begin. Allow yourself the time to reflect deeply on each question and explore your pain to better understand it.
+Try and determine how you experience your pain, and  describe it in order to understand it in a deeper sense.",62,,,,,,,,,,Self Reflection
+18,,"Try and focus on your pain, and precisely pinpoint its location",63,Where do you feel the pain?,multi_select,,,,,,"Head, Neck, Shoulders, Back, Stomach, Knees, Legs, Ankles, Feet, Hands, Elbows, Chest, Eyes, Ears, Nose, Teeth, Tongue, Throat, Nape, Clavicle, Ribs, Entire body, Other(option to write in other)",Pain Location,pain detalis
+19,,"Try to focus on the painful area in relation to the part of the body you selected, and try to describe its location in terms of vertical and horizontal orientation",64,Horizontal Location,likert_scale_2,1,5,Left,Right,,,,pain detalis
+19,,,65,Vertical location,likert_scale_2,1,5,Down,Up,,,,pain detalis
+19,,,66,How long has the pain been present in your life? (in months),number,,,,,,,,pain detalis
+20,,,67,A detailed description of the pain,text_long,,,,,,,,pain detalis
+20,,,68,Which organ is the pain closest to?,text_short,,,,,,,,pain detalis
+20,,,69,Where does it begin and where does it end?,text_short,,,,,,,,pain detalis
+20,,,70,Is it short or long in size?,likert_scale_2,1,10,Short,Long,,,,pain detalis
+20,,,71,"Is it deep, or shallow?",likert_scale_2,1,10,Shallow,Deep,,,,pain detalis
+20,,,72,"If you could visually see your pain, which color best describes it?",color_select,,,,,,,,pain detalis
+21,,,73,Is your pain's shape sharp or round?,likert_scale_2,1,5,Round,Sharp,,,,pain detalis
+21,,,74,Is your pain's boundary defined or blurry?,likert_scale_2,1,5,Defined,Blurry,,,,pain detalis
+21,,,75,"If you could run your finger through it, would this texture be thick or diluted?",likert_scale_2,1,5,Diluted,Thick,,,,pain detalis
+21,,,76,"If you could pet your pain, would it have a smooth or rough feel?",likert_scale_2,1,5,Smooth,Rough,,,,pain detalis
+21,,,77,"If you could hold its hand, would it be soft or hard?",likert_scale_2,1,5,Soft,Hard,,,,pain detalis
+22,,,78,Which option best describe how your pain alters over time:,multi_choice,,,,,,"Consistent, Gets worse over time, Gets better over time, On-and-off, Doesn't have a pattern (random)",,pain detalis
+22,,,79,"What worsens the pain? Are there activities, movements, or other factors which worsen/ awakens the pain? Please describe.",text_short,,,,,,,,pain detalis
+22,,,80,"What helps you deal with the pain? Are there activities, movements, or other factors which ease the pain? Please describe.",text_short,,,,,,,,pain detalis
+22,,,81,"Are there characters, symbols, or images that come to mind when you are thinking about your pain?",text_short,,,,,,,,pain detalis
+23,,"In the meantime, we invite you to answer the following questions while you wait to ""meet your pain",82,Name,text_short,,,,,,,,Personal info
+23,,,83,Date,date,,,,,,,,
+23,,,84,Age,number,,,,,,,,
+23,,,85,Gender,dropdown,,,,,,"Male, Female, Non-binary / Third gender, Prefer not to say, Other (with a fill-in option)",,
+23,,,86,What is your religion,dropdown,,,,,,"Christianity, Islam, Judaism, Hinduism, Buddhism, Non-religious / Atheist, Prefer not to say, Other (with a fill-in option)",,
+23,,,87,What is your nationality?,dropdown,,,,,,"Afghanistan, Albania, Algeria, Andorra, Angola, ""Antigua and Barbuda"", Argentina, Armenia, Australia, Austria, Azerbaijan, Bahamas, Bahrain, Bangladesh, Barbados, Belarus, Belgium, Belize, Benin, Bhutan, Bolivia (Plurinational State of), Bosnia and Herzegovina, Botswana, Brazil, Brunei Darussalam, Bulgaria, Burkina Faso, Burundi, Cabo Verde, Cambodia, Cameroon, Canada, Central African Republic, Chad, Chile, China, Colombia, Comoros, Congo, Costa Rica, Croatia, Cuba, Cyprus, Czech Republic, Democratic People's Republic of Korea (North Korea), Democratic Republic of the Congo, Denmark, Djibouti, Dominica, Dominican Republic, Ecuador, Egypt, El Salvador, Equatorial Guinea, Eritrea, Estonia, Eswatini, Ethiopia, Fiji, Finland, France, Gabon, Gambia, Georgia, Germany, Ghana, Greece, Grenada, Guatemala, Guinea, Guinea-Bissau, Guyana, Haiti, Honduras, Hungary, Iceland, India, Indonesia, Iran (Islamic Republic of), Iraq, Ireland, Israel, Italy, Jamaica, Japan, Jordan, Kazakhstan, Kenya, Kiribati, Kuwait, Kyrgyzstan, Lao Peoples Democratic Republic, Latvia, Lebanon, Lesotho, Liberia, Libya, Liechtenstein, Lithuania, Luxembourg, Madagascar, Malawi, Malaysia, Maldives, Mali, Malta, Marshall Islands, Mauritania, Mauritius, Mexico, Micronesia (Federated States of), Monaco, Mongolia, Montenegro, Morocco, Mozambique, Myanmar, Namibia, Nauru, Nepal, Netherlands, New Zealand, Nicaragua, Niger, Nigeria, North Macedonia, Norway, Oman, Pakistan, Palau, Panama, Papua New Guinea, Paraguay, Peru, Philippines, Poland, Portugal, Qatar, Republic of Korea (South Korea), Republic of Moldova, Romania, Russian Federation, Rwanda, Saint Kitts and Nevis, Saint Lucia, Saint Vincent and the Grenadines, Samoa, San Marino, Sao Tome and Principe, Saudi Arabia, Senegal, Serbia, Seychelles, Sierra Leone, Singapore, Slovakia, Slovenia, Solomon Islands, Somalia, South Africa, South Sudan, Spain, Sri Lanka, Sudan, Suriname, Sweden, Switzerland, Syrian Arab Republic, Tajikistan, Thailand, Timor-Leste, Togo, Tonga, Trinidad and Tobago, Tunisia, Turkey, Turkmenistan, Tuvalu, Uganda, Ukraine, United Arab Emirates, United Kingdom of Great Britain and Northern Ireland, United Republic of Tanzania, USA, Uruguay, Uzbekistan, Vanuatu, Venezuela (Bolivarian Republic of), Viet Nam, Yemen, Zambia, Zimbabwe, Prefer not to say, Other (with a fill-in option)",,
+23,,,88,Your mother tongue,dropdown,,,,,,"Arabic, Bengali, Chinese (Mandarin), Dutch, English, Filipino (Tagalog), French, German, Greek, Hebrew, Hindi, Italian, Japanese, Javanese, Korean, Malay, Marathi, Persian (Farsi), Polish, Portuguese, Punjabi, Romanian, Russian, Spanish, Swahili, Tamil, Telugu, Thai, Turkish, Ukrainian, Urdu, Vietnamese, Prefer not to say, Other (with a fill-in option)",,
+23,,,89,Your socio-economic status,dropdown,,,,,,"Lower income, Lower-middle income, Middle income, Upper-middle income, Upper income, Prefer not to say",,
+23,,,90,What is your education?,multi_choice,,,,,,"No formal schooling, Primary education, High school diploma or equivalent, Some college / vocational training, Bachelor's degree, Master's degree, Doctoral degree (PhD), Prefer not to say",,
+23,,,91,What kind of pain are you experiencing (Diagnosis),text_short,,,,,,,,
+24,In a few moments you will meet your pain,,,,,,,,,,,,

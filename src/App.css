@@ -1,0 +1,259 @@
+/* 🎨 General Page Styling */
+:root {
+  --primary-color: #11564F;
+  --secondary-color: #A7CAB680;
+  --text-color: #333;
+  --background-color: #f5f8f6;
+  --font-family: 'Roboto', Arial, sans-serif;
+  --font-size-base: 16px;
+  --font-size-heading: 32px;
+  --font-size-small: 14px;
+  --font-weight-bold: 700;
+  --font-weight-normal: 500;
+  --border-radius: 10px;
+  --padding-base: 20px;
+  --padding-large: 40px;
+  --margin-base: 15px;
+  --container-width: 800px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* 📦 Container */
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  background: white;
+  padding: var(--padding-large) var(--padding-base);
+  margin: var(--margin-base) auto;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* ❓ Question Styling */
+.question {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25px;
+  padding: 15px 20px;
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-color);
+  background-color: #e8f5e9;
+  border-radius: var(--border-radius);
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.question:hover {
+  background-color: var(--secondary-color);
+}
+
+/* 📊 Likert Scale - Modern Look */
+.likert-scale {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: #f9f9f9;
+  border-radius: var(--border-radius);
+  padding: var(--padding-base);
+  box-sizing: border-box;
+}
+
+.likert-scale .scale-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+  flex-wrap: nowrap;
+}
+
+.likert-scale button {
+  flex: 1;
+  padding: 18px;
+  font-size: 18px;
+  border: none;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+.likert-scale button:hover {
+  background-color: #a5d6a7;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.likert-scale button.selected {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* 🏷️ Scale Labels */
+.scale-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+
+.scale-label {
+  font-size: var(--font-size-base);
+  color: #777;
+  text-align: center;
+}
+
+.scale-label.min {
+  text-align: left;
+}
+
+.scale-label.max {
+  text-align: right;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 25px;
+    margin: 15px;
+  }
+
+  .question {
+    padding: 15px;
+  }
+
+  .likert-scale {
+    padding: 15px;
+  }
+
+  .likert-scale button {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  p {
+    font-size: var(--font-size-small);
+  }
+
+  button {
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+}
+
+/* 🖱️ Navigation Buttons */
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  gap: 15px;
+}
+
+button {
+  padding: 14px 30px;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: var(--font-weight-bold);
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  letter-spacing: 1px;
+  text-transform: uppercase; 
+}
+
+/* ⬅️ Previous Button */
+button.previous {
+  background: linear-gradient(135deg, #bbb, #999);
+  color: white;
+  border: 2px solid #aaa;
+}
+
+button.previous:hover {
+  background: linear-gradient(135deg, #999, #777);
+  transform: translateY(-3px) scale(1.05); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+}
+
+/* ➡️ Next Button */
+button.next {
+  background: linear-gradient(135deg, var(--primary-color), #0d4540);
+  color: white;
+  border: 2px solid #0d4540;
+}
+
+button.next:hover {
+  background: linear-gradient(135deg, #0d4540, #08352f);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ Disabled Button State */
+button:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  opacity: 0.7;
+}
+
+/* 📊 Progress Bar */
+.progress-container {
+  width: 100%;
+  background: #e0e0e0;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  margin-top: 20px;
+  height: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.5s ease;
+  border-radius: var(--border-radius);
+}
+
+/* 📊 Progress Bar - Hover Effect */
+.progress-container:hover {
+  background-color: #d4d4d4; 
+}
+
+.progress-bar:hover {
+  background: #2c756e;
+}
+
+
+
+
+
