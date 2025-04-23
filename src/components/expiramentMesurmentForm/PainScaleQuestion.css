@@ -1,0 +1,131 @@
+/* PainScaleQuestion.css */
+.pain-scale-question {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.question-text-pain {
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 20px;
+    max-width: 800px;
+}
+
+.pain-scale-faces {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 850px;
+    position: relative;
+    padding-bottom: 50px;
+}
+
+.pain-face-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 65px;
+    position: relative;
+}
+
+.pain-face {
+    width: 40px;
+    height: 40px;
+}
+
+.pain-label {
+    font-size: 10px;
+    text-align: center;
+    margin-top: 5px;
+    font-weight: 500;
+    word-wrap: break-word;
+    max-width: 65px;
+}
+
+.pain-value {
+    position: absolute;
+    bottom: -30px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.pain-scale-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #000;
+    z-index: 0;
+}
+
+/* Rating table styling */
+.rating-table-container-pain {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.rating-table-pain {
+    width: 100%;
+    max-width: 850px;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: none;
+    background-color: #FFFFFF;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px #B9B9B9;
+}
+
+.rating-cell-pain {
+    height: 36px;
+    border-width: 0;
+    border-right: 1px solid #B9B9B9;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 130%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #FFFFFF;
+}
+
+.rating-cell-pain:last-child {
+    border-right: none;
+}
+
+.rating-cell-pain:hover {
+    background-color: #F9FAF9;
+}
+
+.rating-cell-pain.selected {
+    background-color: #295A4B;
+    color: #FFFFFF;
+}
+
+/* Responsive adjustments */
+@media (max-width: 850px) {
+    .pain-scale-faces {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding-bottom: 30px;
+    }
+
+    .pain-scale-line {
+        display: none;
+    }
+
+    .pain-face-container {
+        width: 50px;
+    }
+}

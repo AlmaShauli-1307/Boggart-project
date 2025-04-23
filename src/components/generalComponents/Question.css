@@ -1,0 +1,152 @@
+/* Question.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+.question-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.question-text {
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 15px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Container for table with side labels */
+.rating-table-container-with-labels {
+    width: 100%;
+    max-width: 570px;
+    display: flex;
+    position: relative;
+    margin: 0 auto;
+}
+
+.rating-table-container-with-labels.wide-scale {
+    max-width: 1000px;
+}
+.rating-table-container-with-labels.mid-scale {
+    max-width: 600px;
+}
+
+/* Side label styling */
+.side-label {
+    position: absolute;
+    font-size: 16px;
+    font-weight: 400;
+    white-space: nowrap;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.left-label {
+    left: 0;
+    text-align: right;
+}
+
+.right-label {
+    right: 0;
+    text-align: left;
+}
+
+/* Rating table styling */
+.rating-table-container {
+    width: 100%;
+    max-width: 410px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.rating-table-container.wide-scale {
+    max-width: 850px; /* Wider width for 10-option scales, matching pain scale */
+}
+
+.rating-table-container.mid-scale {
+    max-width: 460px; /* Wider width for 10-option scales, matching pain scale */
+}
+
+.rating-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: none;
+    background-color: #FFFFFF;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px #B9B9B9; /* Single pixel border around the entire table */
+}
+
+.rating-table.wide-scale {
+    max-width: 850px; /* Wider width for 10-option scales, matching pain scale */
+}
+
+.rating-cell {
+    height: 41px;
+    border-width: 0;
+    border-right: 1px solid #B9B9B9;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 130%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.02); /* Updated to match the design spec's subtle opacity */
+}
+
+.rating-cell:last-child {
+    border-right: none;
+}
+
+.rating-cell:hover {
+    background-color: #F9FAF9;
+}
+
+.rating-cell.selected {
+    background-color: #295A4B;
+    color: #FFFFFF;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .rating-table-container.wide-scale,
+    .rating-table-container-with-labels.wide-scale {
+        max-width: 100%;
+    }
+
+    .side-label {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 500px) {
+    .rating-table {
+        max-width: 100%;
+    }
+
+    .rating-cell {
+        font-size: 14px;
+    }
+
+    .side-label {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .question-text {
+        font-size: 14px;
+    }
+
+    .rating-cell {
+        font-size: 14px;
+        padding: 8px 0;
+    }
+}

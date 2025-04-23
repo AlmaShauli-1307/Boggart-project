@@ -1,0 +1,121 @@
+/* BodyMapQuestionnaire.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap');
+
+.question-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.question-text {
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 15px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Body parts checkboxes styling */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    grid-column-gap: 100px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.option-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+/* Custom checkbox styling */
+.option-checkbox input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    cursor: pointer;
+}
+
+.option-checkbox label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+}
+
+.option-checkbox label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 1px solid #000000;
+    border-radius: 2px;
+    background-color: #EEF0ED;
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+}
+
+/* Added check mark inside the checkbox */
+.option-checkbox input[type="checkbox"]:checked + label::after {
+    content: '✓';
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.option-checkbox input[type="checkbox"]:checked + label::before {
+    background-color: #295A4B;
+    border-color: #000000;
+    border-radius: 2px;
+}
+
+.option-checkbox input[type="checkbox"]:checked + label {
+    font-weight: 500;
+}
+
+/* Custom styling for the "Other" option */
+.other-option {
+    grid-column: span 1;
+    display: flex;
+    align-items: center;
+}
+
+.other-input {
+    flex-grow: 1;
+    background-color: #EEF0ED;
+    border: 0px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.other-input:focus {
+    outline: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .body-map-container {
+        flex-direction: column; /* Stack vertically on mobile */
+    }
+
+    .body-map-section, .body-parts-section {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

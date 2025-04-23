@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+/* Scale legend */
+.scale-legend {
+    width: 100%;
+    max-width: 675px;
+    margin-bottom: 40px;
+}
+
+.scale-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: none;
+    background-color: #FFFFFF;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px #B9B9B9; /* Single pixel border around the entire table */
+}
+
+.scale-table th {
+    padding: 10px 15px;
+    text-align: center;
+    vertical-align: top;
+    font-weight: 500;
+    font-size: 14px;
+    background-color: #A7CAB680;
+    border-width: 0;
+    border-right: 1px solid #B9B9B9;
+    border-bottom: 1px solid #B9B9B9;
+    width: 134.8px;
+    height: 56px;
+}
+
+.scale-table th:last-child {
+    border-right: none;
+}
+
+.scale-table td {
+    padding: 10px;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    border-width: 0;
+    border-right: 1px solid #B9B9B9;
+    width: 134.8px;
+    height: 41px;
+    line-height: 130%;
+}
+
+.scale-table td:last-child {
+    border-right: none;
+}

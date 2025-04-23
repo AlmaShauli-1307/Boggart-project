@@ -1,0 +1,126 @@
+/* LandingPage.css */
+
+/* Import La Belle Aurore font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=La+Belle+Aurore&family=Roboto:wght@400;500;700;800&display=swap');
+
+/* Design tokens based on the screenshot */
+:root {
+    /* Colors */
+    --color-background: #E0ECE7;
+    --color-text: #000000;
+    --color-button-bg: #295A4B;
+    --color-button-text: #FFFFFF;
+
+    /* Typography */
+    --font-family-logo: 'Comic Sans MS', cursive, sans-serif;
+    --font-family-base: 'Roboto', sans-serif;
+    --font-family-cursive: 'La Belle Aurore', cursive;
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 3rem;
+    --spacing-xl: 4rem;
+}
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-base);
+    color: var(--color-text);
+    background-color: var(--color-background);
+    line-height: 1.5;
+}
+
+/* Main layout */
+.landing-boggart-page {
+    min-height: 100vh;
+    background-color: var(--color-background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.boggart-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Header */
+.form-header {
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+.logo-image {
+    max-width: 120px;
+    height: auto;
+}
+/* Welcome section */
+.welcome-section {
+    margin-bottom: 60px;
+    width: 100%;
+}
+
+.welcome-title {
+    font-family: 'La Belle Aurore', cursive;
+    font-size: 65px;
+    font-weight: 400;
+    line-height: 125%;
+    letter-spacing: 0;
+    text-align: center;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.welcome-description p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 140%;
+    letter-spacing: 0;
+    text-align: center;
+    margin: 0 auto 15px;
+    max-width: 90%;
+}
+.welcome-description div {
+    margin: 0 auto 60px;
+    max-width: 90%;
+}
+
+/* CTA section */
+.cta-section {
+    margin: 20px 0 60px;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .welcome-description {
+        max-width: 675px;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 40px;
+    }
+
+    .welcome-description {
+        font-size: 16px;
+        padding: 0 20px;
+    }
+}

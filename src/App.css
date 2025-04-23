@@ -3,7 +3,7 @@
   --primary-color: #11564F;
   --secondary-color: #A7CAB680;
   --text-color: #333;
-  --background-color: #f5f8f6;
+  --background-color: #EEF0ED; /* Changed to match IAS page */
   --font-family: 'Roboto', Arial, sans-serif;
   --font-size-base: 16px;
   --font-size-heading: 32px;
@@ -14,7 +14,7 @@
   --padding-base: 20px;
   --padding-large: 40px;
   --margin-base: 15px;
-  --container-width: 800px;
+  --container-width: 1200px; /* Increased width */
 }
 
 * {
@@ -26,15 +26,13 @@ body {
   background-color: var(--background-color);
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
   box-sizing: border-box;
+  /* Removed the flex centering that was causing layout issues */
 }
 
-/* 📦 Container */
-.container {
+/* 📦 Container - Only apply to certain pages, not IAS or Landing */
+.app-container {
   width: 100%;
   max-width: var(--container-width);
   background: white;
@@ -44,6 +42,7 @@ body {
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* The rest of your styles remain the same */
 /* ❓ Question Styling */
 .question {
   display: flex;
@@ -135,7 +134,7 @@ body {
 
 /* 📱 Responsive Design */
 @media (max-width: 768px) {
-  .container {
+  .app-container {
     padding: 25px;
     margin: 15px;
   }
@@ -177,7 +176,8 @@ body {
   gap: 15px;
 }
 
-button {
+/* General button styles for app, not the IAS page or landing page */
+.app-button {
   padding: 14px 30px;
   border-radius: var(--border-radius);
   border: none;
@@ -187,37 +187,37 @@ button {
   transition: all 0.3s ease-in-out;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   letter-spacing: 1px;
-  text-transform: uppercase; 
+  text-transform: uppercase;
 }
 
 /* ⬅️ Previous Button */
-button.previous {
+.app-button.previous {
   background: linear-gradient(135deg, #bbb, #999);
   color: white;
   border: 2px solid #aaa;
 }
 
-button.previous:hover {
+.app-button.previous:hover {
   background: linear-gradient(135deg, #999, #777);
-  transform: translateY(-3px) scale(1.05); 
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* ➡️ Next Button */
-button.next {
+.app-button.next {
   background: linear-gradient(135deg, var(--primary-color), #0d4540);
   color: white;
   border: 2px solid #0d4540;
 }
 
-button.next:hover {
+.app-button.next:hover {
   background: linear-gradient(135deg, #0d4540, #08352f);
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* ✅ Disabled Button State */
-button:disabled {
+.app-button:disabled {
   background: #ccc;
   color: #666;
   cursor: not-allowed;
@@ -237,7 +237,7 @@ button:disabled {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.progress-bar {
+.app-progress-bar {
   height: 100%;
   background: var(--primary-color);
   transition: width 0.5s ease;
@@ -246,14 +246,9 @@ button:disabled {
 
 /* 📊 Progress Bar - Hover Effect */
 .progress-container:hover {
-  background-color: #d4d4d4; 
+  background-color: #d4d4d4;
 }
 
-.progress-bar:hover {
+.app-progress-bar:hover {
   background: #2c756e;
 }
-
-
-
-
-

@@ -1,0 +1,20 @@
+Page,Page Title,Instructions,question_ID,Question,question_type,scale_min,scale_max,left_label,right_label,scale_labels,options,picture added,Page name/subject (not visible)
+1,,"Try and focus on your pain, and precisely pinpoint its location",63,Where do you feel the pain?,multi_select,,,,,,"Head, Neck, Shoulders, Back, Stomach, Knees, Legs, Ankles, Feet, Hands, Elbows, Chest, Eyes, Ears, Nose, Teeth, Tongue, Throat, Nape, Clavicle, Ribs, Entire body, Other(option to write in other)",Pain Location,pain detalis
+2,,"Try to focus on the painful area in relation to the part of the body you selected, and try to describe its location in terms of vertical and horizontal orientation",64,Horizontal Location,scale,1,5,Left,Right,,,,pain detalis
+2,,,65,Vertical location,scale,1,5,Down,Up,,,,pain detalis
+2,,,66,How long has the pain been present in your life? (in months),number,,,,,,,,pain detalis
+3,,,67,A detailed description of the pain,longText,,,,,,,,pain detalis
+3,,,68,Which organ is the pain closest to?,shortText,,,,,,,,pain detalis
+3,,,69,Where does it begin and where does it end?,shortText,,,,,,,,pain detalis
+4,,,70,Is it short or long in size?,scale,1,10,Short,Long,,,,pain detalis
+4,,,71,"Is it deep, or shallow?",scale,1,10,Shallow,Deep,,,,pain detalis
+4,,,72,"If you could visually see your pain, which color best describes it?",color_select,,,,,,,,pain detalis
+5,,,73,Is your pain's shape sharp or round?,scale,1,5,Round,Sharp,,,,pain detalis
+5,,,74,Is your pain's boundary defined or blurry?,scale,1,5,Defined,Blurry,,,,pain detalis
+5,,,75,"If you could run your finger through it, would this texture be thick or diluted?",scale,1,5,Diluted,Thick,,,,pain detalis
+5,,,76,"If you could pet your pain, would it have a smooth or rough feel?",scale,1,5,Smooth,Rough,,,,pain detalis
+5,,,77,"If you could hold its hand, would it be soft or hard?",scale,1,5,Soft,Hard,,,,pain detalis
+6,,,78,Which option best describe how your pain alters over time:,multi_choice,,,,,,"Consistent, Gets worse over time, Gets better over time, On-and-off, Doesn't have a pattern (random)",,pain detalis
+6,,,79,"What worsens the pain? Are there activities, movements, or other factors which worsen/ awakens the pain? Please describe.",shortText,,,,,,,,pain detalis
+6,,,80,"What helps you deal with the pain? Are there activities, movements, or other factors which ease the pain? Please describe.",shortText,,,,,,,,pain detalis
+6,,,81,"Are there characters, symbols, or images that come to mind when you are thinking about your pain?",shortText,,,,,,,,pain detalis

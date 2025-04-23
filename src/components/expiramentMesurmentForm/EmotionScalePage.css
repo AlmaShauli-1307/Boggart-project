@@ -1,0 +1,97 @@
+/* EmotionScalePage.css */
+.emotion-scale-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.emotion-scale-title {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.emotion-scale-image-container {
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.emotion-scale-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+}
+
+.emotion-scale-questions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.emotion-question-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.emotion-question-text {
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 20px;
+    max-width: 700px;
+}
+
+/* Use the same rating styles from Question.css to maintain consistency */
+.rating-table-container.wide-scale {
+    width: 100%;
+    max-width: 850px;
+    display: flex;
+    justify-content: center;
+}
+
+.rating-table.wide-scale {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: none;
+    background-color: #FFFFFF;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px #B9B9B9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 850px) {
+    .emotion-scale-image {
+        max-height: 300px;
+    }
+
+    .emotion-question-text {
+        font-size: 15px;
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .emotion-scale-title {
+        font-size: 16px;
+        padding: 0 15px;
+    }
+
+    .emotion-scale-image {
+        max-height: 250px;
+    }
+
+    .emotion-question-text {
+        font-size: 14px;
+    }
+}

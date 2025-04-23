@@ -1,0 +1,268 @@
+/* BodyMapQuestionnaire.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap');
+
+/* Base styles inherited from QuestionnairePage.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: #EEF0ED;
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Main container */
+.form-page {
+    background-color: #EEF0ED;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Header */
+.form-header {
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+.logo-image {
+    max-width: 120px;
+    height: auto;
+}
+
+/* Content area */
+.form-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+    width: 100%;
+}
+
+/* Instructions */
+.instructions {
+    margin: 20px 0 30px;
+    text-align: center;
+}
+
+.instructions-text {
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 140%;
+    text-align: center;
+    color: #000000;
+    max-width: 850px;
+}
+
+/* Body Map specific styles - Updated to side-by-side layout */
+.body-map-container {
+    display: flex;
+    flex-direction: row; /* Changed to row for side-by-side layout */
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.body-map-section {
+    width: 48%; /* Adjusted width for side-by-side */
+    margin-bottom: 30px;
+}
+
+.body-parts-section {
+    width: 48%; /* Adjusted width for side-by-side */
+    margin-bottom: 30px;
+}
+
+.body-map-section h3, .body-parts-section h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.body-image-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.body-image-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.body-outline-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Clear button styling - now matches the theme */
+.clear-button-container {
+    grid-column: span 3;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    min-height: 40px; /* Fixed height to prevent layout shifts */
+}
+
+.clear-selections-button {
+    padding: 8px 15px;
+    background-color: #295A4B; /* Matches your site's color scheme */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.clear-selections-button:hover {
+    background-color: #1d3f35; /* Darker shade for hover */
+}
+
+/* Highlight overlay for selected body parts */
+.highlight-overlay {
+    position: absolute;
+    background-color: rgba(255, 152, 0, 0.5); /* Semi-transparent orange */
+    border: 2px solid rgba(230, 81, 0, 0.7); /* Darker orange border */
+    pointer-events: none; /* Allow clicks to pass through to the image */
+    z-index: 2;
+}
+
+.highlight-overlay.entire-body {
+    background-color: rgba(255, 152, 0, 0.3); /* Lighter for entire body */
+    border: 3px dashed rgba(230, 81, 0, 0.7);
+}
+
+/* Body parts checkboxes styling */
+.body-parts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.body-part-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+/* Custom checkbox styling */
+.body-part-checkbox input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    cursor: pointer;
+}
+
+.body-part-checkbox label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+}
+
+.body-part-checkbox label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 1px solid #000000;
+    border-radius: 2px;
+    background-color: #EEF0ED;
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25));
+}
+
+/* Added check mark inside the checkbox */
+.body-part-checkbox input[type="checkbox"]:checked + label::after {
+    content: '✓';
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.body-part-checkbox input[type="checkbox"]:checked + label::before {
+    background-color: #295A4B;
+    border-color: #000000;
+    border-radius: 2px;
+}
+
+.body-part-checkbox input[type="checkbox"]:checked + label {
+    font-weight: 500;
+}
+
+/* Custom styling for the "Other" option */
+.other-option {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+}
+
+.other-input {
+    flex-grow: 1;
+    background-color: #EEF0ED;
+    border: 0px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.other-input:focus {
+    outline: none;
+}
+
+/* Navigation */
+.navigation {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .body-map-container {
+        flex-direction: column; /* Stack vertically on mobile */
+    }
+
+    .body-map-section, .body-parts-section {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .body-parts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

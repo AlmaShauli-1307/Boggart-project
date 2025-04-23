@@ -1,0 +1,79 @@
+/* CompletionPage.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap');
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.completion-page {
+    background-color: #EEF0ED;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.completion-header {
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+.completion-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 0 20px;
+    background-color: #EEF0ED;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.completion-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+    width: 100%;
+    text-align: center;
+    margin-top: 80px;
+}
+
+.completion-title {
+    font-family: 'La Belle Aurore', cursive;
+    font-size: 48px;
+    font-weight: 400;
+    margin-bottom: 30px;
+    color: #295A4B;
+}
+
+.completion-message {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 140%;
+    margin-bottom: 60px;
+    max-width: 600px;
+}
+
+.completion-cta {
+    margin-top: 20px;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .completion-title {
+        font-size: 36px;
+    }
+
+    .completion-message {
+        font-size: 18px;
+        padding: 0 20px;
+    }
+}

@@ -1,0 +1,69 @@
+/* Custom Styles for React Select to Match Input Fields */
+
+.custom-react-select__control {
+    box-sizing: border-box !important;
+    border: 1px solid #686666 !important;
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25)) !important;
+    border-radius: 20px !important;
+    font-family: 'Roboto', sans-serif !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    line-height: 130% !important;
+    background-color: #FFFBFB !important;
+    width: 410px !important;
+    height: 52px !important;
+    min-height: unset !important; /* Override react-select's min-height */
+}
+
+.custom-react-select__control:hover {
+    border-color: #686666 !important;
+}
+
+.custom-react-select__control--is-focused {
+    border-color: #686666 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.custom-react-select__option {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 16px !important;
+    color: #000000 !important;
+}
+
+.custom-react-select__option--is-selected {
+    color: white !important;
+    background-color: #295A4B !important;  /* Your selected option color */
+}
+
+.custom-react-select__option:hover {
+    background-color: #D3E5DB !important;  /* Your hover option color */
+}
+
+.custom-react-select__single-value {
+    color: #000000 !important;
+}
+
+.custom-react-select__placeholder {
+    color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.custom-react-select__indicator-separator {
+    display: none !important;
+}
+
+.custom-react-select__dropdown-indicator {
+    color: #686666 !important;
+    padding: 8px !important;
+}
+
+.custom-react-select__menu {
+    border-radius: 8px !important;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.custom-react-select__menu-list {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
