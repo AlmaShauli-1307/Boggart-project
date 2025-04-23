@@ -1,0 +1,123 @@
+/* IASPage.css */
+
+/* Import Roboto font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap');
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Set the background color on the html and body elements to ensure full coverage */
+html, body {
+    background-color: #EEF0ED;
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Main container */
+.form-page {
+    background-color: #EEF0ED;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Header */
+.form-header {
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+.logo-image {
+    max-width: 120px;
+    height: auto;
+}
+
+/* Content area */
+.form-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+    width: 100%;
+}
+
+/* Instructions */
+.instructions {
+    margin: 20px 0 30px;
+    text-align: center;
+}
+
+.instructions-text {
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 140%;
+    text-align: center;
+    color: #000000;
+    max-width: 850px;
+}
+
+/* Questionnaire */
+.questionnaire {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 60px;
+}
+
+/* Navigation */
+.navigation {
+    margin-bottom: 40px;
+}
+
+/* Progress bar */
+.progress-bar {
+    width: 320px;
+    height: 10px;
+    border-radius: 4px;
+    border: 1px solid #B9B9B9;
+    overflow: hidden;
+}
+
+.progress-indicator {
+    width: 20%;
+    height: 100%;
+    background-color: #B9B9B9;
+    border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .progress-bar {
+        width: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .instructions-text {
+        font-size: 14px;
+    }
+
+    .progress-bar {
+        width: 240px;
+    }
+}
