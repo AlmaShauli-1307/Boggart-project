@@ -7,7 +7,7 @@
 :root {
     /* Colors */
     --color-background: #E0ECE7;
-    --color-text: #11564F;
+    --color-text: #295A4B;
     --color-button-bg: #295A4B;
     --color-button-text: #FFFFFF;
 
@@ -39,31 +39,29 @@ body {
 }
 
 /* Main layout */
-.landing-boggart-page {
+.loading-boggart-page {
     min-height: 100vh;
     background-color: var(--color-background);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    padding: 20px;
+    position: relative;
 }
 
-.boggart-container {
+.loading-boggart-container {
     width: 100%;
-    max-width: 1200px;
+    /*max-width: 800px;*/
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
 }
 
 /* Header */
-.form-header {
-    padding: 20px 0;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    padding-left: 20px;
+.form-loading-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: auto;
 }
 
 .logo-image {
@@ -71,72 +69,32 @@ body {
     height: auto;
 }
 
-/* Welcome section */
-.welcome-section {
-    margin-top: 100px;
-    margin-bottom: 30px;
-    width: 50%;
+/* Loading content */
+.loading-content {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
-.welcome-title {
+.loading-message {
     font-family: 'La Belle Aurore', cursive;
-    font-size: 45px;
+    font-size: 40px;
     font-weight: 400;
-    line-height: 1.2;
-    letter-spacing: 0;
+    line-height: 1.3;
     text-align: center;
-    margin-bottom: 20px;
-    width: 100%;
-    color: var(--color-text); /* Ensure title uses the correct color */
-}
-
-.welcome-description p {
-    font-family: 'Roboto', sans-serif;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 1.4;
-    letter-spacing: 0;
-    text-align: center;
-    margin: 0 auto 15px;
-    max-width: 90%;
-    color: var(--color-text); /* Ensure description uses the correct color */
-}
-
-.welcome-description div {
-    margin: 0 auto 40px;
-    max-width: 90%;
-}
-
-.loading-overlay {
-    position: absolute; /* Or fixed, depending on your layout */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column; /* Stack items vertically */
-    justify-content: center; /* Center vertically */
-    align-items: center; /* Center horizontally */
-    z-index: 1000; /* Ensure it's on top */
+    color: var(--color-text);
+    margin-bottom: 60px;
 }
 
 .loading-spinner {
-    width: 100px;
-    height: 100px;
-    border: 15px solid transparent;
-    border-top-color: #295A4B;
+    width: 80px;
+    height: 80px;
+    border: 12px solid transparent;
+    border-top-color: var(--color-text);
     border-radius: 50%;
     animation: spin 1.2s linear infinite;
-    margin-bottom: 20px;
-}
-
-.loading-text {
-    font-family: var(--font-family-base);
-    font-size: 16px;
-    color: var(--color-text);
 }
 
 @keyframes spin {
@@ -148,14 +106,15 @@ body {
     }
 }
 
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .welcome-title {
-        font-size: 36px;
+    .loading-message {
+        font-size: 28px;
     }
 
-    .welcome-description {
-        font-size: 16px;
-        padding: 0 20px;
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border-width: 8px;
     }
 }

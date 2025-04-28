@@ -43,40 +43,46 @@ body {
     min-height: 100vh;
     background-color: var(--color-background);
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
     padding: 20px;
+    position: relative;
 }
 
 .boggart-container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 800px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
+    margin-top: 80px; /* Add space at the top to account for the absolute positioned logo */
 }
 
 /* Header */
 .form-header {
-    padding: 20px 0;
     width: 100%;
     display: flex;
     justify-content: flex-start;
-    padding-left: 20px;
+    padding: 20px 0;
+    position: absolute;
+    top: 20px;
+    left: 20px;
 }
 
 .logo-image {
     max-width: 120px;
     height: auto;
 }
+
 /* Welcome section */
-.welcome-section {
-    margin-bottom: 60px;
+.boggart-welcome-section {
+    margin: 20px 0 40px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.welcome-title {
+.boggart-welcome-title {
     font-family: 'La Belle Aurore', cursive;
     font-size: 65px;
     font-weight: 400;
@@ -84,43 +90,53 @@ body {
     letter-spacing: 0;
     text-align: center;
     margin-bottom: 40px;
-    width: 100%;
+    color: #295A4B;
 }
 
-.welcome-description p {
+.boggart-welcome-description {
+    max-width: 675px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.boggart-welcome-description p {
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
     font-weight: 500;
     line-height: 140%;
     letter-spacing: 0;
     text-align: center;
-    margin: 0 auto 15px;
-    max-width: 90%;
-}
-.welcome-description div {
-    margin: 0 auto 60px;
-    max-width: 90%;
+    margin-bottom: 20px;
 }
 
 /* CTA section */
 .cta-section {
     margin: 20px 0 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Button styling - in case PrimaryButton component needs overrides */
+.cta-section button {
+    background-color: var(--color-button-bg);
+    color: var(--color-button-text);
+    padding: 12px 40px;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
 }
 
 /* Responsive adjustments */
-@media (min-width: 768px) {
-    .welcome-description {
-        max-width: 675px;
-    }
-}
-
 @media (max-width: 768px) {
-    .welcome-title {
+    .boggart-welcome-title {
         font-size: 40px;
     }
 
-    .welcome-description {
+    .boggart-welcome-description p {
         font-size: 16px;
-        padding: 0 20px;
+        padding: 0 15px;
     }
 }

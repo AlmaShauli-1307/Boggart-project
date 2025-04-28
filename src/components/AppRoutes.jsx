@@ -18,7 +18,6 @@ function AppRoutes() {
                 <Route path="/landing-boggart" element={<LandingPageBoggart />} />
                 <Route path="/questionnaire-boggart" element={<DetailedQuestionnaire />} />
                 <Route path="/questionnaire-personal" element={<PersonalQuestionnaire />} />
-                <Route path="/loading" element={<LoadingPage />} />
                 <Route path="/MeetYourPain" element={<MeetYourPain />} />
                 <Route path="/completion" element={<CompletionPage />} />
                 <Route path="*" element={<Navigate to="/" />} />
