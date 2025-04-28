@@ -39,7 +39,7 @@ body {
 }
 
 /* Main layout */
-.landing-boggart-page {
+.landing-meet-boggart-page {
     min-height: 100vh;
     background-color: var(--color-background);
     display: flex;
@@ -48,7 +48,7 @@ body {
     padding: 20px;
 }
 
-.boggart-container {
+.meet-boggart-container {
     width: 100%;
     max-width: 1200px;
     display: flex;
@@ -58,7 +58,7 @@ body {
 }
 
 /* Header */
-.form-header {
+.form-meet-boggart-header {
     padding: 20px 0;
     width: 100%;
     display: flex;
@@ -72,7 +72,7 @@ body {
 }
 
 /* Welcome section */
-.welcome-section {
+.welcome-meet-boggart-section {
     margin-top: 30px;
     margin-bottom: 30px;
     width: 50%;
@@ -81,7 +81,7 @@ body {
     align-items: center;
 }
 
-.welcome-title {
+.welcome-meet-boggart-title {
     font-family: 'La Belle Aurore', cursive;
     font-size: 60px;
     font-weight: 400;
@@ -100,25 +100,25 @@ body {
     margin: 0 auto 20px;
 }
 
-.welcome-description div {
+.welcome-meet-boggart-description div {
     margin: 0 auto 30px;
     max-width: 90%;
 }
 
 /* CTA section */
-.cta-section {
+.cta-meet-boggart-section {
     margin: 20px 0 60px;
 }
 
 /* Responsive adjustments */
 @media (min-width: 768px) {
-    .welcome-description {
+    .welcome-meet-boggart-description {
         max-width: 675px;
     }
 }
 
 @media (max-width: 768px) {
-    .welcome-title {
+    .welcome-meet-boggart-title {
         font-size: 40px;
     }
 
