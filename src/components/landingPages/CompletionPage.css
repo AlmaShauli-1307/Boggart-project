@@ -9,7 +9,7 @@
 }
 
 .completion-page {
-    background-color: #EEF0ED;
+    background-color: #D3E5DB;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -18,7 +18,7 @@
 }
 
 .completion-header {
-    padding: 20px 0;
+    padding: 15px 0;
     width: 100%;
     display: flex;
     justify-content: flex-start;
@@ -28,8 +28,8 @@
 .completion-container {
     width: 100%;
     max-width: 800px;
-    padding: 0 20px;
-    background-color: #EEF0ED;
+    padding: 0 30px;
+    background-color: #D3E5DB;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -50,7 +50,7 @@
     font-size: 48px;
     font-weight: 400;
     margin-bottom: 30px;
-    color: #295A4B;
+    color: #000000;
 }
 
 .completion-message {
@@ -58,8 +58,17 @@
     font-size: 20px;
     font-weight: 500;
     line-height: 140%;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
     max-width: 600px;
+    color: #000000;
+    font-style: normal;
+    text-align: center;
+
+    color: #000000;
+}
+
+.completion-message a {
+    color: #005E90;
 }
 
 .completion-cta {

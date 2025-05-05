@@ -6,7 +6,6 @@ import CompletionPage from './landingPages/CompletionPage';
 import LandingPageBoggart from "./landingPages/LandingPageBoggart";
 import DetailedQuestionnaire from "./boggartForm/DetailedQuestionnaire";
 import PersonalQuestionnaire from "./expiramentMesurmentForm/PersonalQuestionnaire";
-import LoadingPage from "./landingPages/LoadingPage";
 import MeetYourPain from "./landingPages/MeetYourPain";
 
 function AppRoutes() {

@@ -145,11 +145,11 @@ const DetailedQuestionnairePage = () => {
             console.log('✅ Response from server:', data);
             alert('Answers submitted successfully!');
             // Redirect to success page or next step
-            navigate('/MeetYourPain');
+            navigate('/questionnaire-personal');
         } catch (error) {
             console.error('❌ Error submitting answers:', error);
             alert('An error occurred while submitting answers.');
-            navigate('/MeetYourPain');
+            navigate('/questionnaire-personal');
 
         }
         setIsSubmitting(false);
