@@ -20,7 +20,7 @@ const MeetYourPain = () => {
 
     const handleStartClick = () => {
         // Navigate to the IAS page
-        navigate('/questionnaire-boggart');
+        navigate('/completion');
     };
 
     if (isLoading) {
