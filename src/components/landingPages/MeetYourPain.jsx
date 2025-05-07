@@ -20,7 +20,7 @@ const MeetYourPain = () => {
 
     const handleStartClick = () => {
         // Navigate to the IAS page
-        navigate('/completion');
+        navigate('/meet-your-pain-rate');
     };
 
     if (isLoading) {
@@ -42,7 +42,7 @@ const MeetYourPain = () => {
                 </section>
 
                 <section className="cta-meet-boggart-section">
-                    <PrimaryButton text="Let's talk..." onClick={handleStartClick} />
+                    <PrimaryButton text="Next" onClick={handleStartClick} />
                 </section>
             </div>
         </main>

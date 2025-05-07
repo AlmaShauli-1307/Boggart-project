@@ -1,52 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './MeetYourPain.css';
-import demoBoggart from '../../images/demoBoggart.png'; // Adjust path as needed
+import './LandingPageBoggart.css';
 import logo from '../../images/logo.png'; // Adjust path as needed
 import PrimaryButton from '../generalComponents/PrimaryButton'; // Import the reusable button component
-import LoadingPage from './LoadingPage'; // Import the LoadingPage component
 
-const MeetYourPain = () => {
-    const [isLoading, setIsLoading] = useState(true);
+const LandingPage = () => {
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 5000); // 5 seconds delay
-
-        return () => clearTimeout(timer); // Cleanup the timer
-    }, []);
 
     const handleStartClick = () => {
         // Navigate to the IAS page
         navigate('/questionnaire-boggart');
     };
 
-    if (isLoading) {
-        return <LoadingPage />;
-    }
-
     return (
-        <main className="landing-meet-boggart-page">
-            <div className="meet-boggart-container">
-                <header className="form-meet-boggart-header">
-                    <img src={logo} alt="Boggart" className="logo-image"/>
+        <main className="landing-boggart-page">
+            <div className="boggart-container">
+                <header className="form-boggart-header">
+                    <img src={logo} alt="Boggart" className="logo-image" />
                 </header>
 
-                <section className="welcome-meet-boggart-section">
-                    <h2 className="welcome-meet-boggart-title">Meet Your Pain</h2>
-                    <div className="welcome-meet-boggart-description">
-                        <img src={demoBoggart} className={"boggart-img"} />
-                    </div>
+                <section className="boggart-welcome-section">
+                    <h2 className="boggart-welcome-title">Self Reflection</h2>
+
+                    <p className="boggart-welcome-description">
+                        You will now be guided through a self-reflective questionnaire, allowing an introspective view of your ongoing pain.
+                    </p>
+                    <p className="boggart-welcome-description">
+                        Please take a couple of minutes to sit in a quiet place and focus on your pain before we begin. Allow yourself the time to reflect deeply on each question and explore your pain to better understand it.
+                    </p>
+                    <p className="boggart-welcome-description">
+                        Try and determine how you experience your pain, and describe it in order to understand it in a deeper sense.
+                    </p>
                 </section>
 
-                <section className="cta-meet-boggart-section">
-                    <PrimaryButton text="Let's talk..." onClick={handleStartClick} />
+                <section className="cta-section">
+                    <PrimaryButton text="Let's Start" onClick={handleStartClick} />
                 </section>
             </div>
         </main>
     );
 };
 
-export default MeetYourPain;
+export default LandingPage;

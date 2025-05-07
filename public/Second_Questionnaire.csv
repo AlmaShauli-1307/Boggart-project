@@ -1,5 +1,5 @@
 Page,Page Title,Instructions,question_ID,Question,question_type,scale_min,scale_max,left_label,right_label,scale_labels,options,picture added,Page name/subject (not visible)
-1,,"Try and focus on your pain, and precisely pinpoint its location",63,Where do you feel the pain?,multi_select,,,,,,"Head, Neck, Shoulders, Back, Stomach, Knees, Legs, Ankles, Feet, Hands, Elbows, Chest, Eyes, Ears, Nose, Teeth, Tongue, Throat, Nape, Clavicle, Ribs, Entire body, Other(option to write in other)",Pain Location,pain detalis
+1,Pain Location,"Try and focus on your pain, and precisely pinpoint its location",63,Where do you feel the pain?,multi_select,,,,,,"Head, Neck, Shoulders, Back, Stomach, Knees, Legs, Ankles, Feet, Hands, Elbows, Chest, Eyes, Ears, Nose, Teeth, Tongue, Throat, Nape, Clavicle, Ribs, Entire body, Other(option to write in other)",Pain Location,pain detalis
 2,,"Try to focus on the painful area in relation to the part of the body you selected, and try to describe its location in terms of vertical and horizontal orientation",64,Horizontal Location,scale,1,5,Left,Right,,,,pain detalis
 2,,,65,Vertical location,scale,1,5,Down,Up,,,,pain detalis
 2,,,66,How long has the pain been present in your life? (in months),number,,,,,,,,pain detalis

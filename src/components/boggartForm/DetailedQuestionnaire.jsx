@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Papa from 'papaparse';
 import './DetailedQuestionnaire.css';
-import logo from '../../images/logo.png'; // Adjust path as needed
+import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
-import ScaleLegend from '../generalComponents/ScaleLegend';
 import Question from '../generalComponents/Question';
-import PainScaleQuestion from '../expiramentMesurmentForm/PainScaleQuestion';
-import EmotionScalePage from '../expiramentMesurmentForm/EmotionScalePage';
 import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
 import ColorWheelQuestion from "./ColorWheelQuestion";
@@ -156,7 +153,7 @@ const DetailedQuestionnairePage = () => {
     };
 
     // Determine if this is a special page type
-    const isPainLocationPage = currentPage === 1;
+    const isPainLocationPage = pageData.title === 'Pain Location';
 
     // Format questions for our Question component
     const formattedQuestions = getCurrentPageQuestions().map(q => {

@@ -152,11 +152,11 @@ const PersonalQuestionnaire = () => {
             console.log('✅ Response from server:', data);
             alert('Answers submitted successfully!');
             // Redirect to success page or next step
-            navigate('/MeetYourPain');
+            navigate('/meet-your-pain');
         } catch (error) {
             console.error('❌ Error submitting answers:', error);
             alert('An error occurred while submitting answers.');
-            navigate('/MeetYourPain');
+            navigate('/meet-your-pain');
 
         }
         setIsSubmitting(false);
