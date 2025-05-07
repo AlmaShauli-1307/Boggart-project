@@ -19,9 +19,9 @@ Page,Page Title,Instructions,question_ID,Question,question_type,scale_min,scale_
 5,,,20,I can always accurately perceive when someone is touching me affectionately rather than nonaffectionately,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 4
 5,,,21,I can always accurately perceive when something is going to be ticklish,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 5
 5,,,22,I can always accurately perceive when something is going to be itchy,likert_scale_1,1,5,,,"Strongly Disagree, Disagree, Neither agree nor disagree, Agree, Strongly Agree",,,Interoceptive Accuracy Scale (IAS) 5
-6,,,23,"On a scale of 0 to 10 (0 being no pain and 10 being the worst pain you can possibly imagine), how would you currently rate your pain?",likert_scale_2,1,10,No Pain,Worst Pain,,,VAS.png,Visual Analog Scale for Pain (VAS)
-7,,You will now see two scales describing an emotional experience,24,"Please rate how you are feeling right now, with 0 being very negative and 10 being very positive.",likert_scale_3,1,10,Very Negative,Very Positive,,,sam.png,Self-Assessment Manikin (SAM)
-7,,,25,Please describe your arousal levels with 0 being calm and peaceful and 10 being emotional and aroused,likert_scale_4,1,10,Calm and Peaceful,Emotional and Aroused,,,,Self-Assessment Manikin (SAM)
+6,VAS,,23,"On a scale of 0 to 10 (0 being no pain and 10 being the worst pain you can possibly imagine), how would you currently rate your pain?",likert_scale_2,1,10,No Pain,Worst Pain,,,VAS.png,Visual Analog Scale for Pain (VAS)
+7,SAM,You will now see two scales describing an emotional experience,24,"Please rate how you are feeling right now, with 0 being very negative and 10 being very positive.",likert_scale_3,1,10,Very Negative,Very Positive,,,sam.png,Self-Assessment Manikin (SAM)
+7,SAM,,25,Please describe your arousal levels with 0 being calm and peaceful and 10 being emotional and aroused,likert_scale_4,1,10,Calm and Peaceful,Emotional and Aroused,,,,Self-Assessment Manikin (SAM)
 8,,"On a scale from 0 to 5 (0 being the lowest and 5 the highest) , please specify how intense were the following emotions during an occasion you felt the strongest pain",26,Irritability (I lose my patience at the slightest thing),likert_scale_5,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 1
 8,,,27,Feeling powerless,likert_scale_6,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 1
 8,,,28,Depression (deep sadness with loss of any interest),likert_scale_7,0,5,,,,,,Bodily and Emotional Perception of Pain (BEEP) 1
@@ -58,4 +58,3 @@ Page,Page Title,Instructions,question_ID,Question,question_type,scale_min,scale_
 15,,,59,I keep thinking about how badly I want the pain to stop,likert_scale_2,0,4,,,"Not at all, To a slight degree, To a moderate degree, To a great degree, All the time",,,Pain Catastrophizing Scale (PCS) 3
 15,,,60,There's nothing I can do to reduce the intensity of the pain,likert_scale_2,0,4,,,"Not at all, To a slight degree, To a moderate degree, To a great degree, All the time",,,Pain Catastrophizing Scale (PCS) 3
 15,,,61,I wonder whether something serious may happen,likert_scale_2,0,4,,,"Not at all, To a slight degree, To a moderate degree, To a great degree, All the time",,,Pain Catastrophizing Scale (PCS) 3
-,,,,,,,,,,,,,

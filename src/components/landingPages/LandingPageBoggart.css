@@ -58,14 +58,11 @@ body {
 }
 
 /* Header */
-.form-header {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    padding: 20px 0;
+.form-boggart-header {
     position: absolute;
     top: 20px;
     left: 20px;
+    width: auto;
 }
 
 .logo-image {
@@ -97,6 +94,7 @@ body {
     max-width: 675px;
     text-align: center;
     margin: 0 auto;
+    padding: 10px 20px;
 }
 
 .boggart-welcome-description p {
@@ -106,7 +104,8 @@ body {
     line-height: 140%;
     letter-spacing: 0;
     text-align: center;
-    margin-bottom: 20px;
+    margin: 0 auto 60px;
+    max-width: 90%;
 }
 
 /* CTA section */

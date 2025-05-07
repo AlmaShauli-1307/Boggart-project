@@ -9,7 +9,7 @@ import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
 import EmotionScalePage from './EmotionScalePage';
 
-const QuestionnairePage = () => {
+const QuestionnairePage = ({csvName}) => {
     const navigate = useNavigate();
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
@@ -23,7 +23,7 @@ const QuestionnairePage = () => {
 
     // Load questions from CSV
     useEffect(() => {
-        fetch('/First_Questionnaire.csv')
+        fetch(`/${csvName}.csv`)
             .then(response => response.text())
             .then(text => {
                 Papa.parse(text, {
@@ -48,6 +48,7 @@ const QuestionnairePage = () => {
 
         if (pageQuestions.length > 0) {
             const pageInfo = pageQuestions[0];
+            console.log('Page title:', pageInfo['Page Title']);
             setPageData({
                 title: pageInfo['Page Title'] || '',
                 instructions: pageInfo.Instructions || ''
@@ -173,8 +174,8 @@ const QuestionnairePage = () => {
     };
 
     // Determine if this is a special page type
-    const isPainScalePage = currentPage === 6;
-    const isEmotionScalePage = currentPage === 7;
+    const isVAS = pageData.title === 'VAS';
+    const isSAM = pageData.title === 'SAM';
 
     // Format questions for our Question component
     const formattedQuestions = getCurrentPageQuestions().map(q => {
@@ -213,7 +214,7 @@ const QuestionnairePage = () => {
             <div className="form-container">
                 <main className="form-content">
                     {/* Show instructions if available */}
-                    {!isEmotionScalePage && pageData.instructions && (
+                    {!isSAM && pageData.instructions && (
                         <div className="instructions">
                             <p className="instructions-text">
                                 {pageData.instructions}
@@ -222,13 +223,13 @@ const QuestionnairePage = () => {
                     )}
 
                     {/* Show scale legend only when we have scale data and it's not a special page */}
-                    {showScale && !isPainScalePage && !isEmotionScalePage && Object.keys(currentScale).length > 0 && (
+                    {showScale && !isVAS && !isSAM && Object.keys(currentScale).length > 0 && (
                         <ScaleLegend scale={currentScale}/>
                     )}
 
                     <div className="questionnaire">
                         {/* Special case for pain scale page */}
-                        {isPainScalePage && formattedQuestions.map(question => (
+                        {isVAS && formattedQuestions.map(question => (
                             <PainScaleQuestion
                                 key={question.id}
                                 id={question.id}
@@ -241,7 +242,7 @@ const QuestionnairePage = () => {
                         ))}
 
                         {/* Special case for emotion scale page */}
-                        {isEmotionScalePage && (
+                        {isSAM && (
                             <EmotionScalePage
                                 questions={formattedQuestions}
                                 responses={responses}
@@ -250,7 +251,7 @@ const QuestionnairePage = () => {
                         )}
 
                         {/* Regular questions for all other pages */}
-                        {!isPainScalePage && !isEmotionScalePage && formattedQuestions.map(question => (
+                        {!isVAS && !isSAM && formattedQuestions.map(question => (
                             <Question
                                 key={question.id}
                                 id={question.id}
