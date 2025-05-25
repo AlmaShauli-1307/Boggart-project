@@ -9,6 +9,9 @@ import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
 import ColorWheelQuestion from "./ColorWheelQuestion";
 import CheckboxQuestion from "../generalComponents/CheckboxQuestion";
+import MidjourneyViewer from './MidjourneyViewer';
+// יבוא של שירות TTAPI
+import TTAPIService from '../../services/TTAPIService';
 
 const DetailedQuestionnairePage = () => {
     const navigate = useNavigate();
@@ -21,7 +24,8 @@ const DetailedQuestionnairePage = () => {
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedBodyParts, setSelectedBodyParts] = useState([]);
-
+    const [showMidjourneyViewer, setShowMidjourneyViewer] = useState(false);
+    const [midjourneyData, setMidjourneyData] = useState(null);
 
     // Load questions from CSV
     useEffect(() => {
@@ -98,6 +102,7 @@ const DetailedQuestionnairePage = () => {
             });
         }
     };
+
     const handleNext = () => {
         // Process "other" values
         const updatedResponses = { ...responses };
@@ -128,7 +133,6 @@ const DetailedQuestionnairePage = () => {
         }
     };
 
-    // Function to submit answers
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
@@ -140,16 +144,39 @@ const DetailedQuestionnairePage = () => {
 
             const data = await response.json();
             console.log('✅ Response from server:', data);
-            alert('Answers submitted successfully!');
-            // Redirect to success page or next step
-            navigate('/questionnaire-personal');
+
+            // הגדר את הנתונים ל-MidjourneyViewer ועבור לתצוגה שלו
+            setMidjourneyData({
+                prompt: data.prompt || "",
+                answers: responses,
+                apiKey: "be396f95-696d-c7f0-5066-07ad81b37cbb"
+            });
+            setShowMidjourneyViewer(true);
+
+            // אל תעבור לדף אחר עדיין - נשאר בדף הנוכחי להצגת MidjourneyViewer
+            // navigate('/questionnaire-personal');
         } catch (error) {
             console.error('❌ Error submitting answers:', error);
-            alert('An error occurred while submitting answers.');
-            navigate('/questionnaire-personal');
 
+            // גם במקרה של שגיאה, עבור להצגת MidjourneyViewer
+            setMidjourneyData({
+                prompt: "",  // פרומפט ריק יגרום לקומפוננטה ליצור פרומפט מקומי
+                answers: responses,
+                apiKey: "be396f95-696d-c7f0-5066-07ad81b37cbb"
+            });
+            setShowMidjourneyViewer(true);
         }
         setIsSubmitting(false);
+    };
+
+    // פונקציה לחזרה למסך השאלון
+    const handleBackToQuestionnaire = () => {
+        setShowMidjourneyViewer(false);
+    };
+
+    // פונקציה להמשך לדף הבא
+    const handleContinue = () => {
+        navigate('/questionnaire-personal');
     };
 
     // Determine if this is a special page type
@@ -191,10 +218,47 @@ const DetailedQuestionnairePage = () => {
     // Calculate progress percentage
     const progressPercentage = (currentPage / totalPages) * 100;
 
+    // אם צריך להציג את רכיב MidjourneyViewer
+    if (showMidjourneyViewer) {
+        return (
+            <div className="form-page">
+                <header className="form-header">
+                    <img src={logo} alt="Boggart" className="logo-image" />
+                </header>
+                <div className="form-container">
+                    <main className="form-content">
+                        <h2 className="page-title">Your Pain Visualization</h2>
+                        <p className="page-description">Based on your responses, we've created a visualization of your pain.</p>
+
+                        <MidjourneyViewer
+                            answers={responses}
+                            apiKey={midjourneyData?.apiKey || "be396f95-696d-c7f0-5066-07ad81b37cbb"}
+                            prompt={midjourneyData?.prompt || ""}
+                        />
+
+                        <div className="navigation">
+                            <PrimaryButton
+                                text="BACK TO QUESTIONNAIRE"
+                                onClick={handleBackToQuestionnaire}
+                                className="previous-button"
+                            />
+
+                            <PrimaryButton
+                                text="CONTINUE"
+                                onClick={handleContinue}
+                            />
+                        </div>
+                    </main>
+                </div>
+            </div>
+        );
+    }
+
+    // תצוגת השאלון הרגילה
     return (
         <div className="form-page">
             <header className="form-header">
-                <img src={logo} alt="Boggart" className="logo-image"/>
+                <img src={logo} alt="Boggart" className="logo-image" />
             </header>
             <div className="form-container">
                 <main className="form-content">
@@ -210,6 +274,7 @@ const DetailedQuestionnairePage = () => {
                         {/* Special case for pain scale page */}
                         {isPainLocationPage && formattedQuestions.map(question => (
                             <BodyMapQuestionnaire
+                                key="body-map"
                                 selectedBodyParts={selectedBodyParts}
                                 setSelectedBodyParts={setSelectedBodyParts}
                             />
@@ -217,19 +282,21 @@ const DetailedQuestionnairePage = () => {
                         {/* Regular questions for all other pages */}
                         {!isPainLocationPage && formattedQuestions.map(question => {
                             if (question.questionType === 'scale') {
-                            return (<Question
-                                key={question.id}
-                                id={question.id}
-                                text={question.text}
-                                selectedValue={responses[question.id]}
-                                onSelect={handleOptionSelect}
-                                leftLabel={question.left_label}
-                                rightLabel={question.right_label}
-                                options={question.options}
-                            />)}
+                                return (<Question
+                                    key={question.id}
+                                    id={question.id}
+                                    text={question.text}
+                                    selectedValue={responses[question.id]}
+                                    onSelect={handleOptionSelect}
+                                    leftLabel={question.left_label}
+                                    rightLabel={question.right_label}
+                                    options={question.options}
+                                />)
+                            }
                             else if (question.questionType === 'number' || question.questionType === 'longText' || question.questionType === 'shortText') {
                                 return (
                                     <InputQuestion
+                                        key={question.id}
                                         id={question.id}
                                         text={question.text}
                                         selectedValue={responses[question.id]}
@@ -241,22 +308,25 @@ const DetailedQuestionnairePage = () => {
                             else if (question.questionType === 'color_select') {
                                 return (
                                     <ColorWheelQuestion
+                                        key={question.id}
                                         id={question.id}
-                                text={question.text}
-                                    onSelect={handleOptionSelect}
-                                        selectedColor={responses[question.id]}/>
+                                        text={question.text}
+                                        onSelect={handleOptionSelect}
+                                        selectedColor={responses[question.id]} />
                                 );
                             }
                             else if (question.questionType === 'multi_choice') {
-                            return <CheckboxQuestion
-                                id={question.id}
-                                text={question.text}
-                                other={others[question.id]}
-                                selectedValues={responses[question.id]}
-                                onSelect={handleOptionSelect}
-                                onOther={handleOtherOptionSelect}
-                                options={question.options}/>
+                                return <CheckboxQuestion
+                                    key={question.id}
+                                    id={question.id}
+                                    text={question.text}
+                                    other={others[question.id]}
+                                    selectedValues={responses[question.id]}
+                                    onSelect={handleOptionSelect}
+                                    onOther={handleOtherOptionSelect}
+                                    options={question.options} />
                             }
+                            return null;
                         })}
                     </div>
 
@@ -277,7 +347,7 @@ const DetailedQuestionnairePage = () => {
                             />
                         ) : (
                             <PrimaryButton
-                                text={isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+                                text={isSubmitting ? "SUBMITTING..." : "VISUALIZE PAIN"}
                                 onClick={handleSubmit}
                                 disabled={!allQuestionsAnswered || isSubmitting}
                             />
