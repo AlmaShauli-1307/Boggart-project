@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f49dd3e2-6d06-4f78-a1ce-26ad70ae1833" name="Changes" comment="Refactor routing and add new questionnaire pages for improved user flow" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <excluded-from-favorite>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="master" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </excluded-from-favorite>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="finish-navigations-and-add-questionairre-after" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;shanimi&quot;
+  }
+}</component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="21cacc2b-f26f-40bc-b72f-fc087cdae737" />
+  </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/shanimichael/Boggart-Project.git",
+    "accountId": "21cacc2b-f26f-40bc-b72f-fc087cdae737"
+  }
+}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2snZvLJ6fFDSGHHx7prX5uJoXWL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/shanimi/university/Boggart-Project",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "ts.external.directory.path": "/Users/shanimi/Applications/IntelliJ IDEA Ultimate.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/expiramentMesurmentForm" />
+      <recent name="$PROJECT_DIR$/src/components/landingPages" />
+      <recent name="$PROJECT_DIR$/public" />
+      <recent name="$PROJECT_DIR$/src/componentsShani" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/boggartForm" />
+      <recent name="$PROJECT_DIR$/backend" />
+      <recent name="$PROJECT_DIR$/src/componentsShani/expiramentMesurmentForm" />
+      <recent name="$PROJECT_DIR$/src/componentsShani/landingPages" />
+      <recent name="$PROJECT_DIR$/src/componentsShani/boggartForm" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f49dd3e2-6d06-4f78-a1ce-26ad70ae1833" name="Changes" comment="" />
+      <created>1739093528673</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739093528673</updated>
+      <workItem from="1739093529945" duration="2515000" />
+      <workItem from="1739259589144" duration="1198000" />
+      <workItem from="1739268848411" duration="138000" />
+      <workItem from="1739269170836" duration="154000" />
+      <workItem from="1739269333469" duration="158000" />
+      <workItem from="1739269505407" duration="601000" />
+      <workItem from="1743868366695" duration="3190000" />
+      <workItem from="1743952180512" duration="2003000" />
+      <workItem from="1743954356627" duration="6080000" />
+      <workItem from="1744018432698" duration="58035000" />
+      <workItem from="1745577327864" duration="542000" />
+      <workItem from="1745747973348" duration="12991000" />
+      <workItem from="1746446101762" duration="7689000" />
+      <workItem from="1746947791712" duration="1557000" />
+      <workItem from="1746969724350" duration="625000" />
+      <workItem from="1747059000575" duration="2909000" />
+      <workItem from="1747208071673" duration="11000" />
+      <workItem from="1747742923668" duration="1795000" />
+      <workItem from="1748169584631" duration="1847000" />
+      <workItem from="1748171513279" duration="67000" />
+    </task>
+    <task id="LOCAL-00001" summary="Refactor app structure and add new components for improved navigation and user experience">
+      <option name="closed" value="true" />
+      <created>1745400215884</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1745400215884</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Refactor navigation and add loading functionality for Meet Your Pain feature">
+      <option name="closed" value="true" />
+      <created>1745846374173</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1745846374173</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update navigation paths and enhance CompletionPage content for better user guidance">
+      <option name="closed" value="true" />
+      <created>1746435184273</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1746435184273</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Refactor routing and add new questionnaire pages for improved user flow">
+      <option name="closed" value="true" />
+      <created>1746631226789</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746631226789</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Refactor app structure and add new components for improved navigation and user experience" />
+    <MESSAGE value="Refactor navigation and add loading functionality for Meet Your Pain feature" />
+    <MESSAGE value="Update navigation paths and enhance CompletionPage content for better user guidance" />
+    <MESSAGE value="Refactor routing and add new questionnaire pages for improved user flow" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor routing and add new questionnaire pages for improved user flow" />
+  </component>
+</project>
