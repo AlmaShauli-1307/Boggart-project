@@ -10,6 +10,8 @@ import InputQuestion from "../generalComponents/InputQuestion";
 import ColorWheelQuestion from "./ColorWheelQuestion";
 import CheckboxQuestion from "../generalComponents/CheckboxQuestion";
 import MidjourneyViewer from './MidjourneyViewer';
+// יבוא של שירות TTAPI
+import TTAPIService from '../../services/TTAPIService';
 
 const DetailedQuestionnairePage = () => {
     const navigate = useNavigate();
@@ -131,8 +133,6 @@ const DetailedQuestionnairePage = () => {
         }
     };
 
-    const imagePath = "C:/Users/user/Desktop/Boggart-Project-master/sample_images/pain_sample_1.png";
-
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
@@ -149,7 +149,7 @@ const DetailedQuestionnairePage = () => {
             setMidjourneyData({
                 prompt: data.prompt || "",
                 answers: responses,
-                imagePath: imagePath
+                apiKey: "be396f95-696d-c7f0-5066-07ad81b37cbb"
             });
             setShowMidjourneyViewer(true);
 
@@ -162,7 +162,7 @@ const DetailedQuestionnairePage = () => {
             setMidjourneyData({
                 prompt: "",  // פרומפט ריק יגרום לקומפוננטה ליצור פרומפט מקומי
                 answers: responses,
-                imagePath: imagePath
+                apiKey: "be396f95-696d-c7f0-5066-07ad81b37cbb"
             });
             setShowMidjourneyViewer(true);
         }
@@ -232,8 +232,8 @@ const DetailedQuestionnairePage = () => {
 
                         <MidjourneyViewer
                             answers={responses}
-                            apiKey="70413a13-f6fb-a48d-37fd-a74fbf384e00"
-                            prompt={midjourneyData?.prompt || ""}  // העברת ה-prompt מ-midjourneyData
+                            apiKey={midjourneyData?.apiKey || "be396f95-696d-c7f0-5066-07ad81b37cbb"}
+                            prompt={midjourneyData?.prompt || ""}
                         />
 
                         <div className="navigation">

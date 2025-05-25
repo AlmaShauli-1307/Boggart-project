@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './MidjourneyViewer.css';
+import TTAPIService from '../../services/TTAPIService';
 
 const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
     const [promptText, setPromptText] = useState(prompt || '');
@@ -8,50 +9,42 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedImageIndex, setSelectedImageIndex] = useState(null);
     const [croppedImages, setCroppedImages] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingStatus, setLoadingStatus] = useState('');
+    const [ttapiRequestId, setTtapiRequestId] = useState(null);
+    const [ttapiImageUrl, setTtapiImageUrl] = useState(null);
+    const [error, setError] = useState(null);
     const canvasRef = useRef(null);
-
-    // נתיב לתמונה המקורית - כרגע מוגדר כקבוע, בעתיד יתקבל מ-TTAPI
-    const imageSource = "C:/Users/user/Desktop/Boggart-Project-master/sample_images/pain_sample_1.png";
 
     // פונקציה לחיתוך דינמי של התמונה ל-4 חלקים
     const splitImageIntoQuadrants = (img) => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
 
-        // קביעת גודל הקנבס כמו התמונה המקורית
         canvas.width = img.width;
         canvas.height = img.height;
-
-        // ציור התמונה המקורית
         ctx.drawImage(img, 0, 0, img.width, img.height);
 
-        // חישוב גודל כל חלק
         const partWidth = img.width / 2;
         const partHeight = img.height / 2;
-
-        // יצירת 4 תמונות נפרדות
         const quadrants = [];
 
         for (let row = 0; row < 2; row++) {
             for (let col = 0; col < 2; col++) {
-                // חישוב המיקום של כל חלק
                 const x = col * partWidth;
                 const y = row * partHeight;
 
-                // יצירת קנבס זמני לכל חלק
                 const tempCanvas = document.createElement('canvas');
                 tempCanvas.width = partWidth;
                 tempCanvas.height = partHeight;
                 const tempCtx = tempCanvas.getContext('2d');
 
-                // העתקת החלק הרצוי מהתמונה המקורית
                 tempCtx.drawImage(
                     img,
-                    x, y, partWidth, partHeight,  // מקור
-                    0, 0, partWidth, partHeight   // יעד
+                    x, y, partWidth, partHeight,
+                    0, 0, partWidth, partHeight
                 );
 
-                // המרה לתמונה בפורמט URL
                 const dataURL = tempCanvas.toDataURL('image/png');
                 quadrants.push(dataURL);
             }
@@ -60,48 +53,7 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
         return quadrants;
     };
 
-    // טעינת התמונה המקורית ופיצולה ל-4 חלקים בטעינת הקומפוננטה
-    useEffect(() => {
-        const img = new Image();
-        img.crossOrigin = "Anonymous";  // חשוב עבור תמונות מנתיבים חיצוניים
-
-        img.onload = () => {
-            const quadrants = splitImageIntoQuadrants(img);
-            setCroppedImages(quadrants);
-        };
-
-        img.onerror = (err) => {
-            console.error("שגיאה בטעינת התמונה:", err);
-            console.error("ניסיון לטעון מנתיב:", imageSource);
-
-            // במקרה של שגיאה, ננסה טעינה מנתיב יחסי בתיקיית public
-            const fallbackImg = new Image();
-            fallbackImg.crossOrigin = "Anonymous";
-
-            fallbackImg.onload = () => {
-                console.log("טעינה מוצלחת מנתיב הגיבוי");
-                const quadrants = splitImageIntoQuadrants(fallbackImg);
-                setCroppedImages(quadrants);
-            };
-
-            fallbackImg.onerror = () => {
-                console.error("גם טעינת תמונת גיבוי נכשלה");
-
-                // יצירת תמונות ריקות לדוגמה
-                const emptyQuadrants = Array(4).fill("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQAQMAAAC6caSPAAAAA1BMVEXu7u6QALoZAAAASElEQVR4nO3BMQEAAADCoPVPbQhfoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgYcbQAAW97hl0AAAAASUVORK5CYII=");
-                setCroppedImages(emptyQuadrants);
-            };
-
-            fallbackImg.src = '/sample_images/pain_sample_1.png';  // נתיב יחסי מתיקיית public
-        };
-
-        // מכיוון שהדפדפן לא יכול לגשת ישירות לנתיב מקומי כמו C:/..., 
-        // נשתמש בתמונה שהעלית לתיקיית public
-        img.src = '/sample_images/pain_sample_1.png';
-
-    }, []);
-
-    // אם אין פרומפט מוכן, יצור אחד מקומי
+    // יצירת פרומפט מקומי אם לא קיים
     useEffect(() => {
         if (!promptText) {
             const generateLocalPrompt = () => {
@@ -123,7 +75,123 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
         }
     }, [answers, promptText]);
 
-    // פונקציה להעתקת הפרומפט ללוח
+    // פונקציה לטעינת תמונה עם תמיכה ב-proxy
+    const loadImageAndProcess = (imageSrc, retryCount = 0, maxRetries = 3) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+
+        img.onload = () => {
+            console.log(`✅ Image loaded successfully: ${imageSrc}`);
+            const quadrants = splitImageIntoQuadrants(img);
+            setCroppedImages(quadrants);
+            setError(null);
+        };
+
+        img.onerror = (err) => {
+            console.error(`❌ Error loading image (attempt ${retryCount + 1}/${maxRetries + 1}):`, err);
+            console.error(`Failed URL: ${imageSrc}`);
+
+            // אם זה ניסיון ראשון עם URL חיצוני, נסה proxy
+            if (retryCount === 0 && (imageSrc.includes('ttapi.io') || imageSrc.includes('midjourney') || imageSrc.includes('mjcdn'))) {
+                const directProxyUrl = `http://localhost:5000/api/proxy-url?url=${encodeURIComponent(imageSrc)}`;
+                console.log(`🔄 Trying proxy URL: ${directProxyUrl}`);
+                loadImageAndProcess(directProxyUrl, retryCount + 1, maxRetries);
+                return;
+            }
+
+            // אם יש requestId, נסה proxy דרך requestId
+            if (retryCount === 1 && ttapiRequestId) {
+                const proxyUrl = `http://localhost:5000/api/proxy-image/${ttapiRequestId}`;
+                console.log(`🔄 Trying request-based proxy: ${proxyUrl}`);
+                loadImageAndProcess(proxyUrl, retryCount + 1, maxRetries);
+                return;
+            }
+
+            // אם עדיין לא עבד, נסה תמונת גיבוי
+            if (retryCount < maxRetries && imageSrc !== '/sample_images/pain_sample_1.png') {
+                console.log(`🔄 Trying backup image`);
+                loadImageAndProcess('/sample_images/pain_sample_1.png', retryCount + 1, maxRetries);
+                return;
+            }
+
+            // אם הכל נכשל
+            console.error("❌ All image loading attempts failed");
+            setError(`Failed to load image after ${maxRetries + 1} attempts. Original URL: ${ttapiImageUrl || 'Unknown'}`);
+
+            // יצירת תמונות ריקות לדוגמה
+            const emptyQuadrants = Array(4).fill().map((_, index) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 200;
+                const ctx = canvas.getContext('2d');
+
+                // יצירת תמונה אפורה עם טקסט
+                ctx.fillStyle = '#f0f0f0';
+                ctx.fillRect(0, 0, 200, 200);
+                ctx.fillStyle = '#888';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Sample ${index + 1}`, 100, 100);
+                ctx.fillText('Image Failed to Load', 100, 120);
+
+                return canvas.toDataURL('image/png');
+            });
+            setCroppedImages(emptyQuadrants);
+        };
+
+        img.src = imageSrc;
+    };
+
+    // טעינת תמונה מ-TTAPI
+    useEffect(() => {
+        const requestImageFromTTAPI = async () => {
+            if (!promptText) return;
+
+            try {
+                setIsLoading(true);
+                setLoadingStatus('שולח בקשה ליצירת תמונה...');
+                setError(null);
+
+                const response = await TTAPIService.createImageRequest(answers, promptText);
+
+                if (response && response.requestId) {
+                    setTtapiRequestId(response.requestId);
+                    setLoadingStatus('ממתין ליצירת התמונה... (עד 2 דקות)');
+
+                    try {
+                        const imageUrl = await TTAPIService.waitForImage(response.requestId, 25, 5000);
+
+                        if (imageUrl) {
+                            setTtapiImageUrl(imageUrl);
+                            console.log("🖼️ Received image URL:", imageUrl);
+
+                            // התחל בטעינת התמונה
+                            loadImageAndProcess(imageUrl);
+                        } else {
+                            throw new Error('לא התקבלה תמונה מה-API');
+                        }
+                    } catch (waitError) {
+                        console.error('שגיאה בהמתנה לתמונה:', waitError);
+                        setError(`שגיאה בהמתנה לתמונה: ${waitError.message}`);
+                        loadImageAndProcess('/sample_images/pain_sample_1.png');
+                    }
+                } else {
+                    throw new Error('לא התקבל מזהה בקשה תקין');
+                }
+            } catch (err) {
+                console.error('שגיאה בתקשורת עם TTAPI:', err);
+                setError(`שגיאה בטעינת התמונה: ${err.message}`);
+                loadImageAndProcess('/sample_images/pain_sample_1.png');
+            } finally {
+                setIsLoading(false);
+                setLoadingStatus('');
+            }
+        };
+
+        requestImageFromTTAPI();
+    }, [promptText, answers]);
+
+    // פונקציות UI
     const copyPromptToClipboard = () => {
         navigator.clipboard.writeText(promptText)
             .then(() => {
@@ -135,7 +203,6 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
             });
     };
 
-    // פונקציות לניווט בין התמונות
     const nextImage = () => {
         setCurrentImageIndex((prevIndex) =>
             prevIndex === croppedImages.length - 1 ? 0 : prevIndex + 1
@@ -148,22 +215,45 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
         );
     };
 
-    // פונקציה לבחירת תמונה
     const selectImage = () => {
         setSelectedImageIndex(currentImageIndex);
     };
 
-    // פונקציה לביטול הבחירה
     const clearSelection = () => {
         setSelectedImageIndex(null);
     };
 
     return (
         <div className="midjourney-viewer">
-            {/* קנבס מוסתר לעיבוד התמונה */}
             <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
 
             <h2 className="midjourney-title">Pain Visualization</h2>
+
+            {isLoading && (
+                <div className="loading-status">
+                    <div className="loading-spinner"></div>
+                    <p>{loadingStatus || 'טוען...'}</p>
+                    {ttapiRequestId && (
+                        <p style={{ fontSize: '12px', color: '#666' }}>
+                            Request ID: {ttapiRequestId}
+                        </p>
+                    )}
+                </div>
+            )}
+
+            {error && (
+                <div className="error-message">
+                    <p>{error}</p>
+                    {ttapiImageUrl && (
+                        <details style={{ marginTop: '10px', fontSize: '12px' }}>
+                            <summary>Debug Info</summary>
+                            <p><strong>Original URL:</strong> {ttapiImageUrl}</p>
+                            <p><strong>Request ID:</strong> {ttapiRequestId}</p>
+                            <p><strong>Proxy URL:</strong> {ttapiRequestId ? `http://localhost:5000/api/proxy-image/${ttapiRequestId}` : 'N/A'}</p>
+                        </details>
+                    )}
+                </div>
+            )}
 
             {promptText && (
                 <div className="midjourney-prompt">
@@ -178,8 +268,7 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
                 </div>
             )}
 
-            {/* תצוגת תמונות עם חיצים לניווט */}
-            {croppedImages.length > 0 && (
+            {croppedImages.length > 0 && !isLoading && (
                 <div className="midjourney-sample-viewer">
                     <h3>Pain Visualizations:</h3>
                     <p>Browse through these visualizations and select the one that best represents your pain:</p>
