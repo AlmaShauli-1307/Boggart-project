@@ -9,7 +9,7 @@ import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
 import EmotionScalePage from './EmotionScalePage';
 
-const QuestionnairePage = ({csvName}) => {
+const QuestionnairePage = ({ csvName }) => {
     const navigate = useNavigate();
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
@@ -153,7 +153,11 @@ const QuestionnairePage = ({csvName}) => {
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
-            const response = await fetch('http://localhost:5000/submit', {
+            // בחרי את ה-endpoint לפי שם הטופס
+            let endpoint = 'submit-form1';
+            if (csvName === 'form3') endpoint = 'submit-form3';
+
+            const response = await fetch(`http://localhost:5000/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ answers: responses }),
@@ -209,7 +213,7 @@ const QuestionnairePage = ({csvName}) => {
     return (
         <div className="form-page">
             <header className="form-header">
-                <img src={logo} alt="Boggart" className="logo-image"/>
+                <img src={logo} alt="Boggart" className="logo-image" />
             </header>
             <div className="form-container">
                 <main className="form-content">
@@ -224,7 +228,7 @@ const QuestionnairePage = ({csvName}) => {
 
                     {/* Show scale legend only when we have scale data and it's not a special page */}
                     {showScale && !isVAS && !isSAM && Object.keys(currentScale).length > 0 && (
-                        <ScaleLegend scale={currentScale}/>
+                        <ScaleLegend scale={currentScale} />
                     )}
 
                     <div className="questionnaire">

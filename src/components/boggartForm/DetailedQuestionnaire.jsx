@@ -9,9 +9,6 @@ import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
 import ColorWheelQuestion from "./ColorWheelQuestion";
 import CheckboxQuestion from "../generalComponents/CheckboxQuestion";
-import MidjourneyViewer from './MidjourneyViewer';
-// יבוא של שירות TTAPI
-import TTAPIService from '../../services/TTAPIService';
 
 const DetailedQuestionnairePage = () => {
     const navigate = useNavigate();
@@ -24,8 +21,6 @@ const DetailedQuestionnairePage = () => {
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedBodyParts, setSelectedBodyParts] = useState([]);
-    const [showMidjourneyViewer, setShowMidjourneyViewer] = useState(false);
-    const [midjourneyData, setMidjourneyData] = useState(null);
 
     // Load questions from CSV
     useEffect(() => {
@@ -136,7 +131,7 @@ const DetailedQuestionnairePage = () => {
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
-            const response = await fetch('http://localhost:5000/submit', {
+            const response = await fetch('http://localhost:5000/submit-form2', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ answers: responses }),
@@ -145,38 +140,28 @@ const DetailedQuestionnairePage = () => {
             const data = await response.json();
             console.log('✅ Response from server:', data);
 
-            // הגדר את הנתונים ל-MidjourneyViewer ועבור לתצוגה שלו
-            setMidjourneyData({
-                prompt: data.prompt || "",
-                answers: responses,
-                apiKey: "be396f95-696d-c7f0-5066-07ad81b37cbb"
+            // במקום להציג MidjourneyViewer, נווט ל-MeetYourPain עם הנתונים
+            navigate('/meet-your-pain', {
+                state: {
+                    answers: responses,
+                    prompt: data.prompt || "",
+                    apiKey: "70413a13-f6fb-a48d-37fd-a74fbf384e00"
+                }
             });
-            setShowMidjourneyViewer(true);
 
-            // אל תעבור לדף אחר עדיין - נשאר בדף הנוכחי להצגת MidjourneyViewer
-            // navigate('/questionnaire-personal');
         } catch (error) {
             console.error('❌ Error submitting answers:', error);
 
-            // גם במקרה של שגיאה, עבור להצגת MidjourneyViewer
-            setMidjourneyData({
-                prompt: "",  // פרומפט ריק יגרום לקומפוננטה ליצור פרומפט מקומי
-                answers: responses,
-                apiKey: "be396f95-696d-c7f0-5066-07ad81b37cbb"
+            // גם במקרה של שגיאה, נווט ל-MeetYourPain
+            navigate('/meet-your-pain', {
+                state: {
+                    answers: responses,
+                    prompt: "",  // פרומפט ריק יגרום לקומפוננטה ליצור פרומפט מקומי
+                    apiKey: "70413a13-f6fb-a48d-37fd-a74fbf384e00"
+                }
             });
-            setShowMidjourneyViewer(true);
         }
         setIsSubmitting(false);
-    };
-
-    // פונקציה לחזרה למסך השאלון
-    const handleBackToQuestionnaire = () => {
-        setShowMidjourneyViewer(false);
-    };
-
-    // פונקציה להמשך לדף הבא
-    const handleContinue = () => {
-        navigate('/questionnaire-personal');
     };
 
     // Determine if this is a special page type
@@ -217,42 +202,6 @@ const DetailedQuestionnairePage = () => {
 
     // Calculate progress percentage
     const progressPercentage = (currentPage / totalPages) * 100;
-
-    // אם צריך להציג את רכיב MidjourneyViewer
-    if (showMidjourneyViewer) {
-        return (
-            <div className="form-page">
-                <header className="form-header">
-                    <img src={logo} alt="Boggart" className="logo-image" />
-                </header>
-                <div className="form-container">
-                    <main className="form-content">
-                        <h2 className="page-title">Your Pain Visualization</h2>
-                        <p className="page-description">Based on your responses, we've created a visualization of your pain.</p>
-
-                        <MidjourneyViewer
-                            answers={responses}
-                            apiKey={midjourneyData?.apiKey || "be396f95-696d-c7f0-5066-07ad81b37cbb"}
-                            prompt={midjourneyData?.prompt || ""}
-                        />
-
-                        <div className="navigation">
-                            <PrimaryButton
-                                text="BACK TO QUESTIONNAIRE"
-                                onClick={handleBackToQuestionnaire}
-                                className="previous-button"
-                            />
-
-                            <PrimaryButton
-                                text="CONTINUE"
-                                onClick={handleContinue}
-                            />
-                        </div>
-                    </main>
-                </div>
-            </div>
-        );
-    }
 
     // תצוגת השאלון הרגילה
     return (

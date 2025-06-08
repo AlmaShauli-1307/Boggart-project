@@ -142,7 +142,7 @@ const PersonalQuestionnaire = () => {
         }
         setIsSubmitting(true);
         try {
-            const response = await fetch('http://localhost:5000/submit', {
+            const response = await fetch('http://localhost:5000/submit-personal-info', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ answers: responses }),
@@ -165,7 +165,7 @@ const PersonalQuestionnaire = () => {
     return (
         <div className="form-page">
             <header className="form-header">
-                <img src={logo} alt="Boggart" className="logo-image"/>
+                <img src={logo} alt="Boggart" className="logo-image" />
             </header>
             <div className="form-container">
                 <main className="form-content">
@@ -182,15 +182,16 @@ const PersonalQuestionnaire = () => {
                             <div className="question-grid">
                                 {questions.map((question) => {
                                     if (question.questionType === "shortText") {
-                                    return (
-                                    <input
-                                        id={question.id}
-                                        type="text"
-                                        className={`input-personal-question-field`}
-                                        value={responses[question.id]} // Ensure we handle undefined/null values
-                                        onChange={(e) => handleOptionSelect(question.id, e.target.value)}
-                                        placeholder={question.text}
-                                    />)}
+                                        return (
+                                            <input
+                                                id={question.id}
+                                                type="text"
+                                                className={`input-personal-question-field`}
+                                                value={responses[question.id]} // Ensure we handle undefined/null values
+                                                onChange={(e) => handleOptionSelect(question.id, e.target.value)}
+                                                placeholder={question.text}
+                                            />)
+                                    }
                                     else if (question.questionType === "number") {
                                         return (
                                             <input
@@ -230,11 +231,11 @@ const PersonalQuestionnaire = () => {
                         </div>
                     </div>
                     <div className="navigation">
-                            <PrimaryButton
-                                text={isSubmitting ? "SUBMITTING..." : "SUBMIT"}
-                                onClick={handleSubmit}
-                                disabled={!allQuestionsAnswered || isSubmitting}
-                            />
+                        <PrimaryButton
+                            text={isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+                            onClick={handleSubmit}
+                            disabled={!allQuestionsAnswered || isSubmitting}
+                        />
                     </div>
                 </main>
             </div>
