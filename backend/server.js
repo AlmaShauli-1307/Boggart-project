@@ -4,12 +4,15 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const path = require('path');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // הגדרות TTAPI
-const TTAPI_KEY = "be396f95-696d-c7f0-5066-07ad81b37cbb"; // החלף במפתח שלך
+const TTAPI_KEY = "a72ab7e5-b9fe-7872-a4fa-9fcdd223bc5e"; // החלף במפתח שלך
 const TTAPI_BASE_URL = "https://api.ttapi.io/midjourney/v1";
 
 // בסיס נתונים פשוט לשמירת בקשות ותמונות 
@@ -20,26 +23,122 @@ const imageRequests = new Map();
 app.use(cors()); // Enables CORS to allow requests from the frontend
 app.use(bodyParser.json()); // Parses JSON data from requests
 
-// פונקציה ליצירת פרומפט לפי תשובות המשתמש
-function generatePainPrompt(answers) {
+// פונקציה ליצירת פרומפט מתקדם לפי הלוגיקה של create_prompt.py
+function generatePainDescription(answers) {
     try {
-        // חילוץ הנתונים מהתשובות
-        const bodyParts = answers[63] || [];
-        const bodyPartsText = bodyParts.length > 0 ? bodyParts.join(", ") : "general";
-        const color = answers[64] || "red";
-        const intensity = answers[65] || 5;
+        console.log("🐍 Server - Generating prompt using Python logic");
+        console.log("🔧 Server - All received answers:", answers);
 
-        // מערך של מילות עוצמה
-        const intensityWords = [
-            "indifferent", "apathetic", "uninterested", "disinterested",
-            "bored", "uneasy", "worried", "anxious", "agitated", "angry", "furious"
-        ];
-        const intensityWord = intensityWords[intensity] || "uninterested";
+        // חילוץ הנתונים מהתשובות בהתאם ל-CSV ו-Python
+        const location = answers[63] || ["general body"]; // מערך של חלקי גוף
+        const locationText = Array.isArray(location) ? location.join(", ") : location;
 
-        return `Animated creature in Pixar-art style that is ${intensityWord} and has ${bodyPartsText} pain. It is short and gritty. ${color} colors and has Sandpaper texture.`;
+        const duration = answers[66];
+        const depth = answers[71];
+
+        // צבע - question_ID 72
+        const colorAnswer = answers[72];
+        let color = colorAnswer.name;
+
+        const shape = answers[73];
+        const border = answers[74];
+        const textureTouch = answers[75];
+        const textureStroke = answers[76];
+        const textureHold = answers[77];
+
+        // חישוב intensity מממוצע של כמה שאלות (במקום שאלה אחת)
+        const intensityRaw = answers[65];
+        const intensity = Math.min(10, Math.max(0, Math.round(intensityRaw)));
+
+        console.log("🎨 Server - Extracted values:", {
+            location: locationText,
+            duration,
+            depth,
+            color,
+            shape,
+            border,
+            textureTouch,
+            textureStroke,
+            textureHold,
+            intensity
+        });
+
+        // לוגיקה מ-Python - pain entity
+        const painEntity = "creature"; // תמיד creature (אלא אם כן תוסיף שאלה על physical vs emotional)
+
+        // Intensity description מ-Python
+        const intensityLevels = {
+            0: "indifferent",
+            1: "apathetic",
+            2: "uninterested",
+            3: "disinterested",
+            4: "bored",
+            5: "uneasy",
+            6: "worried",
+            7: "anxious",
+            8: "agitated",
+            9: "angry",
+            10: "furious"
+        };
+        const intensityDesc = intensityLevels[intensity] || "unknown";
+
+        // Short or tall לפי duration
+        const size = duration <= 5 ? "short" : "tall";
+
+        // Thin or thick לפי depth
+        const thickness = depth <= 5 ? "thin" : "thick";
+
+        // Shape mapping
+        const shapes = {
+            1: "rounded",
+            2: "soft",
+            3: "nothing",
+            4: "defined",
+            5: "sharp"
+        };
+        const shapeDesc = shapes[shape] || "undefined";
+
+        // Border description
+        const borderDesc = border >= 3 ? "" : "blurred into the background";
+
+        // Texture mapping מ-Python
+        const textureTypes = {
+            "1,2": "watery",
+            "3,4": "runny",
+            "5,5": "syrupy",
+            "4,5": "creamy with soft texture",
+            "4,4": "bumpy slime",
+            "4,5": "glossy",
+            "4,4": "gritty"
+        };
+        const textureKey = `${textureTouch},${textureStroke}`;
+        const textureDesc = textureTypes[textureKey] || textureTypes["4,4"] || "gritty";
+
+        // Additional features לפי combinations
+        let feature = "no distinct feature";
+
+        if (thickness === "thin" && textureTouch <= 2 && textureStroke <= 2) {
+            feature = "runny/watery/bloby";
+        } else if (thickness === "thin" && textureTouch >= 4 && textureStroke >= 4) {
+            feature = "brittle scales";
+        } else if (thickness === "thick" && textureTouch <= 2 && textureStroke <= 2) {
+            feature = "creamy with soft texture";
+        } else if (thickness === "thick" && textureTouch >= 4 && textureStroke >= 4) {
+            feature = "bumpy slime";
+        }
+
+        // Build the sentence בדיוק כמו ב-Python
+        const description =
+            `Animated ${painEntity} in Pixar-art style that is ${intensityDesc} and has ${locationText}. ` +
+            `It is ${size} and ${thickness}. ${color} colors. ` +
+            `The creature is ${shapeDesc}, ${textureDesc}, ${borderDesc} and has ${feature}.`;
+
+        console.log("✅ Server - Final Python-style prompt:", description);
+        return description;
+
     } catch (error) {
-        console.error('Error generating prompt:', error);
-        return "Animated creature in Pixar-art style that has pain. Red colors and Sandpaper texture.";
+        console.error('❌ Server - Error generating Python-style prompt:', error);
+        return "Animated creature in Pixar-art style that represents pain. It has red colors and rough texture.";
     }
 }
 
@@ -165,19 +264,41 @@ async function handleTTAPIProcess(requestId, prompt) {
     }
 }
 
+function appendToCSV(filePath, data) {
+    const fileExists = fs.existsSync(filePath);
+    const headers = Object.keys(data).map(key => ({ id: key, title: key }));
+
+    // נוודא שכל ערך הוא string
+    const stringData = {};
+    for (const key in data) {
+        if (typeof data[key] === 'object' && data[key] !== null) {
+            stringData[key] = JSON.stringify(data[key]);
+        } else {
+            stringData[key] = String(data[key]);
+        }
+    }
+
+    const csvWriter = createCsvWriter({
+        path: filePath,
+        header: headers,
+        append: fileExists
+    });
+
+    // אם הקובץ לא קיים, יתווספו כותרות; אם קיים – רק שורה חדשה
+    return csvWriter.writeRecords([data]);
+}
+
 // === ENDPOINTS ===
 
-// האנדפוינט הקיים של /submit
+// האנדפוינט הקיים של /submit - עם הלוגיקה החדשה
 app.post('/submit', (req, res) => {
     try {
         const answers = req.body.answers;
         console.log('📩 Received answers:', answers);
 
-        // יצירת פרומפט
-        const prompt = generatePainPrompt(answers);
+        // יצירת פרומפט עם הלוגיקה המתקדמת מ-Python
+        const prompt = generatePainDescription(answers);
 
-        // Here, you can store the answers in a database
-        // For now, we'll just send a success response with the prompt
         res.status(200).json({
             message: 'Answers received successfully!',
             prompt: prompt
@@ -388,6 +509,50 @@ app.get('/api/test-ttapi', async (req, res) => {
 app.get('/api/requests', (req, res) => {
     const allRequests = Array.from(imageRequests.values());
     res.json(allRequests);
+});
+
+app.post('/submit-form1', async (req, res) => {
+    try {
+        const answers = req.body.answers;
+        // אפשר לעבד את התשובות כאן אם צריך
+        await appendToCSV(path.join(__dirname, 'form1.csv'), answers);
+        res.status(200).json({ message: 'Form 1 answers saved!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error saving Form 1 answers', error: error.message });
+    }
+});
+
+app.post('/submit-form2', async (req, res) => {
+    try {
+        const answers = req.body.answers;
+        // אפשר לעבד את התשובות כאן אם צריך
+        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
+        res.status(200).json({ message: 'Form 2 answers saved!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
+    }
+});
+
+app.post('/submit-personal-info', async (req, res) => {
+    try {
+        const answers = req.body.answers;
+        // אפשר לעבד את התשובות כאן אם צריך
+        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
+        res.status(200).json({ message: 'Form 2 answers saved!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
+    }
+});
+
+app.post('/submit-form3', async (req, res) => {
+    try {
+        const answers = req.body.answers;
+        // אפשר לעבד את התשובות כאן אם צריך
+        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
+        res.status(200).json({ message: 'Form 2 answers saved!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
+    }
 });
 
 // Start the server
