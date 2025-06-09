@@ -290,22 +290,95 @@ function appendToCSV(filePath, data) {
 
 // === ENDPOINTS ===
 
-// האנדפוינט הקיים של /submit - עם הלוגיקה החדשה
-app.post('/submit', (req, res) => {
+app.post('/submit-form1', async (req, res) => {
     try {
         const answers = req.body.answers;
         console.log('📩 Received answers:', answers);
+        // אפשר לעבד את התשובות כאן אם צריך
+        await appendToCSV(path.join(__dirname, 'form1.csv'), answers);
 
-        // יצירת פרומפט עם הלוגיקה המתקדמת מ-Python
+        res.status(200).json({ message: 'Form 1 answers saved!' });
+    } catch (error) {
+        console.error('❌ Error handling answers:', error);
+        res.status(500).json({ message: 'Error saving Form 1 answers', error: error.message });
+    }
+});
+const { Client } = require('pg');
+app.post('/submit-form2', async (req, res) => {
+    try {
+        const answers = req.body.answers;
+        const client = new Client();
+        await client.connect();
+
+        // הכנה של רשימת הערכים לפי הסדר של העמודות
+        await client.query(
+            `INSERT INTO form2-bogart (
+                q_id_63, q_id_64, q_id_65, q_id_66, q_id_67, q_id_68, q_id_69, q_id_70, q_id_71, q_id_72, 
+                q_id_73, q_id_74, q_id_75, q_id_76, q_id_77, q_id_78, q_id_79, q_id_80, q_id_81
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+            )`,
+            [
+                answers.q_id_63,
+                answers.q_id_64,
+                answers.q_id_65,
+                answers.q_id_66,
+                answers.q_id_67,
+                answers.q_id_68,
+                answers.q_id_69,
+                answers.q_id_70,
+                answers.q_id_71,
+                answers.q_id_72,
+                answers.q_id_73,
+                answers.q_id_74,
+                answers.q_id_75,
+                answers.q_id_76,
+                answers.q_id_77,
+                answers.q_id_78,
+                answers.q_id_79,
+                answers.q_id_80,
+                answers.q_id_81
+            ]
+        );
+        await client.end();
+        console.log('📩 Received answers:', answers);
+
         const prompt = generatePainDescription(answers);
-
         res.status(200).json({
-            message: 'Answers received successfully!',
+            message: 'Form 2 answers saved!',
             prompt: prompt
         });
     } catch (error) {
         console.error('❌ Error handling answers:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({
+            message: 'Error saving Form 2 answers', error: error.message
+        });
+    }
+});
+
+app.post('/submit-personal-info', async (req, res) => {
+    try {
+        const answers = req.body.answers;
+        console.log('📩 Received answers:', answers);
+        // אפשר לעבד את התשובות כאן אם צריך
+        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
+        res.status(200).json({ message: 'Form 2 answers saved!' });
+    } catch (error) {
+        console.error('❌ Error handling answers:', error);
+        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
+    }
+});
+
+app.post('/submit-form3', async (req, res) => {
+    try {
+        const answers = req.body.answers;
+        console.log('📩 Received answers:', answers);
+        // אפשר לעבד את התשובות כאן אם צריך
+        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
+        res.status(200).json({ message: 'Form 2 answers saved!' });
+    } catch (error) {
+        console.error('❌ Error handling answers:', error);
+        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
     }
 });
 
@@ -509,50 +582,6 @@ app.get('/api/test-ttapi', async (req, res) => {
 app.get('/api/requests', (req, res) => {
     const allRequests = Array.from(imageRequests.values());
     res.json(allRequests);
-});
-
-app.post('/submit-form1', async (req, res) => {
-    try {
-        const answers = req.body.answers;
-        // אפשר לעבד את התשובות כאן אם צריך
-        await appendToCSV(path.join(__dirname, 'form1.csv'), answers);
-        res.status(200).json({ message: 'Form 1 answers saved!' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error saving Form 1 answers', error: error.message });
-    }
-});
-
-app.post('/submit-form2', async (req, res) => {
-    try {
-        const answers = req.body.answers;
-        // אפשר לעבד את התשובות כאן אם צריך
-        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
-        res.status(200).json({ message: 'Form 2 answers saved!' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
-    }
-});
-
-app.post('/submit-personal-info', async (req, res) => {
-    try {
-        const answers = req.body.answers;
-        // אפשר לעבד את התשובות כאן אם צריך
-        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
-        res.status(200).json({ message: 'Form 2 answers saved!' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
-    }
-});
-
-app.post('/submit-form3', async (req, res) => {
-    try {
-        const answers = req.body.answers;
-        // אפשר לעבד את התשובות כאן אם צריך
-        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
-        res.status(200).json({ message: 'Form 2 answers saved!' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
-    }
 });
 
 // Start the server
