@@ -17,6 +17,8 @@ function AppRoutes() {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/questionnaire" element={<QuestionnairePageBefore />} />
+                <Route path="/form1" element={<QuestionnairePage csvName="form1" />} />
+                <Route path="/form2" element={<DetailedQuestionnaire />} />
                 <Route path="/landing-boggart" element={<LandingPageBoggart />} />
                 <Route path="/questionnaire-boggart" element={<DetailedQuestionnaire />} />
                 <Route path="/questionnaire-personal" element={<PersonalQuestionnaire />} />

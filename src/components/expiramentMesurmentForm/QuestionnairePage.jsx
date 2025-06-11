@@ -149,30 +149,39 @@ const QuestionnairePage = ({ csvName }) => {
         }
     };
 
-    // Function to submit answers
     const handleSubmit = async () => {
         setIsSubmitting(true);
+
         try {
-            // בחרי את ה-endpoint לפי שם הטופס
             let endpoint = 'submit-form1';
-            if (csvName === 'form3') endpoint = 'submit-form3';
+            if (csvName === 'Third_Questionnaire') endpoint = 'submit-form3';
 
             const response = await fetch(`http://localhost:5000/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ answers: responses }),
+                body: JSON.stringify({
+                    answers: responses,
+                    beforeAfter: 'Before'
+                }),
             });
 
             const data = await response.json();
-            console.log('✅ Response from server:', data);
-            alert('Answers submitted successfully!');
-            // Redirect to success page or next step
-            navigate('/landing-boggart');
-        } catch (error) {
-            console.error('❌ Error submitting answers:', error);
-            alert('An error occurred while submitting answers.');
-            navigate('/landing-boggart');
+            console.log('✅ Form1 - Response from server:', data);
 
+            if (data.form1Id) {
+                alert('Form 1 completed successfully!');
+                // 🎯 פשוט - שלח את הID ב-URL
+                navigate(`/form2?form1Id=${data.form1Id}`);
+            } else {
+                console.error('❌ No form1Id received from server');
+                alert('Form 1 submitted but no ID received');
+                navigate('/landing-boggart');
+            }
+
+        } catch (error) {
+            console.error('❌ Error submitting Form 1:', error);
+            alert('An error occurred while submitting Form 1.');
+            navigate('/landing-boggart');
         }
         setIsSubmitting(false);
     };

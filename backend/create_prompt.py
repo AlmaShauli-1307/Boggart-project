@@ -73,17 +73,17 @@ def generate_pain_description(pain_type, intensity, location, duration, depth, c
 
 # Example Usage
 description = generate_pain_description(
-    pain_type="physical",
-    intensity=9,
-    location="lower back pain",
-    duration=4,
-    depth=6,
-    color="red",
-    shape=5,
-    border="blurred",
-    texture_touch=4,
-    texture_stroke=5,
-    texture_hold=2
+    pain_type="physical", 
+    intensity=9,#23
+    location="lower back pain", #63
+    duration=4, #64
+    depth=6, #71
+    color="red", #72
+    shape=5, #73
+    border="blurred", #74
+    texture_touch=4, #75
+    texture_stroke=5, #76
+    texture_hold=2 #77
 )
 
 print(description)

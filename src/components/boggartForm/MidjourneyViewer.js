@@ -53,27 +53,13 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
         return quadrants;
     };
 
-    // יצירת פרומפט מקומי אם לא קיים
+    // השתמש רק בפרומפט מהשרת - אל תיצור כלום בקליאנט!
     useEffect(() => {
-        if (!promptText) {
-            const generateLocalPrompt = () => {
-                const bodyParts = answers[63] || [];
-                const bodyPartsText = bodyParts.length > 0 ? bodyParts.join(", ") : "general";
-                const color = answers[64] || "red";
-                const intensity = answers[65] || 5;
-
-                const intensityWords = [
-                    "indifferent", "apathetic", "uninterested", "disinterested",
-                    "bored", "uneasy", "worried", "anxious", "agitated", "angry", "furious"
-                ];
-                const intensityWord = intensityWords[intensity] || "uninterested";
-
-                return `Animated creature in Pixar-art style that is ${intensityWord} and has ${bodyPartsText} pain. It is short and gritty. ${color} colors and has Sandpaper texture.`;
-            };
-
-            setPromptText(generateLocalPrompt());
+        if (prompt) {
+            console.log("✅ Using prompt from server:", prompt);
+            setPromptText(prompt);
         }
-    }, [answers, promptText]);
+    }, [prompt]);
 
     // פונקציה לטעינת תמונה עם תמיכה ב-proxy
     const loadImageAndProcess = (imageSrc, retryCount = 0, maxRetries = 3) => {
@@ -89,9 +75,7 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
 
         img.onerror = (err) => {
             console.error(`❌ Error loading image (attempt ${retryCount + 1}/${maxRetries + 1}):`, err);
-            console.error(`Failed URL: ${imageSrc}`);
 
-            // אם זה ניסיון ראשון עם URL חיצוני, נסה proxy
             if (retryCount === 0 && (imageSrc.includes('ttapi.io') || imageSrc.includes('midjourney') || imageSrc.includes('mjcdn'))) {
                 const directProxyUrl = `http://localhost:5000/api/proxy-url?url=${encodeURIComponent(imageSrc)}`;
                 console.log(`🔄 Trying proxy URL: ${directProxyUrl}`);
@@ -99,7 +83,6 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
                 return;
             }
 
-            // אם יש requestId, נסה proxy דרך requestId
             if (retryCount === 1 && ttapiRequestId) {
                 const proxyUrl = `http://localhost:5000/api/proxy-image/${ttapiRequestId}`;
                 console.log(`🔄 Trying request-based proxy: ${proxyUrl}`);
@@ -107,16 +90,14 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
                 return;
             }
 
-            // אם עדיין לא עבד, נסה תמונת גיבוי
             if (retryCount < maxRetries && imageSrc !== '/sample_images/pain_sample_1.png') {
                 console.log(`🔄 Trying backup image`);
                 loadImageAndProcess('/sample_images/pain_sample_1.png', retryCount + 1, maxRetries);
                 return;
             }
 
-            // אם הכל נכשל
             console.error("❌ All image loading attempts failed");
-            setError(`Failed to load image after ${maxRetries + 1} attempts. Original URL: ${ttapiImageUrl || 'Unknown'}`);
+            setError(`Failed to load image after ${maxRetries + 1} attempts.`);
 
             // יצירת תמונות ריקות לדוגמה
             const emptyQuadrants = Array(4).fill().map((_, index) => {
@@ -125,7 +106,6 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
                 canvas.height = 200;
                 const ctx = canvas.getContext('2d');
 
-                // יצירת תמונה אפורה עם טקסט
                 ctx.fillStyle = '#f0f0f0';
                 ctx.fillRect(0, 0, 200, 200);
                 ctx.fillStyle = '#888';
@@ -142,21 +122,23 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
         img.src = imageSrc;
     };
 
-    // טעינת תמונה מ-TTAPI
+    // טעינת תמונה מ-TTAPI (או תמונת גיבוי)
     useEffect(() => {
         const requestImageFromTTAPI = async () => {
             if (!promptText) return;
 
             try {
                 setIsLoading(true);
-                setLoadingStatus('שולח בקשה ליצירת תמונה...');
+                setLoadingStatus('Creating your pain visualization...');
                 setError(null);
+
+                console.log("🚀 Starting TTAPI request with prompt:", promptText);
 
                 const response = await TTAPIService.createImageRequest(answers, promptText);
 
                 if (response && response.requestId) {
                     setTtapiRequestId(response.requestId);
-                    setLoadingStatus('ממתין ליצירת התמונה... (עד 2 דקות)');
+                    setLoadingStatus('Generating image... (up to 2 minutes)');
 
                     try {
                         const imageUrl = await TTAPIService.waitForImage(response.requestId, 25, 5000);
@@ -164,23 +146,27 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
                         if (imageUrl) {
                             setTtapiImageUrl(imageUrl);
                             console.log("🖼️ Received image URL:", imageUrl);
-
-                            // התחל בטעינת התמונה
                             loadImageAndProcess(imageUrl);
                         } else {
-                            throw new Error('לא התקבלה תמונה מה-API');
+                            throw new Error('No image received from API');
                         }
                     } catch (waitError) {
-                        console.error('שגיאה בהמתנה לתמונה:', waitError);
-                        setError(`שגיאה בהמתנה לתמונה: ${waitError.message}`);
+                        console.error('Error waiting for image:', waitError);
+                        setError(`TTAPI Error: ${waitError.message}. Using sample image.`);
+
+                        // השתמש בתמונת גיבוי
+                        console.log("🔄 Using sample image as fallback");
                         loadImageAndProcess('/sample_images/pain_sample_1.png');
                     }
                 } else {
-                    throw new Error('לא התקבל מזהה בקשה תקין');
+                    throw new Error('No valid request ID received from TTAPI');
                 }
             } catch (err) {
-                console.error('שגיאה בתקשורת עם TTAPI:', err);
-                setError(`שגיאה בטעינת התמונה: ${err.message}`);
+                console.error('Error communicating with TTAPI:', err);
+                setError(`TTAPI Connection Error: ${err.message}. Using sample image.`);
+
+                // השתמש בתמונת גיבוי
+                console.log("🔄 Using sample image due to connection error");
                 loadImageAndProcess('/sample_images/pain_sample_1.png');
             } finally {
                 setIsLoading(false);
@@ -188,8 +174,14 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
             }
         };
 
-        requestImageFromTTAPI();
-    }, [promptText, answers]);
+        // התחל רק אם יש פרומפט מהשרת
+        if (promptText) {
+            console.log("🎯 Starting image generation with server prompt");
+            requestImageFromTTAPI();
+        } else {
+            console.log("⏳ Waiting for prompt from server...");
+        }
+    }, [promptText]);
 
     // פונקציות UI
     const copyPromptToClipboard = () => {
@@ -227,12 +219,12 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
         <div className="midjourney-viewer">
             <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
 
-            <h2 className="midjourney-title">Pain Visualization</h2>
+            <h2 className="midjourney-title">Meet Your Pain</h2>
 
             {isLoading && (
                 <div className="loading-status">
                     <div className="loading-spinner"></div>
-                    <p>{loadingStatus || 'טוען...'}</p>
+                    <p>{loadingStatus || 'Loading...'}</p>
                     {ttapiRequestId && (
                         <p style={{ fontSize: '12px', color: '#666' }}>
                             Request ID: {ttapiRequestId}
@@ -249,75 +241,40 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
                             <summary>Debug Info</summary>
                             <p><strong>Original URL:</strong> {ttapiImageUrl}</p>
                             <p><strong>Request ID:</strong> {ttapiRequestId}</p>
-                            <p><strong>Proxy URL:</strong> {ttapiRequestId ? `http://localhost:5000/api/proxy-image/${ttapiRequestId}` : 'N/A'}</p>
                         </details>
                     )}
                 </div>
             )}
 
-            {promptText && (
-                <div className="midjourney-prompt">
-                    <h3>Your Pain Visualization Prompt:</h3>
-                    <p>{promptText}</p>
-                    <button
-                        className="copy-button"
-                        onClick={copyPromptToClipboard}
-                    >
-                        {copySuccess ? 'Copied!' : 'Copy Prompt'}
-                    </button>
-                </div>
-            )}
-
             {croppedImages.length > 0 && !isLoading && (
                 <div className="midjourney-sample-viewer">
-                    <h3>Pain Visualizations:</h3>
-                    <p>Browse through these visualizations and select the one that best represents your pain:</p>
-
                     <div className="image-navigation">
-                        <button className="nav-button prev-button" onClick={prevImage}>
-                            &larr;
-                        </button>
-
                         <div className="sample-image-container">
                             <img
                                 src={croppedImages[currentImageIndex]}
                                 alt={`Pain visualization ${currentImageIndex + 1}`}
                                 className={`sample-image ${selectedImageIndex === currentImageIndex ? 'selected' : ''}`}
                             />
-                            <div className="image-counter">
-                                Image {currentImageIndex + 1} of {croppedImages.length}
-                            </div>
                         </div>
+                    </div>
 
-                        <button className="nav-button next-button" onClick={nextImage}>
-                            &rarr;
+                    <div className="pain-actions">
+                        <button
+                            className="pain-action-btn like-btn"
+                            onClick={selectImage}
+                        >
+                            I like it
+                        </button>
+
+                        <button
+                            className="pain-action-btn regenerate-btn"
+                            onClick={() => window.location.reload()}
+                        >
+                            Regenerate
                         </button>
                     </div>
-
-                    <div className="image-actions">
-                        {selectedImageIndex === currentImageIndex ? (
-                            <button className="action-button deselect-button" onClick={clearSelection}>
-                                Deselect This Image
-                            </button>
-                        ) : (
-                            <button className="action-button select-button" onClick={selectImage}>
-                                Select This Image
-                            </button>
-                        )}
-                    </div>
-
-                    {selectedImageIndex !== null && (
-                        <div className="selection-info">
-                            <p>You selected visualization #{selectedImageIndex + 1} as the best representation of your pain.</p>
-                        </div>
-                    )}
                 </div>
             )}
-
-            <div className="midjourney-info">
-                <p>These visualizations represent how different aspects of your pain might look.</p>
-                <p>By selecting the one that resonates most with your experience, you help us better understand your pain.</p>
-            </div>
         </div>
     );
 };
@@ -326,12 +283,6 @@ MidjourneyViewer.propTypes = {
     answers: PropTypes.object.isRequired,
     prompt: PropTypes.string,
     apiKey: PropTypes.string
-};
-
-MidjourneyViewer.defaultProps = {
-    answers: {},
-    prompt: '',
-    apiKey: ''
 };
 
 export default MidjourneyViewer;

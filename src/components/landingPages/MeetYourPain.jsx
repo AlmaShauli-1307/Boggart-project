@@ -29,6 +29,7 @@ const MeetYourPain = () => {
     // Get data from previous page (if coming from questionnaire)
     const answers = location.state?.answers || {};
     const prompt = location.state?.prompt || '';
+    const form1Id = location.state?.form1Id || null;
 
     // פונקציה לחיתוך דינמי של התמונה ל-4 חלקים (זהה ל-MidjourneyViewer)
     const splitImageIntoQuadrants = (img) => {
@@ -226,7 +227,8 @@ const MeetYourPain = () => {
                 selectedImage: croppedImages[currentImageIndex],
                 selectedImageIndex: currentImageIndex,
                 answers: answers,
-                prompt: promptText
+                prompt: promptText,
+                form1Id: form1Id
             }
         });
     };

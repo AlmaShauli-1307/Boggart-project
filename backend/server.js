@@ -6,11 +6,14 @@ const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+//const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+console.log('🔍 Environment Debug:');
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
+console.log('DATABASE_PUBLIC_URL:', process.env.DATABASE_PUBLIC_URL);
+console.log('All env vars:', Object.keys(process.env).filter(key => key.includes('DATABASE')));
 // הגדרות TTAPI
 const TTAPI_KEY = "a72ab7e5-b9fe-7872-a4fa-9fcdd223bc5e"; // החלף במפתח שלך
 const TTAPI_BASE_URL = "https://api.ttapi.io/midjourney/v1";
@@ -264,123 +267,501 @@ async function handleTTAPIProcess(requestId, prompt) {
     }
 }
 
-function appendToCSV(filePath, data) {
-    const fileExists = fs.existsSync(filePath);
-    const headers = Object.keys(data).map(key => ({ id: key, title: key }));
-
-    // נוודא שכל ערך הוא string
-    const stringData = {};
-    for (const key in data) {
-        if (typeof data[key] === 'object' && data[key] !== null) {
-            stringData[key] = JSON.stringify(data[key]);
-        } else {
-            stringData[key] = String(data[key]);
-        }
-    }
-
-    const csvWriter = createCsvWriter({
-        path: filePath,
-        header: headers,
-        append: fileExists
-    });
-
-    // אם הקובץ לא קיים, יתווספו כותרות; אם קיים – רק שורה חדשה
-    return csvWriter.writeRecords([data]);
-}
-
 // === ENDPOINTS ===
 
+const { Client } = require('pg');
+
 app.post('/submit-form1', async (req, res) => {
+    let client;
     try {
         const answers = req.body.answers;
-        console.log('📩 Received answers:', answers);
-        // אפשר לעבד את התשובות כאן אם צריך
-        await appendToCSV(path.join(__dirname, 'form1.csv'), answers);
+        console.log('📩 Form1 - Received answers:', answers);
+        console.log('🔍 Form1 - Answers keys:', Object.keys(answers));
 
-        res.status(200).json({ message: 'Form 1 answers saved!' });
+        const databaseUrl = process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL;
+
+        if (!databaseUrl) {
+            throw new Error('No database URL found');
+        }
+
+        client = new Client({
+            connectionString: databaseUrl,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        await client.connect();
+        console.log('✅ Form1 - Connected to Railway PostgreSQL');
+
+        // 🎯 פתרון חכם - נתמודד עם keys שהם strings או numbers
+        const values = [];
+        for (let i = 3; i <= 61; i++) {
+            const value = answers[i] ?? answers[i.toString()] ?? null;
+            values.push(value);
+        }
+
+        // Add the Before/After value
+        values.push('Before');
+
+        const insertQuery = `
+            INSERT INTO "form1-Questionnaire" (
+                q_id_3, q_id_4, q_id_5, q_id_6, q_id_7, q_id_8, 
+                q_id_9, q_id_10, q_id_11, q_id_12, q_id_13, q_id_14, q_id_15, 
+                q_id_16, q_id_17, q_id_18, q_id_19, q_id_20, q_id_21, q_id_22, 
+                q_id_23, q_id_24, q_id_25, q_id_26, q_id_27, q_id_28, q_id_29, 
+                q_id_30, q_id_31, q_id_32, q_id_33, q_id_34, q_id_35, q_id_36,
+                q_id_37, q_id_38, q_id_39, q_id_40, q_id_41, q_id_42, q_id_43, 
+                q_id_44, q_id_45, q_id_46, q_id_47, q_id_48, q_id_49, q_id_50, 
+                q_id_51, q_id_52, q_id_53, q_id_54, q_id_55, q_id_56, q_id_57, 
+                q_id_58, q_id_59, q_id_60, q_id_61,
+                created_at, "Before/After"
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
+                $31, $32, $33, $34, $35, $36, $37, $38, $39, $40,
+                $41, $42, $43, $44, $45, $46, $47, $48, $49, $50,
+                $51, $52, $53, $54, $55, $56, $57, $58, $59,
+                NOW(), $60
+            ) RETURNING id;
+        `;
+
+        const result = await client.query(insertQuery, values);
+        const form1Id = result.rows[0].id;
+
+        console.log('✅ Form1 - Created record with ID:', form1Id);
+
+        // === שלב 2: עדכן את עמודת Number tested עם אותו ID ===
+        const updateQuery = `
+            UPDATE "form1-Questionnaire" 
+            SET "Number tested" = $1 
+            WHERE id = $2`;
+
+        await client.query(updateQuery, [form1Id, form1Id]);
+
+        console.log('✅ Form1 - Updated Number tested column to:', form1Id);
+
+        res.status(200).json({
+            message: 'Form 1 questionnaire saved successfully!',
+            form1Id: form1Id,
+            rowsAffected: result.rowCount
+        });
+
     } catch (error) {
-        console.error('❌ Error handling answers:', error);
-        res.status(500).json({ message: 'Error saving Form 1 answers', error: error.message });
+        console.error('❌ Form1 Database Error:', error);
+        res.status(500).json({
+            message: 'Error saving Form 1 questionnaire',
+            error: error.message
+        });
+    } finally {
+        if (client) {
+            try {
+                await client.end();
+            } catch (endError) {
+                console.error('Error closing Form1 connection:', endError);
+            }
+        }
     }
 });
-const { Client } = require('pg');
+
 app.post('/submit-form2', async (req, res) => {
+    let client;
     try {
-        const answers = req.body.answers;
-        const client = new Client();
+        const { answers, form1Id } = req.body; // 🎯 קבלת form1Id מהלקוח
+        console.log('📩 Form2 - Received answers:', answers);
+        console.log('🔗 Form2 - Received form1Id:', form1Id);
+        console.log('🔄 Starting database connection process...');
+        if (!form1Id) {
+            return res.status(400).json({
+                message: 'form1Id is required for Form2 submission'
+            })
+        }
+        // Railway חיבור - חכם לכל סביבה
+        const databaseUrl = process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL;
+
+        if (!databaseUrl) {
+            throw new Error('No database URL found. Set DATABASE_URL or DATABASE_PUBLIC_URL');
+        }
+
+        client = new Client({
+            connectionString: databaseUrl,
+            ssl: {
+                rejectUnauthorized: false // Railway דורש SSL
+            }
+        });
+
+        console.log('🔗 Using database URL:', databaseUrl.substring(0, 20) + '...');
+
         await client.connect();
+        console.log('✅ Connected to Railway PostgreSQL');
 
-        // הכנה של רשימת הערכים לפי הסדר של העמודות
-        await client.query(
-            `INSERT INTO form2-bogart (
-                q_id_63, q_id_64, q_id_65, q_id_66, q_id_67, q_id_68, q_id_69, q_id_70, q_id_71, q_id_72, 
-                q_id_73, q_id_74, q_id_75, q_id_76, q_id_77, q_id_78, q_id_79, q_id_80, q_id_81
+        // בדיקה אם הטבלה קיימת (עם גרשיים בגלל המקף)
+        const insertQuery = `
+            INSERT INTO "form2-Bogart" (
+                q_id_63, q_id_64, q_id_65, q_id_66, q_id_67, 
+                q_id_68, q_id_69, q_id_70, q_id_71, q_id_72, 
+                q_id_73, q_id_74, q_id_75, q_id_76, q_id_77, 
+                q_id_78, q_id_79, q_id_80, q_id_81, "Number tested"
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
-            )`,
-            [
-                answers.q_id_63,
-                answers.q_id_64,
-                answers.q_id_65,
-                answers.q_id_66,
-                answers.q_id_67,
-                answers.q_id_68,
-                answers.q_id_69,
-                answers.q_id_70,
-                answers.q_id_71,
-                answers.q_id_72,
-                answers.q_id_73,
-                answers.q_id_74,
-                answers.q_id_75,
-                answers.q_id_76,
-                answers.q_id_77,
-                answers.q_id_78,
-                answers.q_id_79,
-                answers.q_id_80,
-                answers.q_id_81
-            ]
-        );
-        await client.end();
-        console.log('📩 Received answers:', answers);
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 
+                $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
+            )
+        `;
 
+        // הכנה של הערכים
+        const values = [
+            Array.isArray(answers[63]) ? answers[63].join(', ') : answers[63],
+            answers[64],
+            answers[65],
+            answers[66],
+            answers[67],
+            answers[68],
+            answers[69],
+            answers[70],
+            answers[71],
+            // אם 72 הוא אובייקט צבע, שמור אותו כ-JSON
+            typeof answers[72] === 'object' ? JSON.stringify(answers[72]) : answers[72],
+            answers[73],
+            answers[74],
+            answers[75],
+            answers[76],
+            answers[77],
+            Array.isArray(answers[78]) ? answers[78].join(', ') : answers[78],
+            answers[79],
+            answers[80],
+            answers[81],
+            form1Id // 🎯 שמירת form1Id בשדה number_tested
+        ];
+
+        console.log('💾 Inserting values:', values);
+
+        let result;
+        try {
+            result = await client.query(insertQuery, values);
+            console.log('✅ Insert successful:', result.rowCount, 'rows affected');
+        } catch (queryError) {
+            console.error('❌ Query failed:', queryError.message);
+            console.error('❌ Query code:', queryError.code);
+            console.error('❌ Query detail:', queryError.detail);
+            throw queryError;
+        }
+
+        // יצירת פרומפט
         const prompt = generatePainDescription(answers);
+
         res.status(200).json({
-            message: 'Form 2 answers saved!',
-            prompt: prompt
+            message: 'Form 2 answers saved successfully to Railway!',
+            form1Id: form1Id,
+            prompt: prompt,
+            rowsAffected: result.rowCount
         });
+
     } catch (error) {
-        console.error('❌ Error handling answers:', error);
+        console.error('❌ Railway Database Error:', error);
+
+        // שגיאות נפוצות ב-Railway
+        if (error.code === '42P01') {
+            console.error('🚨 Table does not exist! Create it first.');
+        } else if (error.code === '42703') {
+            console.error('🚨 Column does not exist! Check your table schema.');
+        }
+
         res.status(500).json({
-            message: 'Error saving Form 2 answers', error: error.message
+            message: 'Error saving to Railway database',
+            error: error.message,
+            code: error.code,
+            hint: error.hint
         });
+    } finally {
+        if (client) {
+            try {
+                await client.end();
+                console.log('🔌 Railway connection closed');
+            } catch (endError) {
+                console.error('Error closing Railway connection:', endError);
+            }
+        }
     }
 });
 
 app.post('/submit-personal-info', async (req, res) => {
+    let client;
     try {
-        const answers = req.body.answers;
-        console.log('📩 Received answers:', answers);
-        // אפשר לעבד את התשובות כאן אם צריך
-        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
-        res.status(200).json({ message: 'Form 2 answers saved!' });
+        const { answers, form1Id } = req.body; // 🎯 קבלת form1Id מהלקוח
+        console.log('📩 Form3 - Received answers:', answers);
+        console.log('🔗 Form3 - Received form1Id:', form1Id);
+        console.log('🔄 Starting database connection process...');
+        if (!form1Id) {
+            return res.status(400).json({
+                message: 'form1Id is required for Form3 submission'
+            });
+        }
+        // Railway חיבור - חכם לכל סביבה
+        const databaseUrl = process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL;
+
+        if (!databaseUrl) {
+            throw new Error('No database URL found. Set DATABASE_URL or DATABASE_PUBLIC_URL');
+        }
+
+        client = new Client({
+            connectionString: databaseUrl,
+            ssl: {
+                rejectUnauthorized: false // Railway דורש SSL
+            }
+        });
+
+        console.log('🔗 Using database URL:', databaseUrl.substring(0, 20) + '...');
+
+        await client.connect();
+        console.log('✅ Connected to Railway PostgreSQL');
+
+        const insertQuery = `
+            INSERT INTO "form3-personal-info" (
+                name, date, age, gender, religion, 
+                nationality, mother_tongue, socio_economic_status, education, existing_diagnosis, "Number tested"
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+            )
+        `;
+
+        // הכנה של הערכים
+        const values = [
+            answers[82],
+            answers[83],
+            answers[84],
+            answers[85],
+            answers[86],
+            answers[87],
+            answers[88],
+            answers[89],
+            answers[90],
+            answers[91],
+            form1Id // 🎯 שמירת form1Id בשדה number_tested
+        ];
+
+        console.log('💾 Inserting values:', values);
+
+        let result;
+        try {
+            result = await client.query(insertQuery, values);
+            console.log('✅ Insert successful:', result.rowCount, 'rows affected');
+        } catch (queryError) {
+            console.error('❌ Query failed:', queryError.message);
+            console.error('❌ Query code:', queryError.code);
+            console.error('❌ Query detail:', queryError.detail);
+            throw queryError;
+        }
+
+        res.status(200).json({
+            message: 'Form personal info answers saved successfully to Railway!',
+            form1Id: form1Id,
+            rowsAffected: result.rowCount
+        });
+
     } catch (error) {
-        console.error('❌ Error handling answers:', error);
-        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
+        console.error('❌ Railway Database Error:', error);
+
+        // שגיאות נפוצות ב-Railway
+        if (error.code === '42P01') {
+            console.error('🚨 Table does not exist! Create it first.');
+        } else if (error.code === '42703') {
+            console.error('🚨 Column does not exist! Check your table schema.');
+        }
+
+        res.status(500).json({
+            message: 'Error saving to Railway database',
+            error: error.message,
+            code: error.code,
+            hint: error.hint
+        });
+    } finally {
+        if (client) {
+            try {
+                await client.end();
+                console.log('🔌 Railway connection closed');
+            } catch (endError) {
+                console.error('Error closing Railway connection:', endError);
+            }
+        }
+    }
+});
+
+app.post('/submit-meet_your_pain', async (req, res) => {
+    let client;
+    try {
+        const { answers, form1Id } = req.body; // 🎯 קבלת form1Id מהלקוח
+        console.log('📩 Form-meet - Received answers:', answers);
+        console.log('🔗 Form-meet - Received form1Id:', form1Id);
+        console.log('🔄 Starting database connection process...');
+        if (!form1Id) {
+            return res.status(400).json({
+                message: 'form1Id is required for Form-meet submission'
+            });
+        }
+        // Railway חיבור - חכם לכל סביבה
+        const databaseUrl = process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL;
+
+        if (!databaseUrl) {
+            throw new Error('No database URL found. Set DATABASE_URL or DATABASE_PUBLIC_URL');
+        }
+
+        client = new Client({
+            connectionString: databaseUrl,
+            ssl: {
+                rejectUnauthorized: false // Railway דורש SSL
+            }
+        });
+
+        console.log('🔗 Using database URL:', databaseUrl.substring(0, 20) + '...');
+
+        await client.connect();
+        console.log('✅ Connected to Railway PostgreSQL');
+
+        const insertQuery = `
+        INSERT INTO meet_your_pain (
+            " describing_your_pain", 
+            "representation_your_pain", 
+            "Number tested"
+        ) VALUES ($1, $2, $3)
+    `;
+
+        // הכנה של הערכים
+        const values = [
+            answers[0],
+            answers[1],
+            form1Id // 🎯 שמירת form1Id בשדה number_tested
+        ];
+
+        console.log('💾 Inserting values:', values);
+
+        let result;
+        try {
+            result = await client.query(insertQuery, values);
+            console.log('✅ Insert successful:', result.rowCount, 'rows affected');
+        } catch (queryError) {
+            console.error('❌ Query failed:', queryError.message);
+            console.error('❌ Query code:', queryError.code);
+            console.error('❌ Query detail:', queryError.detail);
+            throw queryError;
+        }
+
+        res.status(200).json({
+            message: 'Form meet your pain answers saved successfully to Railway!',
+            form1Id: form1Id,
+            rowsAffected: result.rowCount
+        });
+
+    } catch (error) {
+        console.error('❌ Railway Database Error:', error);
+
+        // שגיאות נפוצות ב-Railway
+        if (error.code === '42P01') {
+            console.error('🚨 Table does not exist! Create it first.');
+        } else if (error.code === '42703') {
+            console.error('🚨 Column does not exist! Check your table schema.');
+        }
+
+        res.status(500).json({
+            message: 'Error saving to Railway database',
+            error: error.message,
+            code: error.code,
+            hint: error.hint
+        });
+    } finally {
+        if (client) {
+            try {
+                await client.end();
+                console.log('🔌 Railway connection closed');
+            } catch (endError) {
+                console.error('Error closing Railway connection:', endError);
+            }
+        }
     }
 });
 
 app.post('/submit-form3', async (req, res) => {
+    let client;
     try {
         const answers = req.body.answers;
-        console.log('📩 Received answers:', answers);
-        // אפשר לעבד את התשובות כאן אם צריך
-        await appendToCSV(path.join(__dirname, 'form2.csv'), answers);
-        res.status(200).json({ message: 'Form 2 answers saved!' });
+        console.log('📩 Form4 - Received answers:', answers);
+        console.log('🔍 Form4 - Answers keys:', Object.keys(answers));
+
+        const databaseUrl = process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL;
+
+        if (!databaseUrl) {
+            throw new Error('No database URL found');
+        }
+
+        client = new Client({
+            connectionString: databaseUrl,
+            ssl: { rejectUnauthorized: false }
+        });
+
+        await client.connect();
+        console.log('✅ Form4 - Connected to Railway PostgreSQL');
+
+        // 🎯 פתרון חכם - נתמודד עם keys שהם strings או numbers
+        const values = [];
+        for (let i = 3; i <= 61; i++) {
+            const value = answers[i] ?? answers[i.toString()] ?? null;
+            values.push(value);
+        }
+
+        // Add the Before/After value
+        values.push('After');
+        values.push(form1Id);
+
+        const insertQuery = `
+            INSERT INTO "form1-Questionnaire" (
+                q_id_3, q_id_4, q_id_5, q_id_6, q_id_7, q_id_8, 
+                q_id_9, q_id_10, q_id_11, q_id_12, q_id_13, q_id_14, q_id_15, 
+                q_id_16, q_id_17, q_id_18, q_id_19, q_id_20, q_id_21, q_id_22, 
+                q_id_23, q_id_24, q_id_25, q_id_26, q_id_27, q_id_28, q_id_29, 
+                q_id_30, q_id_31, q_id_32, q_id_33, q_id_34, q_id_35, q_id_36,
+                q_id_37, q_id_38, q_id_39, q_id_40, q_id_41, q_id_42, q_id_43, 
+                q_id_44, q_id_45, q_id_46, q_id_47, q_id_48, q_id_49, q_id_50, 
+                q_id_51, q_id_52, q_id_53, q_id_54, q_id_55, q_id_56, q_id_57, 
+                q_id_58, q_id_59, q_id_60, q_id_61,
+                created_at, "Before/After", "Number tested"
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
+                $31, $32, $33, $34, $35, $36, $37, $38, $39, $40,
+                $41, $42, $43, $44, $45, $46, $47, $48, $49, $50,
+                $51, $52, $53, $54, $55, $56, $57, $58, $59,
+                NOW(), $60, $61
+            ) RETURNING id;
+        `;
+
+        const result = await client.query(insertQuery, values);
+
+        console.log('✅ Form4 - Insert successful, ID:', form1Id);
+
+        res.status(200).json({
+            message: 'Form 4 questionnaire saved successfully!',
+            form1Id: form1Id,
+            rowsAffected: result.rowCount,
+        });
+
     } catch (error) {
-        console.error('❌ Error handling answers:', error);
-        res.status(500).json({ message: 'Error saving Form 2 answers', error: error.message });
+        console.error('❌ Form4 - Railway Database Error:', error);
+        res.status(500).json({
+            message: 'Error saving Form 4 questionnaire',
+            error: error.message,
+            code: error.code
+        });
+    } finally {
+        if (client) {
+            try {
+                await client.end();
+                console.log('🔌 Form4 - Railway connection closed');
+            } catch (endError) {
+                console.error('Error closing Form4 Railway connection:', endError);
+            }
+        }
     }
 });
+
 
 // === TTAPI Endpoints ===
 
@@ -483,7 +864,7 @@ app.get('/api/proxy-image/:requestId', async (req, res) => {
             responseType: 'stream',
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept': 'image/*,*/*',
+                'Accept': 'image/*,*/* ',
                 'Referer': 'https://ttapi.io/'
             },
             timeout: 30000

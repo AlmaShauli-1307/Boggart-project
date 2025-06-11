@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getNames } from 'country-list';
 import languages from 'iso-639-1';
+import { useNavigate, useLocation } from 'react-router-dom'; // וודאי שיש useLocation
 
 import './PersonalQuestionnaire.css';
 import logo from '../../images/logo.png'; // Adjust path as needed
@@ -16,6 +16,9 @@ const PersonalQuestionnaire = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const languageNames = languages.getAllNames();
     const pageData = { title: 'Personal info', instructions: 'In the meantime, we invite you to answer the following questions while you wait to "meet your pain¬î' }
+    const location = useLocation();
+    // Get form1Id from previous page
+    const form1Id = location.state?.form1Id || null;
 
     const questions = [
         {
@@ -132,32 +135,43 @@ const PersonalQuestionnaire = () => {
         }
         return false;
     };
-
-    // Function to submit answers
     const handleSubmit = async () => {
-        const isDateValid = checkDateFormat(83, responses[83]);
-        if (!isDateValid) {
-            alert('Please enter a valid date in the format dd/mm/yyyy');
+        // בדיקה שיש form1Id
+        if (!form1Id) {
+            console.error('❌ Form3 - No form1Id available for submission');
+            alert('Error: Missing connection to previous forms. Please restart the process.');
+            navigate('/questionnaire');
             return;
         }
+
         setIsSubmitting(true);
         try {
+            console.log('📤 Form3 - Submitting with form1Id:', form1Id);
+            console.log('📤 Form3 - Submitting responses:', responses);
+
             const response = await fetch('http://localhost:5000/submit-personal-info', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ answers: responses }),
+                body: JSON.stringify({
+                    answers: responses,
+                    form1Id: parseInt(form1Id)
+                }),
             });
 
             const data = await response.json();
-            console.log('✅ Response from server:', data);
-            alert('Answers submitted successfully!');
-            // Redirect to success page or next step
-            navigate('/meet-your-pain');
-        } catch (error) {
-            console.error('❌ Error submitting answers:', error);
-            alert('An error occurred while submitting answers.');
-            navigate('/meet-your-pain');
+            console.log('✅ Form3 - Response from server:', data);
 
+            if (response.ok) {
+                navigate('/meet-your-pain-rate', {
+                    state: {
+                        form1Id: form1Id  // ✅ העבר את ה-form1Id!
+                    }
+                });
+            }
+
+        } catch (error) {
+            navigate('/meet-your-pai-rate');
+            console.error('❌ Error submitting personal info:', error);
         }
         setIsSubmitting(false);
     };

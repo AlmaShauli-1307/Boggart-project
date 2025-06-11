@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Papa from 'papaparse';
 import './DetailedQuestionnaire.css';
 import logo from '../../images/logo.png';
@@ -9,9 +8,11 @@ import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
 import ColorWheelQuestion from "./ColorWheelQuestion";
 import CheckboxQuestion from "../generalComponents/CheckboxQuestion";
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const DetailedQuestionnairePage = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
     const [others, setOthers] = useState({});
@@ -21,6 +22,42 @@ const DetailedQuestionnairePage = () => {
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedBodyParts, setSelectedBodyParts] = useState([]);
+    const [form1Id, setForm1Id] = useState(null); // הוסף state לform1Id
+
+    // 📥 קבל את form1Id מכמה מקורות
+    useEffect(() => {
+        const urlForm1Id = searchParams.get('form1Id');
+        if (urlForm1Id) {
+            setForm1Id(urlForm1Id);
+            console.log('📥 Form2 - Got form1Id from URL:', urlForm1Id);
+        } else {
+            console.error('⚠️ Form2 - No form1Id in URL! Redirecting to Form1');
+            alert('Please complete Form 1 first');
+            navigate('/form1');
+        }
+    }, [searchParams, navigate]);
+
+
+    // פונקציה לקבלת הID האחרון מהשרת
+    const getLatestForm1Id = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/get-latest-form1-id');
+            const data = await response.json();
+
+            if (data.success && data.form1Id) {
+                setForm1Id(data.form1Id);
+                console.log('📥 Form2 - Got latest form1Id from server:', data.form1Id);
+            } else {
+                console.error('⚠️ Form2 - No form1Id found! Redirecting to Form1');
+                alert('Please complete Form 1 first');
+                navigate('/form1');
+            }
+        } catch (error) {
+            console.error('❌ Error getting form1Id:', error);
+            alert('Error connecting to server. Please try again.');
+            navigate('/form1');
+        }
+    };
 
     // Load questions from CSV
     useEffect(() => {
@@ -129,37 +166,45 @@ const DetailedQuestionnairePage = () => {
     };
 
     const handleSubmit = async () => {
+        // בדיקה שיש form1Id
+        if (!form1Id) {
+            alert('Error: Form 1 ID missing. Please restart from Form 1.');
+            navigate('/form1');
+            return;
+        }
+
         setIsSubmitting(true);
         try {
+            console.log('📤 Form2 - Submitting with form1Id:', form1Id);
+
             const response = await fetch('http://localhost:5000/submit-form2', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ answers: responses }),
+                body: JSON.stringify({
+                    answers: responses,
+                    form1Id: parseInt(form1Id) // שלח את הID מה-URL
+                }),
             });
 
             const data = await response.json();
-            console.log('✅ Response from server:', data);
+            console.log('✅ Form2 - Response from server:', data);
 
-            // במקום להציג MidjourneyViewer, נווט ל-MeetYourPain עם הנתונים
-            navigate('/meet-your-pain', {
-                state: {
-                    answers: responses,
-                    prompt: data.prompt || "",
-                    apiKey: "70413a13-f6fb-a48d-37fd-a74fbf384e00"
-                }
-            });
+            if (response.ok) {
+                navigate('/meet-your-pain', {
+                    state: {
+                        answers: responses,
+                        prompt: data.prompt || "",
+                        apiKey: "70413a13-f6fb-a48d-37fd-a74fbf384e00",
+                        form1Id: form1Id,
+                    }
+                });
+            } else {
+                throw new Error(data.message || 'Form 2 submission failed');
+            }
 
         } catch (error) {
-            console.error('❌ Error submitting answers:', error);
-
-            // גם במקרה של שגיאה, נווט ל-MeetYourPain
-            navigate('/meet-your-pain', {
-                state: {
-                    answers: responses,
-                    prompt: "",  // פרומפט ריק יגרום לקומפוננטה ליצור פרומפט מקומי
-                    apiKey: "70413a13-f6fb-a48d-37fd-a74fbf384e00"
-                }
-            });
+            console.error('❌ Error submitting Form 2:', error);
+            alert('Error submitting Form 2: ' + error.message);
         }
         setIsSubmitting(false);
     };
@@ -208,6 +253,13 @@ const DetailedQuestionnairePage = () => {
         <div className="form-page">
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
+
+                {/* הצג connection status */}
+                {form1Id && (
+                    <div style={{ color: 'green', textAlign: 'center', padding: '10px' }}>
+                        ✅ Connected to Form 1 (ID: {form1Id})
+                    </div>
+                )}
             </header>
             <div className="form-container">
                 <main className="form-content">
@@ -298,7 +350,7 @@ const DetailedQuestionnairePage = () => {
                             <PrimaryButton
                                 text={isSubmitting ? "SUBMITTING..." : "VISUALIZE PAIN"}
                                 onClick={handleSubmit}
-                                disabled={!allQuestionsAnswered || isSubmitting}
+                                disabled={!allQuestionsAnswered || isSubmitting || !form1Id}
                             />
                         )}
                     </div>
