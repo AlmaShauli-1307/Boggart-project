@@ -9,7 +9,7 @@ const LandingPage = () => {
 
     const handleStartClick = () => {
         // Navigate to the IAS page
-        navigate('/questionnaire');
+        navigate('/questionnaire-before');
     };
 
     return (

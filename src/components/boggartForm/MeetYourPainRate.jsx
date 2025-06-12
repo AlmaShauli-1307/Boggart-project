@@ -57,7 +57,7 @@ const MeetYourPainRate = () => {
         if (!form1Id) {
             console.error('❌ Form-meet - No form1Id available for submission');
             alert('Error: Missing connection to previous forms. Please restart the process.');
-            navigate('/questionnaire');
+            navigate('/questionnaire-before');
             return;
         }
 
@@ -78,7 +78,21 @@ const MeetYourPainRate = () => {
             const data = await response.json();
             console.log('✅ Form-meet - Response from server:', data);
             if (response.ok) {
-                navigate('/questionnaire-after');
+                console.log('🎯 Form-meet - Success! Navigating to Form3 with form1Id:', form1Id);
+                // 🎯 העבר את form1Id ב-state ל-QuestionnairePageAfter
+                navigate('/questionnaire-after', {
+                    state: { form1Id: form1Id }
+                });
+            } else {
+                throw new Error(data.error || 'Server error');
+            }
+            if (response.ok) {
+                console.log('🎯 Form-meet - Success! Navigating to Form3 with form1Id:', form1Id);
+                navigate('/questionnaire-after', {
+                    state: {
+                        form1Id: form1Id  // ✅ העבר את ה-form1Id!
+                    }
+                });
             }
 
         } catch (error) {

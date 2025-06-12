@@ -681,9 +681,15 @@ app.post('/submit-meet_your_pain', async (req, res) => {
 app.post('/submit-form3', async (req, res) => {
     let client;
     try {
-        const answers = req.body.answers;
+        const { answers, form1Id } = req.body; // 🎯 קבלת form1Id מהלקוח
         console.log('📩 Form4 - Received answers:', answers);
         console.log('🔍 Form4 - Answers keys:', Object.keys(answers));
+        console.log('🔄 Starting database connection process...');
+        if (!form1Id) {
+            return res.status(400).json({
+                message: 'form1Id is required for Form-meet submission'
+            });
+        }
 
         const databaseUrl = process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL;
 
@@ -701,7 +707,11 @@ app.post('/submit-form3', async (req, res) => {
 
         // 🎯 פתרון חכם - נתמודד עם keys שהם strings או numbers
         const values = [];
-        for (let i = 3; i <= 61; i++) {
+        // עבור שאלות 3-22: הוסף -1 או null (בחר אחד)
+        for (let i = 3; i <= 22; i++) {
+            values.push(-1); // או values.push(null) אם אתה מעדיף null
+        }
+        for (let i = 23; i <= 61; i++) {
             const value = answers[i] ?? answers[i.toString()] ?? null;
             values.push(value);
         }
@@ -730,7 +740,7 @@ app.post('/submit-form3', async (req, res) => {
                 $41, $42, $43, $44, $45, $46, $47, $48, $49, $50,
                 $51, $52, $53, $54, $55, $56, $57, $58, $59,
                 NOW(), $60, $61
-            ) RETURNING id;
+            )
         `;
 
         const result = await client.query(insertQuery, values);

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { getNames } from 'country-list';
 import languages from 'iso-639-1';
 import { useNavigate, useLocation } from 'react-router-dom'; // וודאי שיש useLocation
-
 import './PersonalQuestionnaire.css';
 import logo from '../../images/logo.png'; // Adjust path as needed
 import PrimaryButton from '../generalComponents/PrimaryButton';
@@ -95,13 +94,8 @@ const PersonalQuestionnaire = () => {
             (responses[q.id] !== undefined && responses[q.id] !== null && responses[q.id] !== "")
         );
 
-        console.log('All questions answered (excluding 91):', allAnswered);
-        console.log('Responses:', responses);
-        console.log('Questions:', questions);
-
         setAllQuestionsAnswered(allAnswered);
     }, [responses, questions]);
-
 
     const handleOptionSelect = (questionId, value) => {
         setResponses({
@@ -109,6 +103,7 @@ const PersonalQuestionnaire = () => {
             [questionId]: value
         });
     };
+
     const checkDateFormat = (questionId, date) => {
         const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
 
@@ -135,19 +130,20 @@ const PersonalQuestionnaire = () => {
         }
         return false;
     };
+
     const handleSubmit = async () => {
         // בדיקה שיש form1Id
         if (!form1Id) {
             console.error('❌ Form3 - No form1Id available for submission');
             alert('Error: Missing connection to previous forms. Please restart the process.');
-            navigate('/questionnaire');
+            navigate('/questionnaire-before');
             return;
         }
 
         setIsSubmitting(true);
         try {
-            console.log('📤 Form3 - Submitting with form1Id:', form1Id);
-            console.log('📤 Form3 - Submitting responses:', responses);
+            console.log('📤 Form personal - Submitting with form1Id:', form1Id);
+            console.log('📤 Form personal - Submitting responses:', responses);
 
             const response = await fetch('http://localhost:5000/submit-personal-info', {
                 method: 'POST',
@@ -159,7 +155,7 @@ const PersonalQuestionnaire = () => {
             });
 
             const data = await response.json();
-            console.log('✅ Form3 - Response from server:', data);
+            console.log('✅ Form personal - Response from server:', data);
 
             if (response.ok) {
                 navigate('/meet-your-pain-rate', {
@@ -170,7 +166,7 @@ const PersonalQuestionnaire = () => {
             }
 
         } catch (error) {
-            navigate('/meet-your-pai-rate');
+            navigate('/meet-your-pain-rate');
             console.error('❌ Error submitting personal info:', error);
         }
         setIsSubmitting(false);

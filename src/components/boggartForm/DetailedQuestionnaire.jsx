@@ -33,7 +33,7 @@ const DetailedQuestionnairePage = () => {
         } else {
             console.error('⚠️ Form2 - No form1Id in URL! Redirecting to Form1');
             alert('Please complete Form 1 first');
-            navigate('/form1');
+            navigate('/questionnaire-before');
         }
     }, [searchParams, navigate]);
 
@@ -50,12 +50,12 @@ const DetailedQuestionnairePage = () => {
             } else {
                 console.error('⚠️ Form2 - No form1Id found! Redirecting to Form1');
                 alert('Please complete Form 1 first');
-                navigate('/form1');
+                navigate('/questionnaire-before');
             }
         } catch (error) {
             console.error('❌ Error getting form1Id:', error);
             alert('Error connecting to server. Please try again.');
-            navigate('/form1');
+            navigate('/questionnaire-before');
         }
     };
 
