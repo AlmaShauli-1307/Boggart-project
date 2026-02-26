@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import Papa from 'papaparse';
 import './QuestionnairePage.css';
 import logo from '../../images/logo.png';
@@ -11,6 +13,7 @@ import EmotionScalePage from './EmotionScalePage';
 
 const QuestionnairePageBefore = () => {
     const navigate = useNavigate();
+    const { t, language } = useLanguage();
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,6 +23,17 @@ const QuestionnairePageBefore = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [currentScale, setCurrentScale] = useState({});
     const [showScale, setShowScale] = useState(false);
+    const location = useLocation();
+    const introData = location.state?.introData || null;
+
+    useEffect(() => {
+        if (!introData) {
+            console.warn('⚠️ No introData found, redirecting to introduction page');
+            navigate('/introduction');
+            return;
+        }
+        console.log('✅ IntroData received:', introData);
+    }, [introData, navigate]);
 
     // Load questions from CSV
     useEffect(() => {
@@ -42,6 +56,49 @@ const QuestionnairePageBefore = () => {
             .catch(error => console.error('❌ Error loading CSV:', error));
     }, []);
 
+    // עדכן רק כשהשפה משתנה - אבל שמור על הדף הנוכחי!
+    useEffect(() => {
+        if (questions.length > 0 && currentPage > 0) {
+            console.log('🔍 Language changed to:', language);
+            console.log('🔍 Current page:', currentPage);
+
+            const currentPageQuestions = questions.filter(q => Number(q.Page) === currentPage);
+            if (currentPageQuestions.length > 0) {
+                const pageInfo = currentPageQuestions[0];
+                const pageTitle = pageInfo['Page Title'];
+
+                console.log('🔍 Current page title:', pageTitle);
+
+                // רק עדכן את ההוראות - אל תקראי ל-updatePageData!
+                setPageData(prev => ({
+                    ...prev,  // ✅ שמור הכל כמו שהיה
+                    instructions: language === 'he'
+                        ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
+                        : pageInfo.Instructions
+                }));
+
+                // עדכן את ה-scale labels רק אם יש scale וזה לא VAS/SAM
+                if (pageTitle !== 'VAS' && pageTitle !== 'SAM' && pageInfo.scale_labels) {
+                    const scaleObj = {};
+                    let min = pageInfo.scale_min || 1;
+                    let max = pageInfo.scale_max || 5;
+
+                    const labelsColumn = language === 'he'
+                        ? (pageInfo.scale_labels_Hebrew || pageInfo.scale_labels)
+                        : pageInfo.scale_labels;
+
+                    const labels = labelsColumn.split(',');
+                    for (let i = 0; i < labels.length; i++) {
+                        scaleObj[min + i] = labels[i].trim();
+                    }
+
+                    setCurrentScale(scaleObj);
+                }
+                // ✅ אל תשני את showScale!
+            }
+        }
+    }, [language]); // רק language!
+
     // Update page data when current page changes
     const updatePageData = (data, page) => {
         const pageQuestions = data.filter(q => Number(q.Page) === page);
@@ -51,7 +108,9 @@ const QuestionnairePageBefore = () => {
             console.log('Page title:', pageInfo['Page Title']);
             setPageData({
                 title: pageInfo['Page Title'] || '',
-                instructions: pageInfo.Instructions || ''
+                instructions: language === 'he'
+                    ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
+                    : pageInfo.Instructions
             });
 
             // Check if we should show scale based on CSV data
@@ -76,11 +135,17 @@ const QuestionnairePageBefore = () => {
 
                 // Try to get scale labels if available
                 if (pageInfo.scale_labels) {
-                    const labels = pageInfo.scale_labels.split(',');
+                    // ✅ בחר את העמודה הנכונה לפי השפה
+                    const labelsColumn = language === 'he'
+                        ? (pageInfo.scale_labels_Hebrew || pageInfo.scale_labels)
+                        : pageInfo.scale_labels;
+
+                    const labels = labelsColumn.split(',');
                     for (let i = 0; i < labels.length; i++) {
                         scaleObj[min + i] = labels[i].trim();
                     }
                 } else {
+
                     // Create default scale from min to max
                     for (let i = min; i <= max; i++) {
                         if (i === min) scaleObj[i] = pageInfo.left_label || 'Strongly Disagree';
@@ -150,11 +215,18 @@ const QuestionnairePageBefore = () => {
     };
 
     const handleSubmit = async () => {
+        if (!introData) {
+            alert('Error: Missing consent data. Please start from the beginning.');
+            navigate('/introduction');
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
             const requestBody = {
                 answers: responses,
+                introData: introData,
             };
 
             console.log('📤 Form1 - Sending to server:', JSON.stringify(requestBody, null, 2));
@@ -170,8 +242,7 @@ const QuestionnairePageBefore = () => {
 
             if (data.form1Id) {
                 console.log('✅ Form1 - Success! form1Id:', data.form1Id);
-                alert('Form 1 completed successfully!');
-                navigate(`/form2?form1Id=${data.form1Id}`);
+                navigate(`/form2?form1Id=${data.form1Id}&intensity=${responses[24]}`);
             } else {
                 console.error('❌ Form1 - No form1Id received from server:', data);
                 alert('Form 1 submitted but no ID received');
@@ -208,7 +279,7 @@ const QuestionnairePageBefore = () => {
 
         return {
             id: q.question_ID,
-            text: q.Question,
+            text: language === 'he' ? q.Question_Hebrew : q.Question,
             options: options,
             questionType: q.question_type,
             scaleMin: q.scale_min,
@@ -220,7 +291,8 @@ const QuestionnairePageBefore = () => {
     const progressPercentage = (currentPage / totalPages) * 100;
 
     return (
-        <div className="form-page">
+        <div className="form-page" lang={language}>
+            <LanguageToggle />
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
             </header>
@@ -279,7 +351,7 @@ const QuestionnairePageBefore = () => {
                     <div className="navigation">
                         {currentPage > 1 && (
                             <PrimaryButton
-                                text="PREVIOUS"
+                                text={t('previous')}
                                 onClick={handlePrevious}
                                 className="previous-button"
                             />
@@ -287,13 +359,13 @@ const QuestionnairePageBefore = () => {
 
                         {currentPage < totalPages ? (
                             <PrimaryButton
-                                text="NEXT"
+                                text={t('next')}
                                 onClick={handleNext}
                                 disabled={!allQuestionsAnswered}
                             />
                         ) : (
                             <PrimaryButton
-                                text={isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+                                text={isSubmitting ? t('submitting') : t('submit')}
                                 onClick={handleSubmit}
                                 disabled={!allQuestionsAnswered || isSubmitting}
                             />

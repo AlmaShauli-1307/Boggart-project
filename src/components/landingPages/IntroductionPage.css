@@ -1,0 +1,321 @@
+/* IntroductionPage.css */
+
+/* Import La Belle Aurore font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&family=Heebo&family=Playpen+Sans+Hebrew&display=swap');
+
+/* Design tokens based on the screenshot */
+:root {
+    /* Colors */
+    --color-background: #E0ECE7;
+    --color-text: #000000;
+    --color-button-bg: #295A4B;
+    --color-button-text: #FFFFFF;
+
+    /* Typography */
+    --font-family-logo: 'Comic Sans MS', cursive, sans-serif;
+    --font-family-base: 'Roboto', sans-serif;
+    --font-family-cursive: 'La Belle Aurore', cursive;
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 3rem;
+    --spacing-xl: 4rem;
+}
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-base);
+    color: var(--color-text);
+    background-color: var(--color-background);
+    line-height: 1.5;
+}
+
+/* Main layout */
+.intro-page {
+    min-height: 100vh;
+    background-color: var(--color-background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.intro-container {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Header styling */
+.intro-header {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.logo-image {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Content sections */
+.intro-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.intro-text-section {
+    width: 100%;
+    max-width: 800px;
+}
+
+.intro-title {
+    font-family: 'La Belle Aurore', cursive;
+    font-size: 50px;
+    font-weight: 400;
+    line-height: 125%;
+    letter-spacing: 0;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* פונט ספציפי לעברית */
+[lang="he"] .intro-title {
+    font-family: 'Playpen Sans Hebrew', sans-serif !important;
+}
+
+/* Consent form styling */
+.consent-header {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.consent-header p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+/* פונט ספציפי לעברית */
+[lang="he"] .consent-header p {
+    font-family: 'Heebo', sans-serif !important;
+}
+
+.consent-content {
+    margin-bottom: 40px;
+    max-width: 900px;
+    text-align: justify;
+}
+
+.consent-content>p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* פונט ספציפי לעברית */
+[lang="he"] .consent-conten p {
+    font-family: 'Heebo', sans-serif !important;
+}
+
+.consent-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 25px;
+}
+
+.consent-list li {
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.7;
+    margin-bottom: 18px;
+    padding-left: 20px;
+    position: relative;
+    text-align: justify;
+}
+
+/* פונט ספציפי לעברית */
+[lang="he"] .consent-content li {
+    font-family: 'Heebo', sans-serif !important;
+}
+
+.consent-list li {
+    position: relative;
+    padding-left: 20px;
+    padding-right: 0;
+}
+
+.consent-list li::before {
+    content: "•";
+    color: var(--color-text);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+html[dir="rtl"] .consent-list li {
+    padding-right: 20px;
+    padding-left: 0;
+}
+
+html[dir="rtl"] .consent-list li::before {
+    left: auto;
+    right: 0;
+}
+
+.consent-declaration {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: justify;
+    margin: 25px 0;
+    padding: 15px 0;
+}
+
+/* פונט ספציפי לעברית */
+[lang="he"] .consent-declaration {
+    font-family: 'Heebo', sans-serif !important;
+}
+
+/* Form section */
+.intro-form-section {
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+.form-label {
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--color-text);
+}
+
+/* פונט ספציפי לעברית */
+[lang="he"] .form-label {
+    font-family: 'Heebo', sans-serif !important;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+
+/* פונט ספציפי לעברית */
+[lang="he"] .form-input {
+    font-family: 'Heebo', sans-serif !important;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-button-bg);
+}
+
+.form-input::placeholder {
+    color: #888;
+    font-style: italic;
+}
+
+/* Checkbox styling */
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* פונט ספציפי לעברית */
+[lang="he"] .checkbox-label {
+    font-family: 'Heebo', sans-serif !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    flex-shrink: 0;
+}
+
+/* Form actions */
+.form-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .intro-text-section {
+        max-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .intro-title {
+        font-size: 35px;
+    }
+
+    .consent-header p,
+    .consent-content>p {
+        font-size: 14px;
+    }
+
+    .consent-list li {
+        font-size: 13px;
+    }
+
+    .intro-form-section {
+        padding: 20px;
+    }
+
+    .form-input {
+        font-size: 14px;
+    }
+}

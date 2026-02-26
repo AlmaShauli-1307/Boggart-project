@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Papa from 'papaparse';
 import './QuestionnairePage.css';
@@ -11,6 +13,7 @@ import EmotionScalePage from './EmotionScalePage';
 
 const QuestionnairePageAfter = () => {
     const navigate = useNavigate();
+    const { t, language } = useLanguage();
     const location = useLocation();
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
@@ -21,6 +24,7 @@ const QuestionnairePageAfter = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [currentScale, setCurrentScale] = useState({});
     const [showScale, setShowScale] = useState(false);
+    const isDemo = location.state?.isDemo || false;
 
     // 🎯 קבל את form1Id מ-MeetYourPainRate
     const [form1Id, setForm1Id] = useState(null);
@@ -62,6 +66,49 @@ const QuestionnairePageAfter = () => {
             .catch(error => console.error('❌ Error loading CSV:', error));
     }, []);
 
+    // עדכן רק כשהשפה משתנה - אבל שמור על הדף הנוכחי!
+    useEffect(() => {
+        if (questions.length > 0 && currentPage > 0) {
+            console.log('🔍 Language changed to:', language);
+            console.log('🔍 Current page:', currentPage);
+
+            const currentPageQuestions = questions.filter(q => Number(q.Page) === currentPage);
+            if (currentPageQuestions.length > 0) {
+                const pageInfo = currentPageQuestions[0];
+                const pageTitle = pageInfo['Page Title'];
+
+                console.log('🔍 Current page title:', pageTitle);
+
+                // רק עדכן את ההוראות - אל תקראי ל-updatePageData!
+                setPageData(prev => ({
+                    ...prev,  // ✅ שמור הכל כמו שהיה
+                    instructions: language === 'he'
+                        ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
+                        : pageInfo.Instructions
+                }));
+
+                // עדכן את ה-scale labels רק אם יש scale וזה לא VAS/SAM
+                if (pageTitle !== 'VAS' && pageTitle !== 'SAM' && pageInfo.scale_labels) {
+                    const scaleObj = {};
+                    let min = pageInfo.scale_min || 1;
+                    let max = pageInfo.scale_max || 5;
+
+                    const labelsColumn = language === 'he'
+                        ? (pageInfo.scale_labels_Hebrew || pageInfo.scale_labels)
+                        : pageInfo.scale_labels;
+
+                    const labels = labelsColumn.split(',');
+                    for (let i = 0; i < labels.length; i++) {
+                        scaleObj[min + i] = labels[i].trim();
+                    }
+
+                    setCurrentScale(scaleObj);
+                }
+                // ✅ אל תשני את showScale!
+            }
+        }
+    }, [language]); // רק language!
+
     // Update page data when current page changes
     const updatePageData = (data, page) => {
         const pageQuestions = data.filter(q => Number(q.Page) === page);
@@ -71,7 +118,9 @@ const QuestionnairePageAfter = () => {
             console.log('Page title:', pageInfo['Page Title']);
             setPageData({
                 title: pageInfo['Page Title'] || '',
-                instructions: pageInfo.Instructions || ''
+                instructions: language === 'he'
+                    ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
+                    : pageInfo.Instructions
             });
 
             // Check if we should show scale based on CSV data
@@ -96,11 +145,17 @@ const QuestionnairePageAfter = () => {
 
                 // Try to get scale labels if available
                 if (pageInfo.scale_labels) {
-                    const labels = pageInfo.scale_labels.split(',');
+                    // ✅ בחר את העמודה הנכונה לפי השפה
+                    const labelsColumn = language === 'he'
+                        ? (pageInfo.scale_labels_Hebrew || pageInfo.scale_labels)
+                        : pageInfo.scale_labels;
+
+                    const labels = labelsColumn.split(',');
                     for (let i = 0; i < labels.length; i++) {
                         scaleObj[min + i] = labels[i].trim();
                     }
                 } else {
+
                     // Create default scale from min to max
                     for (let i = min; i <= max; i++) {
                         if (i === min) scaleObj[i] = pageInfo.left_label || 'Strongly Disagree';
@@ -232,7 +287,7 @@ const QuestionnairePageAfter = () => {
 
         return {
             id: q.question_ID,
-            text: q.Question,
+            text: language === 'he' ? q.Question_Hebrew : q.Question,
             options: options,
             questionType: q.question_type,
             scaleMin: q.scale_min,
@@ -245,6 +300,7 @@ const QuestionnairePageAfter = () => {
 
     return (
         <div className="form-page">
+            <LanguageToggle />
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
             </header>
@@ -258,6 +314,14 @@ const QuestionnairePageAfter = () => {
                             </p>
                         </div>
                     )}
+
+                    {console.log('🔍 Scale Debug:', {
+                        showScale,
+                        isVAS,
+                        isSAM,
+                        currentScale,
+                        keysLength: Object.keys(currentScale).length
+                    })}
 
                     {/* Show scale legend only when we have scale data and it's not a special page */}
                     {showScale && !isVAS && !isSAM && Object.keys(currentScale).length > 0 && (
@@ -303,7 +367,7 @@ const QuestionnairePageAfter = () => {
                     <div className="navigation">
                         {currentPage > 1 && (
                             <PrimaryButton
-                                text="PREVIOUS"
+                                text={t('previous')}
                                 onClick={handlePrevious}
                                 className="previous-button"
                             />
@@ -311,13 +375,13 @@ const QuestionnairePageAfter = () => {
 
                         {currentPage < totalPages ? (
                             <PrimaryButton
-                                text="NEXT"
+                                text={t('next')}
                                 onClick={handleNext}
                                 disabled={!allQuestionsAnswered}
                             />
                         ) : (
                             <PrimaryButton
-                                text={isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+                                text={isSubmitting ? t('submitting') : t('submit')}
                                 onClick={handleSubmit}
                                 disabled={!allQuestionsAnswered || isSubmitting}
                             />

@@ -1,7 +1,7 @@
 /* IASPage.css */
 
 /* Import Roboto font */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Roboto:wght@400;500;700;800&display=swap');
 
 /* Reset and base styles */
 * {
@@ -11,12 +11,34 @@
 }
 
 /* Set the background color on the html and body elements to ensure full coverage */
-html, body {
+html,
+body {
     background-color: #EEF0ED;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Heebo', sans-serif;
     height: 100%;
     width: 100%;
     overflow-x: hidden;
+}
+
+/* הסר את כל החלק הישן והוסף את זה: */
+
+/* פונט ברירת מחדל */
+* {
+    font-family: 'Roboto', 'Heebo', sans-serif;
+}
+
+/* פונט ספציפי לעברית - חזק יותר */
+.form-page[lang="he"],
+.form-page[lang="he"] *,
+.form-page[lang="he"] .instructions-text,
+.form-page[lang="he"] p {
+    font-family: 'Heebo', sans-serif !important;
+}
+
+/* פונט ספציפי לאנגלית */
+.form-page[lang="en"],
+.form-page[lang="en"] * {
+    font-family: 'Roboto', sans-serif !important;
 }
 
 /* Main container */
@@ -50,6 +72,8 @@ html, body {
 .logo-image {
     max-width: 120px;
     height: auto;
+    align-items: left;
+
 }
 
 /* Content area */

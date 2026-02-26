@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import Papa from 'papaparse';
 import './DetailedQuestionnaire.css';
 import logo from '../../images/logo.png';
@@ -8,10 +10,11 @@ import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
 import ColorWheelQuestion from "./ColorWheelQuestion";
 import CheckboxQuestion from "../generalComponents/CheckboxQuestion";
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 
 const DetailedQuestionnairePage = () => {
     const navigate = useNavigate();
+    const { t, language } = useLanguage();
     const [searchParams] = useSearchParams();
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
@@ -23,10 +26,21 @@ const DetailedQuestionnairePage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedBodyParts, setSelectedBodyParts] = useState([]);
     const [form1Id, setForm1Id] = useState(null); // הוסף state לform1Id
+    const [intensityFromForm1, setIntensityFromForm1] = useState(null);
+    const location = useLocation();
+    const isDemo = location.state?.isDemo || false;
 
     // 📥 קבל את form1Id מכמה מקורות
     useEffect(() => {
+        if (isDemo) {
+            console.log('🎭 Demo mode - skipping form1Id check');
+            setForm1Id('demo');
+            return;
+        }
+
         const urlForm1Id = searchParams.get('form1Id');
+        const urlIntensity = searchParams.get('intensity');
+
         if (urlForm1Id) {
             setForm1Id(urlForm1Id);
             console.log('📥 Form2 - Got form1Id from URL:', urlForm1Id);
@@ -35,13 +49,18 @@ const DetailedQuestionnairePage = () => {
             alert('Please complete Form 1 first');
             navigate('/questionnaire-before');
         }
-    }, [searchParams, navigate]);
+
+        if (urlIntensity) {
+            setIntensityFromForm1(parseFloat(urlIntensity));
+        }
+    }, [searchParams, navigate, isDemo]);
 
 
     // פונקציה לקבלת הID האחרון מהשרת
     const getLatestForm1Id = async () => {
         try {
             const response = await fetch('http://localhost:5000/get-latest-form1-id');
+            //https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net
             const data = await response.json();
 
             if (data.success && data.form1Id) {
@@ -80,6 +99,23 @@ const DetailedQuestionnairePage = () => {
             .catch(error => console.error('❌ Error loading CSV:', error));
     }, []);
 
+    useEffect(() => {
+        if (questions.length > 0 && currentPage > 0) {
+            const currentPageQuestions = questions.filter(q => Number(q.Page) === currentPage);
+            if (currentPageQuestions.length > 0) {
+                const pageInfo = currentPageQuestions[0];
+
+                // רק עדכן את ההוראות - אל תשני כלום אחר
+                setPageData(prev => ({
+                    ...prev,
+                    instructions: language === 'he'
+                        ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
+                        : pageInfo.Instructions
+                }));
+            }
+        }
+    }, [language]); // רץ כשהשפה משתנה
+
     const updatePageData = (data, page) => {
         const pageQuestions = data.filter(q => Number(q.Page) === page);
 
@@ -87,7 +123,9 @@ const DetailedQuestionnairePage = () => {
             const pageInfo = pageQuestions[0];
             setPageData({
                 title: pageInfo['Page Title'] || '',
-                instructions: pageInfo.Instructions || ''
+                instructions: language === 'he'
+                    ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
+                    : pageInfo.Instructions
             });
         } else {
             setPageData({ title: '', instructions: '' });
@@ -166,23 +204,43 @@ const DetailedQuestionnairePage = () => {
     };
 
     const handleSubmit = async () => {
-        // בדיקה שיש form1Id
-        if (!form1Id) {
-            alert('Error: Form 1 ID missing. Please restart from Form 1.');
-            navigate('/form1');
-            return;
-        }
-
         setIsSubmitting(true);
         try {
+            if (isDemo) {
+                console.log('🎭 Demo mode - generating image without saving');
+                const response = await fetch(`http://localhost:5000/generate-prompt-demo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ answers: responses, intensity: 5 })
+                });
+                const data = await response.json();
+                startImageGeneration(data.prompt, 'demo');
+                navigate('/meet-your-pain', {
+                    state: {
+                        prompt: data.prompt,
+                        detailedAnswers: responses,
+                        isDemo: true,
+                        form1Id: 'demo'
+                    }
+                });
+                return;
+            }
+
+            if (!form1Id) {
+                alert('Error: Form 1 ID missing.');
+                navigate('/questionnaire-before');
+                return;
+            }
             console.log('📤 Form2 - Submitting with form1Id:', form1Id);
+            console.log('📤 Form2 - Submitting responses:', responses);
 
             const response = await fetch('http://localhost:5000/submit-form2', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     answers: responses,
-                    form1Id: parseInt(form1Id) // שלח את הID מה-URL
+                    form1Id: parseInt(form1Id),
+                    intensityFromForm1: intensityFromForm1
                 }),
             });
 
@@ -190,12 +248,16 @@ const DetailedQuestionnairePage = () => {
             console.log('✅ Form2 - Response from server:', data);
 
             if (response.ok) {
-                navigate('/meet-your-pain', {
+                // התחל ליצור תמונה ברקע מיד
+                if (data.prompt) {
+                    startImageGeneration(data.prompt, form1Id);
+                }
+
+                navigate('/questionnaire-personal', {
                     state: {
-                        answers: responses,
-                        prompt: data.prompt || "",
-                        apiKey: "70413a13-f6fb-a48d-37fd-a74fbf384e00",
                         form1Id: form1Id,
+                        prompt: data.prompt || "",
+                        detailedAnswers: responses
                     }
                 });
             } else {
@@ -209,34 +271,70 @@ const DetailedQuestionnairePage = () => {
         setIsSubmitting(false);
     };
 
+    const startImageGeneration = async (prompt, form1Id) => {
+        try {
+            await fetch('http://localhost:5000/api/create-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    //answers: responses,
+                    prompt: prompt,
+                    form1Id: form1Id
+                })
+            });
+            console.log('Image generation started in background');
+        } catch (error) {
+            console.error('Error starting image generation:', error);
+        }
+    };
     // Determine if this is a special page type
     const isPainLocationPage = pageData.title === 'Pain Location';
 
     // Format questions for our Question component
     const formattedQuestions = getCurrentPageQuestions().map(q => {
-        let options = [];
+        let scaleOptions = [];
+        let textOptions = null;
 
         // Determine options based on scale min/max or defined options
         if (q.scale_min !== null && q.scale_max !== null) {
+            // Numeric scale (e.g., 1-5, 1-10)
             for (let i = q.scale_min; i <= q.scale_max; i++) {
-                options.push(i);
+                scaleOptions.push(i);
             }
-        } else if (q.options) {
-            options = q.options.split(', ')
+        } else if (q.options || q.options_Hebrew) {
+            // Text options from CSV
+            const rawOptions = language === 'he'
+                ? (q.options_Hebrew || q.options)
+                : q.options;
+
+            if (rawOptions) {
+                textOptions = rawOptions.split(', ');
+            }
         } else {
             // Default to 1-5 scale
-            options = [1, 2, 3, 4, 5];
+            scaleOptions = [1, 2, 3, 4, 5];
         }
+
+        // Get labels with fallback
+        const leftLabel = language === 'he'
+            ? (q.left_label_Hebrew || q.left_label)
+            : q.left_label;
+
+        const rightLabel = language === 'he'
+            ? (q.right_label_Hebrew || q.right_label)
+            : q.right_label;
 
         return {
             id: q.question_ID,
-            text: q.Question,
-            options: options,
+            text: language === 'he' ? (q.Question_Hebrew || q.Question) : q.Question,
+            scaleOptions: scaleOptions,  // For scale questions [1,2,3,4,5]
+            options: textOptions,         // For multi-choice questions or null
             questionType: q.question_type,
-            left_label: q.left_label,
-            right_label: q.right_label
+            left_label: leftLabel,
+            right_label: rightLabel,
         };
     });
+
 
     const handleOtherOptionSelect = (questionId, value) => {
         setOthers({
@@ -250,16 +348,10 @@ const DetailedQuestionnairePage = () => {
 
     // תצוגת השאלון הרגילה
     return (
-        <div className="form-page">
+        <div className="form-page" lang={language}>
+            < LanguageToggle />
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
-
-                {/* הצג connection status */}
-                {form1Id && (
-                    <div style={{ color: 'green', textAlign: 'center', padding: '10px' }}>
-                        ✅ Connected to Form 1 (ID: {form1Id})
-                    </div>
-                )}
             </header>
             <div className="form-container">
                 <main className="form-content">
@@ -291,7 +383,7 @@ const DetailedQuestionnairePage = () => {
                                     onSelect={handleOptionSelect}
                                     leftLabel={question.left_label}
                                     rightLabel={question.right_label}
-                                    options={question.options}
+                                    options={question.scaleOptions}
                                 />)
                             }
                             else if (question.questionType === 'number' || question.questionType === 'longText' || question.questionType === 'shortText') {
@@ -334,7 +426,7 @@ const DetailedQuestionnairePage = () => {
                     <div className="navigation">
                         {currentPage > 1 && (
                             <PrimaryButton
-                                text="PREVIOUS"
+                                text={t('previous')}
                                 onClick={handlePrevious}
                                 className="previous-button"
                             />
@@ -342,15 +434,15 @@ const DetailedQuestionnairePage = () => {
 
                         {currentPage < totalPages ? (
                             <PrimaryButton
-                                text="NEXT"
+                                text={t('next')}
                                 onClick={handleNext}
                                 disabled={!allQuestionsAnswered}
                             />
                         ) : (
                             <PrimaryButton
-                                text={isSubmitting ? "SUBMITTING..." : "VISUALIZE PAIN"}
+                                text={isSubmitting ? t('submitting') : t('visualize')}
                                 onClick={handleSubmit}
-                                disabled={!allQuestionsAnswered || isSubmitting || !form1Id}
+                                disabled={!allQuestionsAnswered || isSubmitting || (!form1Id && !isDemo)}
                             />
                         )}
                     </div>
@@ -363,7 +455,7 @@ const DetailedQuestionnairePage = () => {
                     </div>
                 </main>
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import { useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './MeetYourPain.css';
@@ -12,6 +14,7 @@ const MeetYourPain = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [showImageViewer, setShowImageViewer] = useState(false);
     const navigate = useNavigate();
+    const { t } = useLanguage();
     const location = useLocation();
 
     // States for image handling (enhanced like MidjourneyViewer)
@@ -27,9 +30,23 @@ const MeetYourPain = () => {
     const canvasRef = useRef(null);
 
     // Get data from previous page (if coming from questionnaire)
-    const answers = location.state?.answers || {};
+    const answers = location.state?.answers || {}; // תשובות אישיות
+    const detailedAnswers = location.state?.detailedAnswers || {}; // תשובות מפורטות
+    const allAnswers = location.state?.allAnswers || { ...detailedAnswers, ...answers }; // כל התשובות
     const prompt = location.state?.prompt || '';
     const form1Id = location.state?.form1Id || null;
+    const isDemo = location.state?.isDemo || false;
+
+    // הוסף debug בתחילת הקומפוננט:
+    console.log("🔍 MeetYourPain Debug:");
+    console.log("- answers (personal):", answers);
+    console.log("- detailedAnswers:", detailedAnswers);
+    console.log("- allAnswers:", allAnswers);
+    console.log("- prompt:", prompt);
+    console.log("- form1Id:", form1Id);
+    console.log("- showImageViewer:", showImageViewer);
+    console.log("- isLoading:", isLoading);
+
 
     // פונקציה לחיתוך דינמי של התמונה ל-4 חלקים (זהה ל-MidjourneyViewer)
     const splitImageIntoQuadrants = (img) => {
@@ -68,13 +85,21 @@ const MeetYourPain = () => {
         return quadrants;
     };
 
-    // השתמש רק בפרומפט מהשרת - אל תיצור כלום בקליאנט! (זהה ל-MidjourneyViewer)
     useEffect(() => {
-        if (prompt) {
-            console.log("✅ Using prompt from server:", prompt);
-            setPromptText(prompt);
-        }
-    }, [prompt]);
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+            // ✅ הצג את מציג התמונות אם יש נתונים כלשהם
+            if (Object.keys(allAnswers).length > 0 || prompt) {
+                setShowImageViewer(true);
+                console.log("✅ Showing image viewer - has data");
+            } else {
+                console.log("⚠️ No data found, but continuing anyway");
+                setShowImageViewer(true); // הצג בכל מקרה
+            }
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, [allAnswers, prompt]);
 
     // פונקציה לטעינת תמונה עם תמיכה ב-proxy (מותאמת מ-MidjourneyViewer)
     const loadImageAndProcess = (imageSrc, retryCount = 0, maxRetries = 3) => {
@@ -137,51 +162,34 @@ const MeetYourPain = () => {
         img.src = imageSrc;
     };
 
-    // טעינת תמונה מ-TTAPI (או תמונת גיבוי) - זהה ל-MidjourneyViewer
+    // חכה לתמונה שכבר התחילה להיווצר ב-DetailedQuestionnaire
     useEffect(() => {
-        const requestImageFromTTAPI = async () => {
-            if (!promptText || !showImageViewer) return;
+        const waitForExistingImage = async () => {
+            if (!form1Id || !showImageViewer) return;
 
             try {
                 setIsLoadingImage(true);
-                setLoadingStatus('Creating your pain visualization...');
+                setLoadingStatus('Finishing your visualization...');
                 setError(null);
 
-                console.log("🚀 Starting TTAPI request with prompt:", promptText);
+                console.log("⏳ Waiting for image that started in background for form1Id:", form1Id);
 
-                const response = await TTAPIService.createImageRequest(answers, promptText);
+                // חכה לתמונה שכבר התחילה ברקע ב-DetailedQuestionnaire
+                const imageUrl = await TTAPIService.waitForImageByFormId(form1Id, 25, 5000);
 
-                if (response && response.requestId) {
-                    setTtapiRequestId(response.requestId);
-                    setLoadingStatus('Generating image... (up to 2 minutes)');
-
-                    try {
-                        const imageUrl = await TTAPIService.waitForImage(response.requestId, 25, 5000);
-
-                        if (imageUrl) {
-                            setTtapiImageUrl(imageUrl);
-                            console.log("🖼️ Received image URL:", imageUrl);
-                            loadImageAndProcess(imageUrl);
-                        } else {
-                            throw new Error('No image received from API');
-                        }
-                    } catch (waitError) {
-                        console.error('Error waiting for image:', waitError);
-                        setError(`TTAPI Error: ${waitError.message}. Using sample image.`);
-
-                        // השתמש בתמונת גיבוי
-                        console.log("🔄 Using sample image as fallback");
-                        loadImageAndProcess('/sample_images/pain_sample_1.png');
-                    }
+                if (imageUrl) {
+                    setTtapiImageUrl(imageUrl);
+                    console.log("🖼️ Received background image URL:", imageUrl);
+                    loadImageAndProcess(imageUrl);
                 } else {
-                    throw new Error('No valid request ID received from TTAPI');
+                    throw new Error('Background image generation failed');
                 }
-            } catch (err) {
-                console.error('Error communicating with TTAPI:', err);
-                setError(`TTAPI Connection Error: ${err.message}. Using sample image.`);
+            } catch (waitError) {
+                console.error('Error waiting for background image:', waitError);
+                setError(`Background image not ready. Using sample image.`);
 
                 // השתמש בתמונת גיבוי
-                console.log("🔄 Using sample image due to connection error");
+                console.log("🔄 Using sample image as fallback");
                 loadImageAndProcess('/sample_images/pain_sample_1.png');
             } finally {
                 setIsLoadingImage(false);
@@ -189,14 +197,14 @@ const MeetYourPain = () => {
             }
         };
 
-        // התחל רק אם יש פרומפט מהשרת וצריך להציג את מציג התמונות
-        if (promptText && showImageViewer) {
-            console.log("🎯 Starting image generation with server prompt");
-            requestImageFromTTAPI();
+        if (form1Id && showImageViewer) {
+            console.log("🎯 Waiting for background image generation");
+            waitForExistingImage();
         } else if (showImageViewer) {
-            console.log("⏳ Waiting for prompt from server...");
+            console.log("⚠️ No form1Id - cannot wait for background image");
+            loadImageAndProcess('/sample_images/pain_sample_1.png');
         }
-    }, [promptText, showImageViewer, answers]);
+    }, [form1Id, showImageViewer]);
 
     // Initial loading timer
     useEffect(() => {
@@ -205,9 +213,6 @@ const MeetYourPain = () => {
             // אם יש נתונים מהשאלון, תעבור ישירות לתצוגת התמונות
             if (answers && Object.keys(answers).length > 0) {
                 setShowImageViewer(true);
-            } else {
-                // אם אין נתונים מהשאלון, עבור ישירות לדף הבא
-                navigate('/meet-your-pain-rate');
             }
         }, 5000);
 
@@ -219,16 +224,30 @@ const MeetYourPain = () => {
         navigate('/meet-your-pain-rate');
     };
 
-    const handleNextClick = () => {
+    const handleNextClick = async () => {
         setSelectedImageIndex(currentImageIndex);
+        // שמור את הבחירה בבסיס הנתונים
+        try {
+            await fetch('http://localhost:5000/api/save-selected-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    form1Id: form1Id,
+                    selectedImageIndex: currentImageIndex
+                })
+            });
+        } catch (error) {
+            console.error('Error saving selected image:', error);
+        }
         // Navigate to next page with selected image data
-        navigate('/questionnaire-personal', {
+        navigate('/meet-your-pain-rate', {
             state: {
                 selectedImage: croppedImages[currentImageIndex],
                 selectedImageIndex: currentImageIndex,
-                answers: answers,
+                answers: allAnswers,
                 prompt: promptText,
-                form1Id: form1Id
+                form1Id: form1Id,
+                isDemo: isDemo
             }
         });
     };
@@ -252,6 +271,16 @@ const MeetYourPain = () => {
         );
     };
 
+    // פונקציה להורדת התמונה הנוכחית
+    const handleDownloadImage = () => {
+        const link = document.createElement('a');
+        link.href = croppedImages[currentImageIndex];
+        link.download = `my-pain-visualization-${currentImageIndex + 1}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     if (isLoading) {
         return <LoadingPage />;
     }
@@ -259,7 +288,8 @@ const MeetYourPain = () => {
     // אם צריך להציג את מציג התמונות (אחרי השאלון)
     if (showImageViewer) {
         return (
-            <main className="landing-meet-boggart-page">
+            <main className="landing-meet-boggart-page" >
+                <LanguageToggle />
                 <div className="meet-boggart-container">
                     <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
 
@@ -268,18 +298,13 @@ const MeetYourPain = () => {
                     </header>
 
                     <section className="welcome-meet-boggart-section">
-                        <h2 className="welcome-meet-boggart-title">Meet Your Pain</h2>
+                        <h2 className="welcome-meet-boggart-title">{t('meetYourPainTitle')}</h2>
+                        <p className='welcome-description'>{t('meetYourPainDescription')}</p>
 
                         {/* הוספת אינדיקטור טעינה כמו ב-MidjourneyViewer */}
                         {isLoadingImage && (
                             <div className="loading-status">
                                 <div className="loading-spinner"></div>
-                                <p>{loadingStatus || 'Loading...'}</p>
-                                {ttapiRequestId && (
-                                    <p style={{ fontSize: '12px', color: '#666' }}>
-                                        Request ID: {ttapiRequestId}
-                                    </p>
-                                )}
                             </div>
                         )}
 
@@ -287,13 +312,6 @@ const MeetYourPain = () => {
                         {error && (
                             <div className="error-message">
                                 <p>{error}</p>
-                                {ttapiImageUrl && (
-                                    <details style={{ marginTop: '10px', fontSize: '12px' }}>
-                                        <summary>Debug Info</summary>
-                                        <p><strong>Original URL:</strong> {ttapiImageUrl}</p>
-                                        <p><strong>Request ID:</strong> {ttapiRequestId}</p>
-                                    </details>
-                                )}
                             </div>
                         )}
 
@@ -313,11 +331,16 @@ const MeetYourPain = () => {
 
                     <section className="cta-meet-boggart-section">
                         <PrimaryButton
-                            text="Regenerate"
+                            text={t('regenerate')}
                             onClick={nextImage}
                         />
                         <PrimaryButton
-                            text="That's my pain!"
+                            text={t('download')}
+                            onClick={handleDownloadImage}
+                            className="download-button"
+                        />
+                        <PrimaryButton
+                            text={t('thatMyPain')}
                             onClick={handleNextClick}
                         />
                     </section>
@@ -326,9 +349,25 @@ const MeetYourPain = () => {
         );
     }
 
-    // אם מגיעים לכאן, זה אומר שאין נתונים מהשאלון
-    // במקרה זה המערכת כבר העבירה לדף הבא ב-useEffect
-    return null;
+    return (
+        <main className="landing-meet-boggart-page">
+            <div className="meet-boggart-container">
+                <header className="form-meet-boggart-header">
+                    <img src={logo} alt="Boggart" className="logo-image" />
+                </header>
+                <section className="welcome-meet-boggart-section">
+                    <h2 className="welcome-meet-boggart-title">{t('meetYourPainTitle')}</h2>
+                    <p>{t('meetYourPainTitle')}</p>
+                    <PrimaryButton
+                        text={t('Continue Anyway')}
+                        onClick={() => navigate('/meet-your-pain-rate', {
+                            state: { form1Id, answers: allAnswers, prompt }
+                        })}
+                    />
+                </section>
+            </div>
+        </main>
+    );
 };
 
 export default MeetYourPain;

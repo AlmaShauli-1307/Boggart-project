@@ -8,7 +8,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     background-color: #EEF0ED;
     font-family: 'Roboto', sans-serif;
     height: 100%;
@@ -76,23 +77,27 @@ html, body {
 /* Body Map specific styles - Updated to side-by-side layout */
 .body-map-container {
     display: flex;
-    flex-direction: row; /* Changed to row for side-by-side layout */
+    flex-direction: row;
+    /* Changed to row for side-by-side layout */
     justify-content: space-between;
     width: 100%;
     margin-bottom: 40px;
 }
 
 .body-map-section {
-    width: 48%; /* Adjusted width for side-by-side */
+    width: 48%;
+    /* Adjusted width for side-by-side */
     margin-bottom: 30px;
 }
 
 .body-parts-section {
-    width: 48%; /* Adjusted width for side-by-side */
+    width: 48%;
+    /* Adjusted width for side-by-side */
     margin-bottom: 30px;
 }
 
-.body-map-section h3, .body-parts-section h3 {
+.body-map-section h3,
+.body-parts-section h3 {
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 20px;
@@ -126,12 +131,14 @@ html, body {
     margin-top: 15px;
     display: flex;
     justify-content: center;
-    min-height: 40px; /* Fixed height to prevent layout shifts */
+    min-height: 40px;
+    /* Fixed height to prevent layout shifts */
 }
 
 .clear-selections-button {
     padding: 8px 15px;
-    background-color: #295A4B; /* Matches your site's color scheme */
+    background-color: #295A4B;
+    /* Matches your site's color scheme */
     color: white;
     border: none;
     border-radius: 4px;
@@ -141,20 +148,25 @@ html, body {
 }
 
 .clear-selections-button:hover {
-    background-color: #1d3f35; /* Darker shade for hover */
+    background-color: #1d3f35;
+    /* Darker shade for hover */
 }
 
 /* Highlight overlay for selected body parts */
 .highlight-overlay {
     position: absolute;
-    background-color: rgba(255, 152, 0, 0.5); /* Semi-transparent orange */
-    border: 2px solid rgba(230, 81, 0, 0.7); /* Darker orange border */
-    pointer-events: none; /* Allow clicks to pass through to the image */
+    background-color: rgba(255, 152, 0, 0.5);
+    /* Semi-transparent orange */
+    border: 2px solid rgba(230, 81, 0, 0.7);
+    /* Darker orange border */
+    pointer-events: none;
+    /* Allow clicks to pass through to the image */
     z-index: 2;
 }
 
 .highlight-overlay.entire-body {
-    background-color: rgba(255, 152, 0, 0.3); /* Lighter for entire body */
+    background-color: rgba(255, 152, 0, 0.3);
+    /* Lighter for entire body */
     border: 3px dashed rgba(230, 81, 0, 0.7);
 }
 
@@ -171,6 +183,23 @@ html, body {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
+    justify-content: space-between;
+}
+
+/* RTL Support for Hebrew - body-part-checkbox */
+[dir="rtl"] .body-part-checkbox label {
+    padding-left: 0;
+    padding-right: 30px;
+}
+
+[dir="rtl"] .body-part-checkbox label::before {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .body-part-checkbox input[type="checkbox"]:checked+label::after {
+    left: auto;
+    right: 4px;
 }
 
 /* Custom checkbox styling */
@@ -178,6 +207,7 @@ html, body {
     opacity: 0;
     position: absolute;
     cursor: pointer;
+    order: 2;
 }
 
 .body-part-checkbox label {
@@ -186,6 +216,7 @@ html, body {
     cursor: pointer;
     font-size: 16px;
     display: inline-block;
+    order: 1;
 }
 
 .body-part-checkbox label::before {
@@ -203,7 +234,7 @@ html, body {
 }
 
 /* Added check mark inside the checkbox */
-.body-part-checkbox input[type="checkbox"]:checked + label::after {
+.body-part-checkbox input[type="checkbox"]:checked+label::after {
     content: '✓';
     position: absolute;
     left: 4px;
@@ -214,13 +245,13 @@ html, body {
     font-weight: bold;
 }
 
-.body-part-checkbox input[type="checkbox"]:checked + label::before {
+.body-part-checkbox input[type="checkbox"]:checked+label::before {
     background-color: #295A4B;
     border-color: #000000;
     border-radius: 2px;
 }
 
-.body-part-checkbox input[type="checkbox"]:checked + label {
+.body-part-checkbox input[type="checkbox"]:checked+label {
     font-weight: 500;
 }
 
@@ -254,10 +285,12 @@ html, body {
 /* Responsive styles */
 @media (max-width: 768px) {
     .body-map-container {
-        flex-direction: column; /* Stack vertically on mobile */
+        flex-direction: column;
+        /* Stack vertically on mobile */
     }
 
-    .body-map-section, .body-parts-section {
+    .body-map-section,
+    .body-parts-section {
         width: 100%;
         margin-bottom: 30px;
     }

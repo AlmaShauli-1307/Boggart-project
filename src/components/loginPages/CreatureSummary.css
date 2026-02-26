@@ -1,0 +1,232 @@
+/* --- הגדרות בסיס ומכולה --- */
+.summary-page-wrapper {
+    min-height: 100vh;
+    background-color: #f4f7f6;
+}
+
+.summary-main-content {
+    padding: 100px 20px 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* --- ניהול כיווניות גלובלי (הקלאסים שנוספים לדיב הראשי) --- */
+.rtl-layout {
+    direction: rtl;
+}
+
+.ltr-layout {
+    direction: ltr;
+}
+
+/* --- כפתורי פעולה וכותרת --- */
+.summary-actions-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+    margin-bottom: 20px;
+}
+
+.pdf-download-btn-transparent {
+    background: transparent;
+    color: #333;
+    border: 2px solid #333;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.pdf-download-btn-transparent:hover {
+    background: #333;
+    color: #fff;
+}
+
+.pdf-download-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.update-table-btn {
+    background-color: #295A4B;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.update-table-btn:hover:not(:disabled) {
+    background-color: #1e4237;
+    transform: translateY(-1px);
+}
+
+.update-table-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* הפיכת סדר הכפתורים באנגלית כדי שה-PDF יישאר בשמאל והחזור בימין */
+.ltr-layout .summary-actions-top {
+    flex-direction: row-reverse;
+}
+
+.summary-centered-title {
+    text-align: center;
+    width: 100%;
+    margin: 20px 0;
+    font-size: 2.2rem;
+    color: #295A4B;
+    font-weight: bold;
+}
+
+/* --- בחירת תאריכים --- */
+.date-selection-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 15px 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.date-controls-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.date-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-input-group label {
+    font-weight: bold;
+    color: #295A4B;
+}
+
+.date-input-group input {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+}
+
+
+.range-error-row {
+    width: 100%;
+    text-align: center;
+}
+
+.range-error-text {
+    color: #d93025;
+    font-size: 0.85rem;
+    margin: 0;
+    padding-top: 5px;
+}
+
+/* --- עיצוב הטבלה (כאן קורה ההיפוך) --- */
+.diary-table-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.diary-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* הסרנו direction: rtl קשיח מכאן */
+}
+
+/* הפיכת השורות לגמישות */
+.diary-table thead tr,
+.diary-table tbody tr {
+    display: flex;
+    width: 100%;
+}
+
+/* הגדרת התאים */
+.diary-table th,
+.diary-table td {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* מרכוז התוכן בתוך התא */
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.diary-table th {
+    background: #295A4B;
+    color: white;
+    font-size: 1rem;
+}
+
+/* --- לוגיקת ההיפוך הפיזי של העמודות --- */
+
+/* בעברית: העמודה הראשונה (יום) תהיה בימין */
+.rtl-layout .diary-table thead tr,
+.rtl-layout .diary-table tbody tr {
+    flex-direction: row-reverse;
+}
+
+/* באנגלית: העמודה הראשונה (day) תהיה בשמאל */
+.ltr-layout .diary-table thead tr,
+.ltr-layout .diary-table tbody tr {
+    flex-direction: row;
+}
+
+/* יישור טקסט לפי שפה */
+.rtl-layout .diary-table th,
+.rtl-layout .diary-table td {
+    text-align: right;
+}
+
+.ltr-layout .diary-table th,
+.ltr-layout .diary-table td {
+    text-align: left;
+}
+
+/* --- אלמנטים בתוך הטבלה --- */
+.diary-thumb {
+    width: 65px;
+    height: 65px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    transition: transform 0.3s ease;
+}
+
+.diary-thumb:hover {
+    transform: scale(3.5);
+    z-index: 10;
+}
+
+.sam-tag {
+    background: #000;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.comment-style {
+    font-family: 'Courier New', Courier, monospace;
+    color: #6a9955;
+    font-weight: bold;
+}

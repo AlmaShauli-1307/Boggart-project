@@ -1,5 +1,6 @@
 /* BodyMapQuestionnaire.css */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Roboto:wght@400;500;700;800&display=swap');
+
 /* IASPage.css */
 
 * {
@@ -8,10 +9,19 @@
     box-sizing: border-box;
 }
 
+/* פונט ספציפי לעברית - חזק יותר */
+.form-page[lang="he"],
+.form-page[lang="he"] *,
+.form-page[lang="he"] .instructions-text,
+.form-page[lang="he"] p {
+    font-family: 'Heebo', sans-serif !important;
+}
+
 /* Set the background color on the html and body elements to ensure full coverage */
-html, body {
+html,
+body {
     background-color: #EEF0ED;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Heebo', sans-serif;
     height: 100%;
     width: 100%;
     overflow-x: hidden;
@@ -43,11 +53,13 @@ html, body {
     display: flex;
     justify-content: flex-start;
     padding-left: 20px;
+    direction: ltr;
 }
 
 .logo-image {
     max-width: 120px;
     height: auto;
+    direction: ltr;
 }
 
 /* Content area */
@@ -136,11 +148,15 @@ html, body {
     max-width: 100%;
     margin: 0 auto;
 }
+
 /* General select styling */
 .input-personal-question-field {
-    appearance: none; /* Remove default browser styles */
-    -webkit-appearance: none; /* For Safari */
-    -moz-appearance: none; /* For Firefox */
+    appearance: none;
+    /* Remove default browser styles */
+    -webkit-appearance: none;
+    /* For Safari */
+    -moz-appearance: none;
+    /* For Firefox */
     box-sizing: border-box;
     border: 1px solid #686666;
     border-radius: 20px;
@@ -149,7 +165,8 @@ html, body {
     line-height: 130%;
     background-color: #FFFBFB;
     color: #000000;
-    padding: 10px 40px 10px 20px; /* Add padding for the arrow */
+    padding: 10px 40px 10px 20px;
+    /* Add padding for the arrow */
     width: 100%;
     max-width: 410px;
     height: 52px;
@@ -161,37 +178,49 @@ html, body {
 
 /* Placeholder styling */
 .input-personal-question-field option[value=""] {
-    color: rgba(0, 0, 0, 0.5); /* Match placeholder color */
+    color: rgba(0, 0, 0, 0.5);
+    /* Match placeholder color */
 }
 
 /* Add a custom arrow */
 .input-personal-question-field::after {
-    content: '▼'; /* Custom arrow */
+    content: '▼';
+    /* Custom arrow */
     position: absolute;
-    right: 20px; /* Align arrow with padding */
+    right: 20px;
+    /* Align arrow with padding */
     top: 50%;
     transform: translateY(-50%);
-    pointer-events: none; /* Prevent interaction with the arrow */
-    color: #686666; /* Arrow color */
+    pointer-events: none;
+    /* Prevent interaction with the arrow */
+    color: #686666;
+    /* Arrow color */
 }
 
 /* Dropdown popup styling */
 .input-personal-question-field option {
-    background-color: #FFFBFB; /* Match input background */
-    color: #000000; /* Text color */
-    padding: 10px; /* Add padding for better spacing */
+    background-color: #FFFBFB;
+    /* Match input background */
+    color: #000000;
+    /* Text color */
+    padding: 10px;
+    /* Add padding for better spacing */
 }
 
 /* Hover and focus states */
 .input-personal-question-field:focus {
     outline: none;
-    border-color: #295A4B; /* Match your design's focus color */
+    border-color: #295A4B;
+    /* Match your design's focus color */
 }
 
 .input-personal-question-field option:hover {
-    background-color: #EEF0ED; /* Highlight color for options */
-    color: #295A4B; /* Text color on hover */
+    background-color: #EEF0ED;
+    /* Highlight color for options */
+    color: #295A4B;
+    /* Text color on hover */
 }
+
 .input-personal-question-field::placeholder {
     color: rgba(0, 0, 0, 0.5);
 }
@@ -206,6 +235,7 @@ html, body {
 
 /* Responsive adjustments */
 @media (max-width: 700px) {
+
     .input-personal-question-field.short-text,
     textarea.input-personal-question-field.long-text {
         width: 90%;
@@ -234,10 +264,12 @@ html, body {
 /* Responsive styles */
 @media (max-width: 768px) {
     .body-map-container {
-        flex-direction: column; /* Stack vertically on mobile */
+        flex-direction: column;
+        /* Stack vertically on mobile */
     }
 
-    .body-map-section, .body-parts-section {
+    .body-map-section,
+    .body-parts-section {
         width: 100%;
         margin-bottom: 30px;
     }

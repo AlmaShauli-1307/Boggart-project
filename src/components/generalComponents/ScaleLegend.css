@@ -2,6 +2,7 @@
 
 /* Scale legend */
 .scale-legend {
+    direction: ltr !important;
     width: 100%;
     max-width: 675px;
     margin-bottom: 40px;
@@ -16,7 +17,8 @@
     background-color: #FFFFFF;
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 0 0 1px #B9B9B9; /* Single pixel border around the entire table */
+    box-shadow: 0 0 0 1px #B9B9B9;
+    /* Single pixel border around the entire table */
 }
 
 .scale-table th {

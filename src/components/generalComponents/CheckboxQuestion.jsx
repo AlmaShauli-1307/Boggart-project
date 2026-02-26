@@ -1,16 +1,18 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import { useLanguage } from '../LanguageContext';
 import './CheckboxQuestion.css';
 
 const CheckboxQuestion = ({
-                              id,
-                              text,
-                              selectedValues = [], // Default to an empty array
-                              other = "", // Default to an empty string
-                              onSelect,
-                              onOther,
-                              options,
-                          }) => {
+    id,
+    text,
+    selectedValues = [], // Default to an empty array
+    other = "", // Default to an empty string
+    onSelect,
+    onOther,
+    options,
+}) => {
     const [otherSelected, setOtherSelected] = useState(false)
+    const { language } = useLanguage();
 
 
     const handleCheckboxChange = (value) => {
@@ -36,7 +38,7 @@ const CheckboxQuestion = ({
     };
 
     return (
-        <div className="question-item">
+        <div className="question-item" dir={language === 'he' ? 'rtl' : 'ltr'}>
             <p className="question-text">{text}</p>
             <div className="options-grid">
                 {options.map((option) => (
@@ -58,14 +60,14 @@ const CheckboxQuestion = ({
                         onChange={() => handleCheckboxChange('Other')}
                     />
                     <label htmlFor="Other">
-                    <input
-                        type="text"
-                        value={other}
-                        onChange={onOtherChange}
-                        placeholder="Other..."
-                        className="other-input"
-                        aria-label="Other input"
-                    /></label>
+                        <input
+                            type="text"
+                            value={other}
+                            onChange={onOtherChange}
+                            placeholder="Other..."
+                            className="other-input"
+                            aria-label="Other input"
+                        /></label>
                 </div>
             </div>
         </div>

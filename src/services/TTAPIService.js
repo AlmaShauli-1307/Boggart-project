@@ -21,13 +21,14 @@ class TTAPIService {
      * @param {String} prompt - הפרומפט ליצירת התמונה
      * @returns {Promise<Object>} - מחזיר את התשובה מהשרת כולל requestId
      */
-    async createImageRequest(answers, prompt) {
+    async createImageRequest(answers, prompt, form1Id) {
         try {
-            console.log('🚀 Sending TTAPI request:', { prompt, answers });
+            console.log('🚀 Sending TTAPI request:', { prompt, answers, form1Id });
 
             const response = await this.axios.post('/create-image', {
                 answers,
-                prompt
+                prompt,
+                form1Id
             });
 
             console.log('✅ TTAPI response:', response.data);
@@ -61,31 +62,37 @@ class TTAPIService {
      * @param {Number} interval - מרווח זמן בין בדיקות במילישניות (ברירת מחדל: 5000 - 5 שניות)
      * @returns {Promise<String>} - מחזיר את כתובת ה-URL של התמונה כשהיא מוכנה
      */
-    async waitForImage(requestId, maxAttempts = 30, interval = 5000) {
+    // הוסיפי את הפונקציה הזו ל-TTAPIService.js:
+
+    async waitForImageByFormId(form1Id, maxAttempts = 30, interval = 5000) {
         return new Promise((resolve, reject) => {
             let attempts = 0;
 
             const checkStatus = async () => {
                 try {
                     attempts++;
-                    console.log(`🔍 Checking image status (attempt ${attempts}/${maxAttempts})...`);
+                    console.log(`🔍 Checking image status for form ${form1Id} (attempt ${attempts}/${maxAttempts})...`);
 
-                    const statusResponse = await this.checkImageStatus(requestId);
+                    // תקני את הכתובת - השתמשי ב-this.baseURL ובלי /api נוסף
+                    const statusResponse = await fetch(`${this.baseURL}/image-status-by-form/${form1Id}`);
+                    const data = await statusResponse.json();
 
-                    if (statusResponse.status === 'completed') {
-                        console.log('✅ Image is ready!', statusResponse.imageUrl);
-                        resolve(statusResponse.imageUrl);
+                    if (data.status === 'completed') {
+                        console.log('✅ Image is ready!', data.imageUrl);
+                        resolve(data.imageUrl);
                         return;
-                    } else if (statusResponse.status === 'failed') {
+                    } else if (data.status === 'failed') {
                         reject(new Error('Image generation failed'));
+                        return;
+                    } else if (data.status === 'not_found') {
+                        reject(new Error('No image found for this form'));
                         return;
                     } else if (attempts >= maxAttempts) {
                         reject(new Error('Max attempts reached waiting for image'));
                         return;
                     }
 
-                    // עדיין בעיבוד, המשך לבדוק
-                    console.log(`⏳ Still processing... (${statusResponse.status})`);
+                    console.log(`⏳ Still processing... (${data.status})`);
                     setTimeout(checkStatus, interval);
                 } catch (error) {
                     console.error('❌ Error in status check:', error);
@@ -93,10 +100,8 @@ class TTAPIService {
                 }
             };
 
-            // התחל לבדוק
             checkStatus();
         });
     }
 }
-
 export default new TTAPIService();

@@ -1,7 +1,7 @@
 /* LoadingPage.css */
 
 /* Import La Belle Aurore font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=La+Belle+Aurore&family=Roboto:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Roboto:wght@400;500;700;800&display=swap');
 
 /* Design tokens based on the screenshot */
 :root {
@@ -88,6 +88,11 @@ body {
     margin-bottom: 60px;
 }
 
+/* פונט ספציפי לעברית */
+[lang="he"] .loading-message {
+    font-family: 'Playpen Sans Hebrew', sans-serif !important;
+}
+
 .loading-spinner {
     width: 80px;
     height: 80px;
@@ -101,6 +106,7 @@ body {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }

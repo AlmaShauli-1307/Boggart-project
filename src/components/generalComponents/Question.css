@@ -30,6 +30,7 @@
 .rating-table-container-with-labels.wide-scale {
     max-width: 1000px;
 }
+
 .rating-table-container-with-labels.mid-scale {
     max-width: 600px;
 }
@@ -61,14 +62,17 @@
     display: flex;
     justify-content: center;
     margin: 0 auto;
+    direction: ltr;
 }
 
 .rating-table-container.wide-scale {
-    max-width: 850px; /* Wider width for 10-option scales, matching pain scale */
+    max-width: 850px;
+    /* Wider width for 10-option scales, matching pain scale */
 }
 
 .rating-table-container.mid-scale {
-    max-width: 460px; /* Wider width for 10-option scales, matching pain scale */
+    max-width: 460px;
+    /* Wider width for 10-option scales, matching pain scale */
 }
 
 .rating-table {
@@ -80,11 +84,13 @@
     background-color: #FFFFFF;
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 0 0 1px #B9B9B9; /* Single pixel border around the entire table */
+    box-shadow: 0 0 0 1px #B9B9B9;
+    /* Single pixel border around the entire table */
 }
 
 .rating-table.wide-scale {
-    max-width: 850px; /* Wider width for 10-option scales, matching pain scale */
+    max-width: 850px;
+    /* Wider width for 10-option scales, matching pain scale */
 }
 
 .rating-cell {
@@ -98,12 +104,10 @@
     line-height: 130%;
     cursor: pointer;
     transition: all 0.2s ease;
-    background: rgba(255, 255, 255, 0.02); /* Updated to match the design spec's subtle opacity */
+    background: rgba(255, 255, 255, 0.02);
+    /* Updated to match the design spec's subtle opacity */
 }
 
-.rating-cell:last-child {
-    border-right: none;
-}
 
 .rating-cell:hover {
     background-color: #F9FAF9;
@@ -116,6 +120,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
+
     .rating-table-container.wide-scale,
     .rating-table-container-with-labels.wide-scale {
         max-width: 100%;

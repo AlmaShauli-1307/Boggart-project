@@ -16,13 +16,13 @@ import face9 from '../../images/pain-faces/9.png';
 import face10 from '../../images/pain-faces/10.png';
 
 const PainScaleQuestion = ({
-                               id,
-                               text,
-                               selectedValue,
-                               onSelect,
-                               min = 0,
-                               max = 10
-                           }) => {
+    id,
+    text,
+    selectedValue,
+    onSelect,
+    min = 0,
+    max = 10
+}) => {
     // Generate array of options
     const options = Array.from({ length: max - min + 1 }, (_, i) => i + min);
 
@@ -51,7 +51,7 @@ const PainScaleQuestion = ({
         <div className="pain-scale-question">
             <p className="question-text-pain">{text}</p>
 
-            <div className="pain-scale-faces">
+            <div className="pain-scale-faces" dir="ltr">
                 {options.map((value) => (
                     <div key={`face-${value}`} className="pain-face-container">
                         <img
@@ -66,20 +66,20 @@ const PainScaleQuestion = ({
                 <div className="pain-scale-line"></div>
             </div>
 
-            <div className="rating-table-container-pain">
+            <div className="rating-table-container-pain" dir="ltr">
                 <table className="rating-table-pain">
                     <tbody>
-                    <tr>
-                        {options.map((value) => (
-                            <td
-                                key={`${id}-${value}`}
-                                className={`rating-cell ${selectedValue === value ? 'selected' : ''}`}
-                                onClick={() => onSelect(id, value)}
-                            >
-                                {value}
-                            </td>
-                        ))}
-                    </tr>
+                        <tr>
+                            {options.map((value) => (
+                                <td
+                                    key={`${id}-${value}`}
+                                    className={`rating-cell ${selectedValue === value ? 'selected' : ''}`}
+                                    onClick={() => onSelect(id, value)}
+                                >
+                                    {value}
+                                </td>
+                            ))}
+                        </tr>
                     </tbody>
                 </table>
             </div>

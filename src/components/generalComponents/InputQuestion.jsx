@@ -1,14 +1,22 @@
 import React from 'react';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import './InputQuestion.css';
 
 const InputQuestion = ({
-                           id,
-                           text,
-                           selectedValue,
-                           onChange,
-                           placeholder = "Write in here...",
-                           inputType = "longText" // "number", "shortText", or "longText"
-                       }) => {
+    id,
+    text,
+    selectedValue,
+    onChange,
+    placeholder,
+    inputType = "longText" // "number", "shortText", or "longText"
+}) => {
+    const { language } = useLanguage(); // ✅ הוספתי את זה
+
+    // ✅ ברירת מחדל לפי שפה
+    const defaultPlaceholder = language === 'he' ? 'כתב/י כאן...' : 'Write in here...';
+    const finalPlaceholder = placeholder || defaultPlaceholder;
+
 
     // Handle change based on input type
     const handleChange = (e) => {
@@ -33,7 +41,7 @@ const InputQuestion = ({
                     className="input-question-field long-text"
                     value={selectedValue || ''} // Ensure we handle undefined/null values
                     onChange={handleChange}
-                    placeholder={placeholder}
+                    placeholder={finalPlaceholder}
                 />
             ) : (
                 <input
@@ -42,7 +50,7 @@ const InputQuestion = ({
                     className={`input-question-field ${inputType === "number" ? "number-input" : "short-text"}`}
                     value={selectedValue || ''} // Ensure we handle undefined/null values
                     onChange={handleChange}
-                    placeholder={placeholder}
+                    placeholder={finalPlaceholder}
                 />
             )}
         </div>

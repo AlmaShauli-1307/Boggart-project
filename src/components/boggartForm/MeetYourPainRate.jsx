@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import { useNavigate, useLocation } from 'react-router-dom'; // וודאי שיש useLocation
 import '../boggartForm/MeetYourPainRate.css';
 import demoBoggart from '../../images/demoBoggart.png';
@@ -8,26 +10,35 @@ import PrimaryButton from '../generalComponents/PrimaryButton';
 
 const MeetYourPainRate = () => {
     const navigate = useNavigate();
-    // Get form1Id from previous page
-    const location = useLocation();
-    const form1Id = location.state?.form1Id || null;
+    const { t, language } = useLanguage();
     const [responses, setResponses] = useState({});
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const pageData = { instructions: "Take a deep look at the generated image of your pain" };
+    // Get form1Id from previous page
+    const location = useLocation();
+    const isDemo = location.state?.isDemo || false;
+    const form1Id = location.state?.form1Id || null;
+    const selectedImage = location.state?.selectedImage || demoBoggart;
+    const pageData = { instructions: t('introMeetYourPainRate') };
     const questions = React.useMemo(() => [
         {
             question_ID: 0,
-            Question: "On a scale of 1-10, how connected do you feel to the visual character describing your experience of pain?",
+            Question: t('question0'),
             scale_min: 1,
-            scale_max: 10
+            scale_max: 10,
+            type: "scale"
         },
         {
             question_ID: 1,
-            Question: "On a scale of 1-10, is the visual character a well representation of your pain?",
+            Question: t('question1'),
             scale_min: 1,
-            scale_max: 10
+            scale_max: 10,
+            type: "scale"
+        },
+        {
+            question_ID: 2,
+            Question: t('question2'),
+            type: "text"
         }
     ], []);
     useEffect(() => {
@@ -38,7 +49,7 @@ const MeetYourPainRate = () => {
         }
 
         const allAnswered = questions.every(q =>
-            responses[q.question_ID] !== undefined && responses[q.question_ID] !== null
+            responses[q.question_ID] !== undefined && responses[q.question_ID] !== null && responses[q.question_ID] !== ''
         );
 
         setAllQuestionsAnswered(allAnswered);
@@ -51,9 +62,20 @@ const MeetYourPainRate = () => {
         });
     };
 
+    const handleTextChange = (questionId, value) => {
+        setResponses({
+            ...responses,
+            [questionId]: value
+        });
+    };
 
     // Function to submit answers
     const handleSubmit = async () => {
+        if (isDemo) {
+            navigate('/home-login');
+            return;
+        }
+
         if (!form1Id) {
             console.error('❌ Form-meet - No form1Id available for submission');
             alert('Error: Missing connection to previous forms. Please restart the process.');
@@ -66,7 +88,7 @@ const MeetYourPainRate = () => {
 
             console.log('📤 Form-meet - Submitting with form1Id:', form1Id);
             console.log('📤 Form-meet - Submitting responses:', responses);
-            const response = await fetch('http://localhost:5000/submit-meet_your_pain', {
+            const response = await fetch('http://localhost:5000/submit-meet-your-pain', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -77,6 +99,7 @@ const MeetYourPainRate = () => {
 
             const data = await response.json();
             console.log('✅ Form-meet - Response from server:', data);
+
             if (response.ok) {
                 console.log('🎯 Form-meet - Success! Navigating to Form3 with form1Id:', form1Id);
                 // 🎯 העבר את form1Id ב-state ל-QuestionnairePageAfter
@@ -85,14 +108,6 @@ const MeetYourPainRate = () => {
                 });
             } else {
                 throw new Error(data.error || 'Server error');
-            }
-            if (response.ok) {
-                console.log('🎯 Form-meet - Success! Navigating to Form3 with form1Id:', form1Id);
-                navigate('/questionnaire-after', {
-                    state: {
-                        form1Id: form1Id  // ✅ העבר את ה-form1Id!
-                    }
-                });
             }
 
         } catch (error) {
@@ -104,6 +119,7 @@ const MeetYourPainRate = () => {
 
     return (
         <div className="form-page">
+            <LanguageToggle />
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
             </header>
@@ -121,8 +137,8 @@ const MeetYourPainRate = () => {
                         <div className="emotion-scale-page">
                             <div className="boggart-image-container">
                                 <img
-                                    src={demoBoggart}
-                                    alt="boggart-picture"
+                                    src={selectedImage}  // השתמש בתמונה הנבחרת
+                                    alt="Selected pain visualization"
                                     className="boggart-image"
                                 />
                             </div>
@@ -131,39 +147,57 @@ const MeetYourPainRate = () => {
                                 {questions.map(question => (
                                     <div key={question.question_ID} className="emotion-question-item">
                                         <p className="emotion-question-text">{question.Question}</p>
-                                        <div className="rating-table-container wide-scale">
-                                            <table className="rating-table wide-scale">
-                                                <tbody>
-                                                    <tr>
-                                                        {Array.from({ length: question.scale_max - question.scale_min + 1 },
-                                                            (_, i) => i + question.scale_min).map(value => (
-                                                                <td
-                                                                    key={`${question.question_ID}-${value}`}
-                                                                    className={`rating-cell ${responses[question.question_ID] === value ? 'selected' : ''}`}
-                                                                    onClick={() => handleOptionSelect(question.question_ID, value)}
-                                                                >
-                                                                    {value}
-                                                                </td>
-                                                            ))}
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        {question.type === "scale" ? (
+                                            <div className="scale-with-labels">
+                                                <span className="scale-label-start">{language === 'he' ? 'מאוד' : 'Not at all'}</span>
+                                                <div className="rating-table-container wide-scale">
+                                                    <table className="rating-table wide-scale">
+                                                        <tbody>
+                                                            <tr>
+                                                                {Array.from({ length: question.scale_max - question.scale_min + 1 },
+                                                                    (_, i) => i + question.scale_min).map(value => (
+                                                                        <td
+                                                                            key={`${question.question_ID}-${value}`}
+                                                                            className={`rating-cell ${responses[question.question_ID] === value ? 'selected' : ''}`}
+                                                                            onClick={() => handleOptionSelect(question.question_ID, value)}
+                                                                        >
+                                                                            {value}
+                                                                        </td>
+                                                                    ))}
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <span className="scale-label-end">{language === 'he' ? 'בכלל לא' : 'Very much'}</span>
+                                            </div>
+                                        ) : (
+                                            <div className="text-input-container">
+                                                <textarea
+                                                    className="text-input-field"
+                                                    value={responses[question.question_ID] || ''}
+                                                    onChange={(e) => handleTextChange(question.question_ID, e.target.value)}
+                                                    placeholder={t('write')}
+                                                    rows="5"
+                                                    style={{ width: "400px" }}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
-                        </div></div>
+                        </div>
+                    </div>
 
                     <div className="navigation">
                         <PrimaryButton
-                            text="NEXT"
+                            text={t('next')}
                             onClick={handleSubmit}
                             disabled={!allQuestionsAnswered || isSubmitting}
                         />
                     </div>
                 </main>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

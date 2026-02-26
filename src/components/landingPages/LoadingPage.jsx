@@ -1,8 +1,11 @@
 import React from 'react';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import './LoadingPage.css';
 import logo from '../../images/logo.png'; // Adjust path as needed
 
 const LoadingPage = () => {
+    const { t } = useLanguage();
     return (
         <main className="loading-boggart-page">
             <div className="loading-boggart-container">
@@ -11,7 +14,7 @@ const LoadingPage = () => {
                 </header>
 
                 <section className="loading-content">
-                    <h2 className="loading-message">In a few moments you will meet your pain</h2>
+                    <h2 className="loading-message">{t('wait')}</h2>
                     <div className="loading-spinner"></div>
                 </section>
             </div>

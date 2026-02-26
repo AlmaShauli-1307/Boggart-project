@@ -1,20 +1,20 @@
-Page,Page Title,Instructions,question_ID,Question,question_type,scale_min,scale_max,left_label,right_label,scale_labels,options,picture added,Page name/subject (not visible)
-1,Pain Location,"Try and focus on your pain, and precisely pinpoint its location",63,Where do you feel the pain?,multi_select,,,,,,"Head, Neck, Shoulders, Back, Stomach, Knees, Legs, Ankles, Feet, Hands, Elbows, Chest, Eyes, Ears, Nose, Teeth, Tongue, Throat, Nape, Clavicle, Ribs, Entire body, Other(option to write in other)",Pain Location,pain detalis
-2,,"Try to focus on the painful area in relation to the part of the body you selected, and try to describe its location in terms of vertical and horizontal orientation",64,Horizontal Location,scale,1,5,Left,Right,,,,pain detalis
-2,,,65,Vertical location,scale,1,5,Down,Up,,,,pain detalis
-2,,,66,How long has the pain been present in your life? (in months),number,,,,,,,,pain detalis
-3,,,67,A detailed description of the pain,longText,,,,,,,,pain detalis
-3,,,68,Which organ is the pain closest to?,shortText,,,,,,,,pain detalis
-3,,,69,Where does it begin and where does it end?,shortText,,,,,,,,pain detalis
-4,,,70,Is it short or long in size?,scale,1,10,Short,Long,,,,pain detalis
-4,,,71,"Is it deep, or shallow?",scale,1,10,Shallow,Deep,,,,pain detalis
-4,,,72,"If you could visually see your pain, which color best describes it?",color_select,,,,,,,,pain detalis
-5,,,73,Is your pain's shape sharp or round?,scale,1,5,Round,Sharp,,,,pain detalis
-5,,,74,Is your pain's boundary defined or blurry?,scale,1,5,Defined,Blurry,,,,pain detalis
-5,,,75,"If you could run your finger through it, would this texture be thick or diluted?",scale,1,5,Diluted,Thick,,,,pain detalis
-5,,,76,"If you could pet your pain, would it have a smooth or rough feel?",scale,1,5,Smooth,Rough,,,,pain detalis
-5,,,77,"If you could hold its hand, would it be soft or hard?",scale,1,5,Soft,Hard,,,,pain detalis
-6,,,78,Which option best describe how your pain alters over time:,multi_choice,,,,,,"Consistent, Gets worse over time, Gets better over time, On-and-off, Doesn't have a pattern (random)",,pain detalis
-6,,,79,"What worsens the pain? Are there activities, movements, or other factors which worsen/ awakens the pain? Please describe.",shortText,,,,,,,,pain detalis
-6,,,80,"What helps you deal with the pain? Are there activities, movements, or other factors which ease the pain? Please describe.",shortText,,,,,,,,pain detalis
-6,,,81,"Are there characters, symbols, or images that come to mind when you are thinking about your pain?",shortText,,,,,,,,pain detalis
+﻿Page,Page Title,Instructions_Hebrew,Instructions,question_ID,Question,Question_Hebrew,question_type,scale_min,scale_max,left_label,left_label_Hebrew,right_label_Hebrew,right_label,scale_labels,options_Hebrew,options,picture added,Page name/subject (not visible)
+1,Pain Location,"נסה/י להתמקד בכאב שלך, ולאתר במדויק את מיקומו","Try and focus on your pain, and precisely pinpoint its location",63,Where do you feel the pain?,איפה את/ה מרגיש/ה את הכאב?,multi_select,,,,,,,,"ראש, צוואר, כתפיים, גב, בטן, ברכיים, רגליים, קרסוליים, כפות רגליים, ידיים, מרפקים, חזה, עיניים, אוזניים, אף, שיניים, לשון, גרון, עורף, עצם הבריח, צלעות, כל הגוף, אחר (אפשרות לכתוב אחרת)","Head, Neck, Shoulders, Back, Stomach, Knees, Legs, Ankles, Feet, Hands, Elbows, Chest, Eyes, Ears, Nose, Teeth, Tongue, Throat, Nape, Clavicle, Ribs, Entire body, Other(option to write in other)",Pain Location,pain detalis
+2,,"נסה/י להתמקד באזור הכואב ביחס לחלק הגוף שבחרת, ונסה/י לתאר את מיקומו במונחים של אוריינטציה אנכית ואופקית.","Try to focus on the painful area in relation to the part of the body you selected, and try to describe its location in terms of vertical and horizontal orientation",64,Horizontal Location,מיקום אופקי (ימין/שמאל),scale,1,5,Left,שמאל,ימין,Right,,,,,pain detalis
+2,,,,65,Vertical location,מיקום אנכי (למעלה/למטה),scale,1,5,Down,למטה,למעלה,Up,,,,,pain detalis
+2,,,,66,How long has the pain been present in your life? (in months),כמה זמן הכאב נוכח בחייך? (בחודשים),number,,,,,,,,,,,pain detalis
+3,,,,67,A detailed description of the pain,תיאור מפורט של הכאב,longText,,,,,,,,,,,pain detalis
+3,,,,68,Which organ is the pain closest to?,לאיזה איבר הכאב הכי קרוב?,shortText,,,,,,,,,,,pain detalis
+3,,,,69,Where does it begin and where does it end?,היכן הוא מתחיל והיכן הוא נגמר?,shortText,,,,,,,,,,,pain detalis
+4,,,,70,Is it short or long in size?,האם הוא קצר או ארוך בגודלו?,scale,1,10,Short,קצר,ארוך,Long,,,,,pain detalis
+4,,,,71,"Is it deep, or shallow?",האם הוא עמוק או שטחי?,scale,1,10,Shallow,רדוד,עמוק,Deep,,,,,pain detalis
+4,,,,72,"If you could visually see your pain, which color best describes it?","אם היית יכול/ה לראות את הכאב שלך, באיזה צבע היית מתאר/ת אותו?",color_select,,,,,,,,,,,pain detalis
+5,,,,73,Is your pain's shape sharp or round?,האם הצורה של הכאב שלך חדה או עגולה?,scale,1,5,Round,עגול,חד,Sharp,,,,,pain detalis
+5,,,,74,Is your pain's boundary defined or blurry?,האם הגבול של הכאב שלך מוגדר או מטושטש?,scale,1,5,Defined,מוגדר,מטושטש,Blurry,,,,,pain detalis
+5,,,,75,"If you could run your finger through it, would this texture be thick or diluted?","אם היית מעביר/ה דרכו אצבע, האם המרקם שלו סמיך או דליל?",scale,1,5,Diluted,מדולל,עבה,Thick,,,,,pain detalis
+5,,,,76,"If you could pet your pain, would it have a smooth or rough feel?","אם היית יכול/ה ללטף את הכאב שלך, האם הוא היה חלק או מחוספס?",scale,1,5,Smooth,חלק,מחוספס,Rough,,,,,pain detalis
+5,,,,77,"If you could hold its hand, would it be soft or hard?","אם היית מחזיק/ה את הכאב שלך ביד, האם הוא היה רך או קשה?",scale,1,5,Soft,רך,קשה,Hard,,,,,pain detalis
+6,,,,78,Which option best describe how your pain alters over time:,איזו אפשרות מתארת בצורה הטובה ביותר כיצד הכאב שלך משתנה עם הזמן:,multi_choice,,,,,,,,"עקבי, מחמיר עם הזמן, משתפר עם הזמן, לסירוגין, אין דפוס (אקראי)","Consistent, Gets worse over time, Gets better over time, On-and-off, Doesn't have a pattern (random)",,pain detalis
+6,,,,79,"What worsens the pain? Are there activities, movements, or other factors which worsen/ awakens the pain? Please describe.","מה מחמיר את הכאב? האם יש פעילויות, תנועות או גורמים אחרים שמעוררים או מחמירים את הכאב? אנא תאר/י.",shortText,,,,,,,,,,,pain detalis
+6,,,,80,"What helps you deal with the pain? Are there activities, movements, or other factors which ease the pain? Please describe.","מה עוזר לך להתמודד עם הכאב? האם יש פעילויות, תנועות או גורמים אחרים שמקלים על הכאב? אנא תאר/י.",shortText,,,,,,,,,,,pain detalis
+6,,,,81,"Are there characters, symbols, or images that come to mind when you are thinking about your pain?","האם עולות לך דמויות, סמלים או תמונות כשאת/ה חושב/ת על הכאב שלך?",shortText,,,,,,,,,,,pain detalis

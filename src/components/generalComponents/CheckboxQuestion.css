@@ -64,7 +64,7 @@
 }
 
 /* Added check mark inside the checkbox */
-.option-checkbox input[type="checkbox"]:checked + label::after {
+.option-checkbox input[type="checkbox"]:checked+label::after {
     content: '✓';
     position: absolute;
     left: 4px;
@@ -75,14 +75,30 @@
     font-weight: bold;
 }
 
-.option-checkbox input[type="checkbox"]:checked + label::before {
+.option-checkbox input[type="checkbox"]:checked+label::before {
     background-color: #295A4B;
     border-color: #000000;
     border-radius: 2px;
 }
 
-.option-checkbox input[type="checkbox"]:checked + label {
+.option-checkbox input[type="checkbox"]:checked+label {
     font-weight: 500;
+}
+
+/* RTL Support for Hebrew */
+[dir="rtl"] .option-checkbox label {
+    padding-left: 0;
+    padding-right: 30px;
+}
+
+[dir="rtl"] .option-checkbox label::before {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .option-checkbox input[type="checkbox"]:checked+label::after {
+    left: auto;
+    right: 4px;
 }
 
 /* Custom styling for the "Other" option */
@@ -107,10 +123,12 @@
 /* Responsive styles */
 @media (max-width: 768px) {
     .body-map-container {
-        flex-direction: column; /* Stack vertically on mobile */
+        flex-direction: column;
+        /* Stack vertically on mobile */
     }
 
-    .body-map-section, .body-parts-section {
+    .body-map-section,
+    .body-parts-section {
         width: 100%;
         margin-bottom: 30px;
     }

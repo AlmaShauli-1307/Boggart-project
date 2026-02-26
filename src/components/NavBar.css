@@ -1,0 +1,75 @@
+.fixed-corner-logo {
+    position: fixed;
+    left: 20px;
+    top: 10px;
+    z-index: 2000;
+    cursor: pointer;
+}
+
+.fixed-corner-logo img {
+    height: 50px;
+}
+
+/* ה-NavBar שמתחיל אחרי הסמל ונמשך עד הסוף ימינה */
+.top-navbar-short {
+    position: fixed;
+    top: 0;
+    left: 170px;
+    /* הרווח שמשאיר מקום לסמל בצד שמאל */
+    right: 0;
+    height: 70px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.nav-inner-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.nav-links-left,
+.nav-user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    font-size: 0.95rem;
+    color: #444;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.navbar-language-selector {
+    display: flex;
+    align-items: center;
+    transform: scale(0.8);
+    margin: 0 10px;
+    position: relative !important;
+}
+
+.user-display-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.logout-nav-btn {
+    background: none;
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}

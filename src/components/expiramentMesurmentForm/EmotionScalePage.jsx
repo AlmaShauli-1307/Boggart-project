@@ -1,16 +1,25 @@
 import React from 'react';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import './EmotionScalePage.css';
 import emotionScaleImage from '../../images/emotion-scale.png'; // Add your emotion scale image
 
 const EmotionScalePage = ({
-                              questions,
-                              responses,
-                              onSelect
-                          }) => {
+    questions,
+    responses,
+    onSelect
+}) => {
+    const { language, t } = useLanguage();
+
+    // Define translations for the title
+    const titleText = language === 'he'
+        ? 'כעת תראה/י שני סולמות המתארים חוויה רגשית'
+        : 'You will now see two scales describing an emotional experience';
+
     return (
-        <div className="emotion-scale-page">
+        <div className="emotion-scale-page" dir={language === 'he' ? 'rtl' : 'ltr'}>
             <h2 className="emotion-scale-title">
-                You will now see two scales describing an emotional experience
+                {titleText}
             </h2>
 
             <div className="emotion-scale-image-container">
@@ -28,17 +37,17 @@ const EmotionScalePage = ({
                         <div className="rating-table-container wide-scale">
                             <table className="rating-table wide-scale">
                                 <tbody>
-                                <tr>
-                                    {Array.from({ length: 11 }, (_, i) => i).map(value => (
-                                        <td
-                                            key={`${question.id}-${value}`}
-                                            className={`rating-cell ${responses[question.id] === value ? 'selected' : ''}`}
-                                            onClick={() => onSelect(question.id, value)}
-                                        >
-                                            {value}
-                                        </td>
-                                    ))}
-                                </tr>
+                                    <tr>
+                                        {Array.from({ length: 11 }, (_, i) => i).map(value => (
+                                            <td
+                                                key={`${question.id}-${value}`}
+                                                className={`rating-cell ${responses[question.id] === value ? 'selected' : ''}`}
+                                                onClick={() => onSelect(question.id, value)}
+                                            >
+                                                {value}
+                                            </td>
+                                        ))}
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

@@ -1,0 +1,36 @@
+.creature-display-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.creature-header h1 {
+    font-size: 2.5rem;
+    color: #295A4B;
+    margin-bottom: 10px;
+}
+
+.image-frame {
+    margin-top: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+}
+
+.creature-img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+}
+
+.no-image-message {
+    padding: 50px;
+    color: #888;
+    font-style: italic;
+}

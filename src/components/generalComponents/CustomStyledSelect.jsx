@@ -3,7 +3,16 @@ import Select from 'react-select';
 import './CustomStyledSelect.css'; // Import your custom styles
 
 function CustomStyledSelect({ question, value, onChange }) {
-    const options = question.options.map(option => ({ value: option, label: option }));
+    // Handle both string options and object options {value, label}
+    const options = question.options.map(option => {
+        // If option is already an object with value and label, use it as-is
+        if (typeof option === 'object' && option.value !== undefined) {
+            return option;
+        }
+        // If option is a string, convert it to {value, label} format
+        return { value: option, label: option };
+    });
+
     const selectedOption = options.find(opt => opt.value === value);
 
     return (

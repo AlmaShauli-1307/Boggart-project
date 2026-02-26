@@ -1,11 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import './LandingPageBoggart.css';
 import logo from '../../images/logo.png'; // Adjust path as needed
 import PrimaryButton from '../generalComponents/PrimaryButton'; // Import the reusable button component
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    const { t, language } = useLanguage();
 
     const handleStartClick = () => {
         // Navigate to the IAS page
@@ -14,27 +17,28 @@ const LandingPage = () => {
 
     return (
         <main className="landing-boggart-page">
+            <LanguageToggle />
             <div className="boggart-container">
                 <header className="form-boggart-header">
                     <img src={logo} alt="Boggart" className="logo-image" />
                 </header>
 
                 <section className="boggart-welcome-section">
-                    <h2 className="boggart-welcome-title">Self Reflection</h2>
+                    <h2 className="boggart-welcome-title">{t('boggartWelcomeTitle')}</h2>
 
                     <p className="boggart-welcome-description">
-                        You will now be guided through a self-reflective questionnaire, allowing an introspective view of your ongoing pain.
+                        {t('boggartWelcomeDescription1')}
                     </p>
                     <p className="boggart-welcome-description">
-                        Please take a couple of minutes to sit in a quiet place and focus on your pain before we begin. Allow yourself the time to reflect deeply on each question and explore your pain to better understand it.
+                        {t('boggartWelcomeDescription2')}
                     </p>
                     <p className="boggart-welcome-description">
-                        Try and determine how you experience your pain, and describe it in order to understand it in a deeper sense.
+                        {t('boggartWelcomeDescription3')}
                     </p>
                 </section>
 
                 <section className="cta-section">
-                    <PrimaryButton text="Let's Start" onClick={handleStartClick} />
+                    <PrimaryButton text={t('letsStart')} onClick={handleStartClick} />
                 </section>
             </div>
         </main>

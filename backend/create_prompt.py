@@ -17,7 +17,7 @@ def generate_pain_description(pain_type, intensity, location, duration, depth, c
         10: "furious"
     }
     intensity_desc = intensity_levels.get(intensity, "unknown")
-
+    
     # Short or tall
     size = "short" if duration <= 5 else "tall"
 

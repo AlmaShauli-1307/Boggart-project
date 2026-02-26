@@ -1,7 +1,7 @@
 /* IASPage.css */
 
-/* Import Roboto font */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Roboto:wght@400;500;700;800&display=swap');
+
 
 /* Reset and base styles */
 * {
@@ -11,7 +11,8 @@
 }
 
 /* Set the background color on the html and body elements to ensure full coverage */
-html, body {
+html,
+body {
     background-color: #EEF0ED;
     font-family: 'Roboto', sans-serif;
     height: 100%;
@@ -50,6 +51,7 @@ html, body {
 .logo-image {
     max-width: 120px;
     height: auto;
+    align-items: left;
 }
 
 /* Content area */

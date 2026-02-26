@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../LanguageContext';
+import LanguageToggle from '../LanguageButton';
 import Papa from 'papaparse';
 import './QuestionnairePage.css';
 import logo from '../../images/logo.png'; // Adjust path as needed
@@ -11,6 +13,7 @@ import EmotionScalePage from './EmotionScalePage';
 
 const QuestionnairePage = ({ csvName }) => {
     const navigate = useNavigate();
+    const { t, language } = useLanguage();
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
@@ -51,7 +54,9 @@ const QuestionnairePage = ({ csvName }) => {
             console.log('Page title:', pageInfo['Page Title']);
             setPageData({
                 title: pageInfo['Page Title'] || '',
-                instructions: pageInfo.Instructions || ''
+                instructions: language === 'he'
+                    ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
+                    : pageInfo.Instructions
             });
 
             // Check if we should show scale based on CSV data
@@ -101,6 +106,49 @@ const QuestionnairePage = ({ csvName }) => {
             setShowScale(false);
         }
     };
+
+    // עדכן רק כשהשפה משתנה - אבל שמור על הדף הנוכחי!
+    useEffect(() => {
+        if (questions.length > 0 && currentPage > 0) {
+            console.log('🔍 Language changed to:', language);
+            console.log('🔍 Current page:', currentPage);
+
+            const currentPageQuestions = questions.filter(q => Number(q.Page) === currentPage);
+            if (currentPageQuestions.length > 0) {
+                const pageInfo = currentPageQuestions[0];
+                const pageTitle = pageInfo['Page Title'];
+
+                console.log('🔍 Current page title:', pageTitle);
+
+                // רק עדכן את ההוראות - אל תקראי ל-updatePageData!
+                setPageData(prev => ({
+                    ...prev,  // ✅ שמור הכל כמו שהיה
+                    instructions: language === 'he'
+                        ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
+                        : pageInfo.Instructions
+                }));
+
+                // עדכן את ה-scale labels רק אם יש scale וזה לא VAS/SAM
+                if (pageTitle !== 'VAS' && pageTitle !== 'SAM' && pageInfo.scale_labels) {
+                    const scaleObj = {};
+                    let min = pageInfo.scale_min || 1;
+                    let max = pageInfo.scale_max || 5;
+
+                    const labelsColumn = language === 'he'
+                        ? (pageInfo.scale_labels_Hebrew || pageInfo.scale_labels)
+                        : pageInfo.scale_labels;
+
+                    const labels = labelsColumn.split(',');
+                    for (let i = 0; i < labels.length; i++) {
+                        scaleObj[min + i] = labels[i].trim();
+                    }
+
+                    setCurrentScale(scaleObj);
+                }
+                // ✅ אל תשני את showScale!
+            }
+        }
+    }, [language]); // רק language!
 
     // Check if all questions on current page are answered
     useEffect(() => {
@@ -169,7 +217,6 @@ const QuestionnairePage = ({ csvName }) => {
             console.log('✅ Form1 - Response from server:', data);
 
             if (data.form1Id) {
-                alert('Form 1 completed successfully!');
                 // 🎯 פשוט - שלח את הID ב-URL
                 navigate(`/form2?form1Id=${data.form1Id}`);
             } else {
@@ -208,7 +255,7 @@ const QuestionnairePage = ({ csvName }) => {
 
         return {
             id: q.question_ID,
-            text: q.Question,
+            text: language === 'he' ? q.Question_Hebrew : q.Question,
             options: options,
             questionType: q.question_type,
             scaleMin: q.scale_min,
@@ -221,6 +268,7 @@ const QuestionnairePage = ({ csvName }) => {
 
     return (
         <div className="form-page">
+            <LanguageToggle />
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
             </header>
@@ -279,7 +327,7 @@ const QuestionnairePage = ({ csvName }) => {
                     <div className="navigation">
                         {currentPage > 1 && (
                             <PrimaryButton
-                                text="PREVIOUS"
+                                text={t('previous')}
                                 onClick={handlePrevious}
                                 className="previous-button"
                             />
@@ -287,13 +335,13 @@ const QuestionnairePage = ({ csvName }) => {
 
                         {currentPage < totalPages ? (
                             <PrimaryButton
-                                text="NEXT"
+                                text={t('next')}
                                 onClick={handleNext}
                                 disabled={!allQuestionsAnswered}
                             />
                         ) : (
                             <PrimaryButton
-                                text={isSubmitting ? "SUBMITTING..." : "SUBMIT"}
+                                text={isSubmitting ? t('submitting') : t('submit')}
                                 onClick={handleSubmit}
                                 disabled={!allQuestionsAnswered || isSubmitting}
                             />
