@@ -39,7 +39,7 @@ const MyCreature = () => {
         const fetchAndProcessImage = async () => {
             try {
                 // 1. שליפת הנתונים מהשרת
-                const response = await axios.get(`http://localhost:5000/api/get-creature/${user.username}`);
+                const response = await axios.get(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/get-creature/${user.username}`);
 
                 if (response.data.success) {
                     const { image_url, selected_image_index } = response.data;

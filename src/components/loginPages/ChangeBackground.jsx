@@ -21,7 +21,7 @@ const ChangeBackgroundPage = () => {
     const handleUpdateWeather = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/update-avatar-weather', {
+            const response = await axios.post('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/update-avatar-weather', {
                 samLevel: samLevel.toString(),
                 username: user.username
             });

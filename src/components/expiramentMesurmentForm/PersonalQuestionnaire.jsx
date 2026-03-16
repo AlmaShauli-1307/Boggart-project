@@ -133,7 +133,7 @@ const PersonalQuestionnaire = () => {
 
         try {
             // שימוש בכתובת לוקלית לבדיקה
-            const response = await fetch('http://localhost:5000/submit-personal-info', {
+            const response = await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/submit-personal-info', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

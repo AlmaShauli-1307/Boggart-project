@@ -25,7 +25,7 @@ const HomePageLogin = () => {
         const fetchDailyCharacter = async () => {
             setIsCheckingStatus(true); // מתחילים בדיקה
             try {
-                const response = await axios.get(`http://localhost:5000/api/get-daily-character/${user.username}`);
+                const response = await axios.get(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/get-daily-character/${user.username}`);
 
                 if (response.data.success) {
                     setAvatarUrl(response.data.imageUrl);
@@ -66,7 +66,7 @@ const HomePageLogin = () => {
     const handleUpdateWeather = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/update-avatar-weather', {
+            const response = await axios.post('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/update-avatar-weather', {
                 samLevel: samLevel.toString(),
                 username: user.username
             });

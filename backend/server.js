@@ -1132,7 +1132,7 @@ app.post('/api/update-avatar-weather', async (req, res) => {
             `);
 
         const originalImage = userResult.recordset[0]?.image_url;
-        const selectedIndex = userResult.recordset[0]?.selected_image_index || 0; // חשוב!
+        const selectedIndex = userResult.recordset[0]?.selected_image_index || 0; 
 
         if (!originalImage) return res.status(404).json({ message: "Creature not found" });
 
@@ -1267,6 +1267,7 @@ app.get('/api/get-daily-character/:username', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
 app.get('/api/creature-summary/:username', async (req, res) => {
     const { username } = req.params;
     const { startDate, endDate } = req.query;

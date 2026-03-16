@@ -88,7 +88,7 @@ const MeetYourPainRate = () => {
 
             console.log('📤 Form-meet - Submitting with form1Id:', form1Id);
             console.log('📤 Form-meet - Submitting responses:', responses);
-            const response = await fetch('http://localhost:5000/submit-meet-your-pain', {
+            const response = await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/submit-meet-your-pain', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

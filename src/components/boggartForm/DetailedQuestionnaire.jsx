@@ -59,7 +59,7 @@ const DetailedQuestionnairePage = () => {
     // פונקציה לקבלת הID האחרון מהשרת
     const getLatestForm1Id = async () => {
         try {
-            const response = await fetch('http://localhost:5000/get-latest-form1-id');
+            const response = await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/get-latest-form1-id');
             //https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net
             const data = await response.json();
 
@@ -208,7 +208,7 @@ const DetailedQuestionnairePage = () => {
         try {
             if (isDemo) {
                 console.log('🎭 Demo mode - generating image without saving');
-                const response = await fetch(`http://localhost:5000/generate-prompt-demo`, {
+                const response = await fetch(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/generate-prompt-demo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ answers: responses, intensity: 5 })
@@ -234,7 +234,7 @@ const DetailedQuestionnairePage = () => {
             console.log('📤 Form2 - Submitting with form1Id:', form1Id);
             console.log('📤 Form2 - Submitting responses:', responses);
 
-            const response = await fetch('http://localhost:5000/submit-form2', {
+            const response = await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/submit-form2', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -273,7 +273,7 @@ const DetailedQuestionnairePage = () => {
 
     const startImageGeneration = async (prompt, form1Id) => {
         try {
-            await fetch('http://localhost:5000/api/create-image', {
+            await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/create-image', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

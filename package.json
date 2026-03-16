@@ -30,7 +30,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:5000",
+  "proxy": "https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net",
   "eslintConfig": {
     "extends": [
       "react-app",

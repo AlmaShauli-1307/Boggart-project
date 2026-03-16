@@ -77,14 +77,14 @@ const MidjourneyViewer = ({ answers, prompt, apiKey }) => {
             console.error(`❌ Error loading image (attempt ${retryCount + 1}/${maxRetries + 1}):`, err);
 
             if (retryCount === 0 && (imageSrc.includes('ttapi.io') || imageSrc.includes('midjourney') || imageSrc.includes('mjcdn'))) {
-                const directProxyUrl = `http://localhost:5000/api/proxy-url?url=${encodeURIComponent(imageSrc)}`;
+                const directProxyUrl = `https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/proxy-url?url=${encodeURIComponent(imageSrc)}`;
                 console.log(`🔄 Trying proxy URL: ${directProxyUrl}`);
                 loadImageAndProcess(directProxyUrl, retryCount + 1, maxRetries);
                 return;
             }
 
             if (retryCount === 1 && ttapiRequestId) {
-                const proxyUrl = `http://localhost:5000/api/proxy-image/${ttapiRequestId}`;
+                const proxyUrl = `https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/proxy-image/${ttapiRequestId}`;
                 console.log(`🔄 Trying request-based proxy: ${proxyUrl}`);
                 loadImageAndProcess(proxyUrl, retryCount + 1, maxRetries);
                 return;

@@ -236,7 +236,7 @@ const QuestionnairePageAfter = () => {
         try {
             console.log('📤 Form4 - Submitting with form1Id:', form1Id);
 
-            const response = await fetch('http://localhost:5000/submit-form3', {
+            const response = await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/submit-form3', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

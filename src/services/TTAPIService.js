@@ -1,7 +1,7 @@
 // src/services/TTAPIService.js
 import axios from 'axios';
 
-const TTAPI_ENDPOINT = 'http://localhost:5000/api'; // או כתובת השרת שלך
+const TTAPI_ENDPOINT = 'https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api'; // או כתובת השרת שלך
 
 class TTAPIService {
     constructor() {

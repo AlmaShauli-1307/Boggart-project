@@ -5,7 +5,7 @@ module.exports = function (app) {
     app.use(
         ['/submit-form1', '/submit-form2', '/submit-form3', '/submit-personal-info', '/submit-meet-your-pain', '/get-latest-form1-id', '/api'],
         createProxyMiddleware({
-            target: 'http://localhost:5000',
+            target: 'https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net',
             changeOrigin: true,
             secure: false,
             // רק אם זה באמת מתחיל עם אחד מהנתיבים האלה

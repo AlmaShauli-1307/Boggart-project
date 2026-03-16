@@ -47,7 +47,7 @@ const MonthlySummary = ({ username, onViewChange }) => {
 
             setLoading(true);
             try {
-                const res = await axios.get(`http://localhost:5000/api/creature-summary/${activeUser}`, {
+                const res = await axios.get(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/creature-summary/${activeUser}`, {
                     params: { startDate: appliedRange.start, endDate: appliedRange.end }
                 });
                 if (res.data.success) {
