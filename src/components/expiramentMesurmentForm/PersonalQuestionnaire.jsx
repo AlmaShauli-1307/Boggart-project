@@ -130,10 +130,11 @@ const PersonalQuestionnaire = () => {
 
         setIsSubmitting(true);
         setErrorMessage("");
-
+        const API_BASE_URL = process.env.REACT_APP_API_URL;
+        
         try {
             // שימוש בכתובת לוקלית לבדיקה
-            const response = await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/submit-personal-info', {
+            const response = await fetch(`${API_BASE_URL}/submit-personal-info`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

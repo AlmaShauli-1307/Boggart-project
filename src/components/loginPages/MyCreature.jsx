@@ -7,6 +7,7 @@ const MyCreature = () => {
     const [loading, setLoading] = useState(true);
     const canvasRef = useRef(null);
     const user = JSON.parse(sessionStorage.getItem('user'));
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
 
     // הפונקציה ששלחת - חותכת את התמונה ל-4 חלקים
     const splitImageIntoQuadrants = (img) => {
@@ -39,7 +40,7 @@ const MyCreature = () => {
         const fetchAndProcessImage = async () => {
             try {
                 // 1. שליפת הנתונים מהשרת
-                const response = await axios.get(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/get-creature/${user.username}`);
+                const response = await axios.get(`${API_BASE_URL}/api/get-creature/${user.username}`);
 
                 if (response.data.success) {
                     const { image_url, selected_image_index } = response.data;

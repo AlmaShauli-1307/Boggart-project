@@ -199,12 +199,13 @@ const QuestionnairePage = ({ csvName }) => {
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
+        const API_BASE_URL = process.env.REACT_APP_API_URL;
 
         try {
             let endpoint = 'submit-form1';
             if (csvName === 'Third_Questionnaire') endpoint = 'submit-form3';
 
-            const response = await fetch(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/${endpoint}`, {
+            const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

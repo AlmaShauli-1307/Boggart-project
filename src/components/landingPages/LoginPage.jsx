@@ -24,9 +24,10 @@ const LoginPage = () => {
 
         setIsLoading(true);
         setError('');
+        const API_BASE_URL = process.env.REACT_APP_API_URL;
 
         try {
-            const response = await fetch(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/login`, {
+            const response = await fetch(`${API_BASE_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })

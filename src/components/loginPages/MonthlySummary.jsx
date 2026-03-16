@@ -46,8 +46,9 @@ const MonthlySummary = ({ username, onViewChange }) => {
             if (!activeUser) return;
 
             setLoading(true);
+            const API_BASE_URL = process.env.REACT_APP_API_URL;
             try {
-                const res = await axios.get(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/creature-summary/${activeUser}`, {
+                const res = await axios.get(`${API_BASE_URL}/api/creature-summary/${activeUser}`, {
                     params: { startDate: appliedRange.start, endDate: appliedRange.end }
                 });
                 if (res.data.success) {

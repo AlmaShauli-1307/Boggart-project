@@ -12,6 +12,7 @@ const WeeklySummary = ({ username, onViewChange }) => {
     const { t, language } = useLanguage();
     const [dbHistory, setDbHistory] = useState([]);
     const [loading, setLoading] = useState(false);
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
 
     // שימוש בפורמט מקומי למניעת בעיות UTC
     const [tempEndDate, setTempEndDate] = useState(new Date().toLocaleDateString('en-CA'));
@@ -43,7 +44,7 @@ const WeeklySummary = ({ username, onViewChange }) => {
 
             setLoading(true);
             try {
-                const res = await axios.get(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/creature-summary/${activeUser}`, {
+                const res = await axios.get(`${API_BASE_URL}/api/creature-summary/${activeUser}`, {
                     params: { startDate: appliedRange.start, endDate: appliedRange.end }
                 });
                 if (res.data.success) {

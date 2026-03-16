@@ -13,7 +13,7 @@ const HomePageLogin = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [hasGeneratedToday, setHasGeneratedToday] = useState(false); // מצב חדש
     const [isCheckingStatus, setIsCheckingStatus] = useState(true); // מצב טעינה ראשוני
-
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
     const user = JSON.parse(sessionStorage.getItem('user'));
 
     const samQuestions = [
@@ -23,9 +23,10 @@ const HomePageLogin = () => {
 
     useEffect(() => {
         const fetchDailyCharacter = async () => {
-            setIsCheckingStatus(true); // מתחילים בדיקה
+            setIsCheckingStatus(true);
+            
             try {
-                const response = await axios.get(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/get-daily-character/${user.username}`);
+                const response = await axios.get(`${API_BASE_URL}/api/get-daily-character/${user.username}`);
 
                 if (response.data.success) {
                     setAvatarUrl(response.data.imageUrl);
@@ -66,7 +67,7 @@ const HomePageLogin = () => {
     const handleUpdateWeather = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/update-avatar-weather', {
+            const response = await axios.post(`${API_BASE_URL}/api/update-avatar-weather`, {
                 samLevel: samLevel.toString(),
                 username: user.username
             });

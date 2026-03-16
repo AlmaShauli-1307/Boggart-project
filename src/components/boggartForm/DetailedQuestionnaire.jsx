@@ -29,6 +29,7 @@ const DetailedQuestionnairePage = () => {
     const [intensityFromForm1, setIntensityFromForm1] = useState(null);
     const location = useLocation();
     const isDemo = location.state?.isDemo || false;
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
 
     // 📥 קבל את form1Id מכמה מקורות
     useEffect(() => {
@@ -58,9 +59,9 @@ const DetailedQuestionnairePage = () => {
 
     // פונקציה לקבלת הID האחרון מהשרת
     const getLatestForm1Id = async () => {
+
         try {
-            const response = await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/get-latest-form1-id');
-            //https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net
+            const response = await fetch(`${API_BASE_URL}/get-latest-form1-id`);
             const data = await response.json();
 
             if (data.success && data.form1Id) {
@@ -205,10 +206,11 @@ const DetailedQuestionnairePage = () => {
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
+
         try {
             if (isDemo) {
                 console.log('🎭 Demo mode - generating image without saving');
-                const response = await fetch(`https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/generate-prompt-demo`, {
+                const response = await fetch(`${API_BASE_URL}/generate-prompt-demo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ answers: responses, intensity: 5 })
@@ -234,7 +236,7 @@ const DetailedQuestionnairePage = () => {
             console.log('📤 Form2 - Submitting with form1Id:', form1Id);
             console.log('📤 Form2 - Submitting responses:', responses);
 
-            const response = await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/submit-form2', {
+            const response = await fetch(`${API_BASE_URL}/submit-form2`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -273,7 +275,7 @@ const DetailedQuestionnairePage = () => {
 
     const startImageGeneration = async (prompt, form1Id) => {
         try {
-            await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/create-image', {
+            await fetch(`${API_BASE_URL}/api/create-image`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

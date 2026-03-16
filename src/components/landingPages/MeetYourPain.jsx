@@ -28,6 +28,7 @@ const MeetYourPain = () => {
     const [ttapiImageUrl, setTtapiImageUrl] = useState(null);
     const [error, setError] = useState(null);
     const canvasRef = useRef(null);
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
 
     // Get data from previous page (if coming from questionnaire)
     const answers = location.state?.answers || {}; // תשובות אישיות
@@ -117,14 +118,14 @@ const MeetYourPain = () => {
             console.error(`❌ Error loading image (attempt ${retryCount + 1}/${maxRetries + 1}):`, err);
 
             if (retryCount === 0 && (imageSrc.includes('ttapi.io') || imageSrc.includes('midjourney') || imageSrc.includes('mjcdn'))) {
-                const directProxyUrl = `https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/proxy-url?url=${encodeURIComponent(imageSrc)}`;
+                const directProxyUrl = `${API_BASE_URL}/api/proxy-url?url=${encodeURIComponent(imageSrc)}`;
                 console.log(`🔄 Trying proxy URL: ${directProxyUrl}`);
                 loadImageAndProcess(directProxyUrl, retryCount + 1, maxRetries);
                 return;
             }
 
             if (retryCount === 1 && ttapiRequestId) {
-                const proxyUrl = `https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/proxy-image/${ttapiRequestId}`;
+                const proxyUrl = `${API_BASE_URL}/api/proxy-image/${ttapiRequestId}`;
                 console.log(`🔄 Trying request-based proxy: ${proxyUrl}`);
                 loadImageAndProcess(proxyUrl, retryCount + 1, maxRetries);
                 return;
@@ -228,7 +229,7 @@ const MeetYourPain = () => {
         setSelectedImageIndex(currentImageIndex);
         // שמור את הבחירה בבסיס הנתונים
         try {
-            await fetch('https://boggart-backend-bcgshza5hwhherar.israelcentral-01.azurewebsites.net/api/save-selected-image', {
+            await fetch(`${API_BASE_URL}/api/save-selected-image`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
