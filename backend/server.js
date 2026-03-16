@@ -12,7 +12,7 @@ const path = require('path');
 const { uploadImageFromUrl } = require('./utils/azureStorage');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000; // שמריצים לוקאלית לשנות ל-5000
 
 // --- הגדרות שירותים חיצוניים ---
 
@@ -50,31 +50,29 @@ const imageRequests = new Map();
 const allowedOrigins = [
     'https://boggart-app-f6eueeftawdka3cu.israelcentral-01.azurewebsites.net',
     'http://localhost:3000',
-    'http://localhost:5000/',
+    'http://localhost:5000',
     'http://127.0.0.1:3000' // לפעמים הדפדפן משתמש ב-IP במקום במילה localhost
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        // מאפשר בקשות ללא Origin (כמו מובייל או כלים מסוימים) או כאלה ברשימה
+        // בדיקה אם ה-origin נמצא ברשימה או אם הוא ריק (למשל ב-Postman)
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            console.log("❌ CORS Blocked Origin:", origin); // זה ידפיס לנו בדיוק מה חסר ברשימה
+            console.log("❌ CORS Blocked Origin:", origin);
             callback(new Error('Not allowed by CORS'));
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    // הוספנו כאן כמה Headers נפוצים כדי למנוע חסימות מיותרות
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    credentials: true,
+    // שים לב לשורה הזו - היא קריטית כדי שהדפדפן ידע שהבדיקה המקדימה הצליחה
+    optionsSuccessStatus: 200
 }));
-// app.use(cors({
-//     origin: 'https://boggart-app-f6eueeftawdka3cu.israelcentral-01.azurewebsites.net',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//     credentials: true
-// }));
-//app.use(bodyParser.json());
+// השורה הזו מוודאת שכל בקשת OPTIONS (Preflight) תיענה בחיוב באופן אוטומטי
+app.options('*', cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
@@ -1132,7 +1130,7 @@ app.post('/api/update-avatar-weather', async (req, res) => {
             `);
 
         const originalImage = userResult.recordset[0]?.image_url;
-        const selectedIndex = userResult.recordset[0]?.selected_image_index || 0; 
+        const selectedIndex = userResult.recordset[0]?.selected_image_index || 0;
 
         if (!originalImage) return res.status(404).json({ message: "Creature not found" });
 
