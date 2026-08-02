@@ -1,6 +1,3 @@
-/* LandingPage.css */
-
-/* Import La Belle Aurore font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&family=Heebo&family=Playpen+Sans+Hebrew&display=swap');
 
 /* Design tokens based on the screenshot */
@@ -85,7 +82,6 @@ body {
     width: 100%;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .welcome-title {
     font-family: 'Playpen Sans Hebrew', sans-serif !important;
 }
@@ -101,12 +97,10 @@ body {
     max-width: 90%;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .welcome-description {
     font-family: 'Heebo', sans-serif !important;
 }
 
-/* CTA section */
 .cta-section {
     margin: 20px 0 60px;
 }

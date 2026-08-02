@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
-import './IntroductionPage.css'; // תצטרכי ליצור קובץ CSS
+import './IntroductionPage.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
 
 const IntroductionPage = () => {
     const navigate = useNavigate();
-    const { t } = useLanguage(); // הוספנו את זה
+    const { t } = useLanguage();
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -18,7 +18,6 @@ const IntroductionPage = () => {
     });
     const [isValid, setIsValid] = useState(false);
 
-    // עדכון השדות
     const handleInputChange = (field, value) => {
         const updatedData = {
             ...formData,
@@ -26,7 +25,6 @@ const IntroductionPage = () => {
         };
         setFormData(updatedData);
 
-        // בדיקה שהשדות מלאים
         setIsValid(
             updatedData.fullName.trim() !== '' &&
             updatedData.phoneNumber.trim() !== '' &&
@@ -37,7 +35,6 @@ const IntroductionPage = () => {
 
     const handleContinue = () => {
         if (isValid) {
-            // העבר את הנתונים לשאלון הראשון
             navigate('/questionnaire-before', {
                 state: {
                     introData: formData
@@ -48,7 +45,7 @@ const IntroductionPage = () => {
 
     return (
         <div className="intro-page">
-            <LanguageToggle /> {}
+            <LanguageToggle /> { }
             <header className="intro-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
             </header>

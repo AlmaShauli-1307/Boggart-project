@@ -1,6 +1,3 @@
-/* LoadingPage.css */
-
-/* Import La Belle Aurore font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Roboto:wght@400;500;700;800&display=swap');
 
 /* Design tokens based on the screenshot */
@@ -50,7 +47,6 @@ body {
 
 .loading-boggart-container {
     width: 100%;
-    /*max-width: 800px;*/
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -88,7 +84,6 @@ body {
     margin-bottom: 60px;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .loading-message {
     font-family: 'Playpen Sans Hebrew', sans-serif !important;
 }

@@ -5,12 +5,17 @@
     color: #333;
 }
 
-.sam-scale-container {
-    margin-bottom: 40px;
-    /* מרווח בין השורה הראשונה לשנייה */
+.input-question-text {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #333;
 }
 
-/* מכולה שדואגת שהכל יהיה במרכז */
+.sam-scale-container {
+    margin-bottom: 40px;
+}
+
 .avatar-display {
     display: flex;
     flex-direction: column;
@@ -20,17 +25,12 @@
     padding: 20px;
 }
 
-/* עיצוב התמונה עצמה */
 .main-avatar-img {
     width: 100%;
     max-width: 650px;
-    /* גודל אופטימלי למסכי מחשב */
     height: auto;
-    /* שומר על הפרופורציה הריבועית */
     border-radius: 25px;
-    /* פינות עגולות שמתאימות לסגנון פיקסאר */
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
-    /* צל עמוק שנותן נפח */
     transition: transform 0.3s ease;
 }
 
@@ -45,12 +45,10 @@
     width: 100%;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .welcome-title {
     font-family: 'Playpen Sans Hebrew', sans-serif !important;
 }
 
-/* אנימציית הסיבוב */
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -61,7 +59,6 @@
     }
 }
 
-/* המכולה של הטעינה */
 .loading-screen,
 .loader-container {
     display: flex;
@@ -69,25 +66,18 @@
     align-items: center;
     justify-content: center;
     padding: 60px;
-    /* הגדלנו את המרווח מסביב */
     margin: 40px auto;
 }
 
-/* הספינר השחור והגדול */
 .loading-screen::before,
 .loader-container::before {
     content: "";
     width: 80px;
-    /* הגדלנו את הרוחב מ-50 ל-80 */
     height: 80px;
-    /* הגדלנו את הגובה מ-50 ל-80 */
     border: 6px solid #e0e0e0;
-    /* רקע אפור בהיר מאוד לגלגל */
     border-top: 6px solid #000000;
-    /* החלק המסתובב בצבע שחור */
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
-    /* סיבוב מעט מהיר יותר למראה דינמי */
     margin-bottom: 25px;
 }
 
@@ -118,4 +108,18 @@
     background-color: #A0AEA9;
     cursor: not-allowed;
     opacity: 0.7;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }

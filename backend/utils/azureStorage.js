@@ -50,13 +50,11 @@ async function uploadImageBuffer(dataString, username = 'user') {
  */
 async function uploadImageFromUrl(imageUrl, originalFilename = null) {
     try {
-        // בדיקה אם ה-URL הוא בעצם Base64 (קורה בנתיב ה-Weather)
         if (imageUrl.startsWith('data:image')) {
             return await uploadImageBuffer(imageUrl);
         }
 
-        const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-        const imageBuffer = Buffer.from(response.data);
+        const imageBuffer = await fetchImageBufferWithRetry(imageUrl);
         const fileExtension = imageUrl.split('.').pop().split('?')[0] || 'png';
         const blobName = originalFilename || `${uuidv4()}.${fileExtension}`;
 
@@ -70,6 +68,34 @@ async function uploadImageFromUrl(imageUrl, originalFilename = null) {
         console.error('Error uploading image from URL:', error.message);
         throw error;
     }
+}
+
+async function fetchImageBufferWithRetry(imageUrl, maxRetries = 3) {
+    const browserHeaders = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+        'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://www.midjourney.com/'
+    };
+
+    let lastError;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            const response = await axios.get(imageUrl, {
+                responseType: 'arraybuffer',
+                headers: browserHeaders,
+                timeout: 15000
+            });
+            return Buffer.from(response.data);
+        } catch (err) {
+            lastError = err;
+            console.warn(`⚠️ Image fetch attempt ${attempt}/${maxRetries} failed: ${err.message}`);
+            if (attempt < maxRetries) {
+                await new Promise(r => setTimeout(r, 2000 * attempt));
+            }
+        }
+    }
+    throw lastError;
 }
 
 async function generateSasUrl(blobName) {
@@ -104,7 +130,7 @@ async function deleteImageFromAzure(blobUrl) {
 
 module.exports = {
     uploadImageFromUrl,
-    uploadImageBuffer, // ייצוא הפונקציה החדשה
+    uploadImageBuffer,
     deleteImageFromAzure,
     generateSasUrl
 };

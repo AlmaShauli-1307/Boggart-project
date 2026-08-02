@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
 import './LandingPage.css';
-import logo from '../../images/logo.png'; // Adjust path as needed
-import PrimaryButton from '../generalComponents/PrimaryButton'; // Import the reusable button component
+import logo from '../../images/logo.png';
+import PrimaryButton from '../generalComponents/PrimaryButton';
 
 const LandingPage = () => {
     const navigate = useNavigate();
-    const { t } = useLanguage(); // הוספנו את זה
+    const { t } = useLanguage();
 
     const handleStartClick = () => {
-        // Navigate to the IAS page
         navigate('/introduction');
     };
 
@@ -21,7 +20,7 @@ const LandingPage = () => {
 
     return (
         <main className="landing-page" >
-            <LanguageToggle /> {/* הוספנו את הכפתור */}
+            <LanguageToggle />
             <div className="landing-container">
                 <header className="logo-container">
                     <img src={logo} alt="Boggart" className="logo-image" />

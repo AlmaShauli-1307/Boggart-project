@@ -9,14 +9,11 @@ const InputQuestion = ({
     selectedValue,
     onChange,
     placeholder,
-    inputType = "longText" // "number", "shortText", or "longText"
+    inputType = "longText"
 }) => {
-    const { language } = useLanguage(); // ✅ הוספתי את זה
-
-    // ✅ ברירת מחדל לפי שפה
+    const { language } = useLanguage();
     const defaultPlaceholder = language === 'he' ? 'כתב/י כאן...' : 'Write in here...';
     const finalPlaceholder = placeholder || defaultPlaceholder;
-
 
     // Handle change based on input type
     const handleChange = (e) => {
@@ -39,7 +36,7 @@ const InputQuestion = ({
                 <textarea
                     id={id}
                     className="input-question-field long-text"
-                    value={selectedValue || ''} // Ensure we handle undefined/null values
+                    value={selectedValue || ''}
                     onChange={handleChange}
                     placeholder={finalPlaceholder}
                 />
@@ -48,7 +45,7 @@ const InputQuestion = ({
                     id={id}
                     type="text"
                     className={`input-question-field ${inputType === "number" ? "number-input" : "short-text"}`}
-                    value={selectedValue || ''} // Ensure we handle undefined/null values
+                    value={selectedValue || ''}
                     onChange={handleChange}
                     placeholder={finalPlaceholder}
                 />

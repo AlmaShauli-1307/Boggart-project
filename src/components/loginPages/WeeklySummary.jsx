@@ -8,13 +8,30 @@ import CreatureTable from './CreatureTable';
 import { useLanguage } from '../LanguageContext';
 import './CreatureSummary.css';
 
+const dailyQuestions = [
+    { en: "What was the first thing that came to mind when you saw your figure?", he: "מה הדבר הראשון שעלה לך כשראית את הדמות שלך?" },
+    { en: "What would you name your figure?", he: "איך היית קורא/ת לדמות שלך?" },
+    { en: "When is your figure strongest? When is it quietest?", he: "מתי הדמות שלך הכי חזקה? מתי הכי שקטה?" },
+    { en: "What is your figure's secret?", he: "מה הסוד של הדמות שלך?" },
+    { en: "What is your figure afraid of?", he: "ממה הדמות שלך מפחדת?" },
+    { en: "Why does the figure come to visit you?", he: "למה היא מגיעה לבקר אותך?" },
+    { en: "What can your figure NOT control?", he: "מה הדמות שלך לא יכולה לשלוט בו?" },
+    { en: "If the figure had met you 10 years ago — what would it have said?", he: "אם הדמות הייתה פוגשת אותך לפני 10 שנים — מה היא הייתה אומרת לך?" },
+    { en: "How can you make the figure smaller?", he: "איך אפשר להקטין את הדמות?" },
+    { en: "What does your figure know about you that nobody else knows?", he: "מה הדמות שלך יודעת עלייך שאף אחד אחר לא יודע?" },
+    { en: "What has changed about your figure since you first met?", he: "מה השתנה בדמות שלך מאז שנפגשתם?" },
+    { en: "How will you feel about your figure a year from now?", he: "איך תרגיש/י לגבי הדמות שלך בעוד שנה?" },
+    { en: "If your figure could write you a letter — what would it say?", he: "אם הדמות שלך יכלה לכתוב לך מכתב — מה היא הייתה כותבת?" },
+    { en: "What would you say to your figure on the day you part ways?", he: "מה היית אומר/ת לדמות שלך ביום שתיפרדו?" },
+];
+
+const isProcessing = (val) => !val || val === 'Processing...' || val === '-';
+
 const WeeklySummary = ({ username, onViewChange }) => {
     const { t, language } = useLanguage();
     const [dbHistory, setDbHistory] = useState([]);
     const [loading, setLoading] = useState(false);
     const API_BASE_URL = process.env.REACT_APP_API_URL;
-
-    // שימוש בפורמט מקומי למניעת בעיות UTC
     const [tempEndDate, setTempEndDate] = useState(new Date().toLocaleDateString('en-CA'));
     const [tempStartDate, setTempStartDate] = useState(() => {
         const d = new Date();
@@ -30,8 +47,7 @@ const WeeklySummary = ({ username, onViewChange }) => {
     const isRangeValid = useMemo(() => {
         const start = new Date(tempStartDate);
         const end = new Date(tempEndDate);
-        const diffTime = end - start;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
         return diffDays > 0 && diffDays <= 7;
     }, [tempStartDate, tempEndDate]);
 
@@ -39,17 +55,13 @@ const WeeklySummary = ({ username, onViewChange }) => {
         const fetchHistory = async () => {
             const userData = JSON.parse(sessionStorage.getItem('user'));
             const activeUser = username || userData?.username;
-
             if (!activeUser) return;
-
             setLoading(true);
             try {
                 const res = await axios.get(`${API_BASE_URL}/api/creature-summary/${activeUser}`, {
                     params: { startDate: appliedRange.start, endDate: appliedRange.end }
                 });
-                if (res.data.success) {
-                    setDbHistory(res.data.history || []);
-                }
+                if (res.data.success) setDbHistory(res.data.history || []);
             } catch (error) {
                 console.error("❌ Fetch error:", error);
             } finally {
@@ -60,58 +72,39 @@ const WeeklySummary = ({ username, onViewChange }) => {
     }, [username, appliedRange]);
 
     const handleUpdate = () => {
-        if (isRangeValid) {
-            setAppliedRange({ start: tempStartDate, end: tempEndDate });
-        }
+        if (isRangeValid) setAppliedRange({ start: tempStartDate, end: tempEndDate });
     };
 
     const fullHistory = useMemo(() => {
         const days = [];
         const start = new Date(appliedRange.start);
         const end = new Date(appliedRange.end);
-        let diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-
+        const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
         if (diffDays <= 0) return [];
 
         for (let i = 0; i < diffDays; i++) {
             const d = new Date(start);
             d.setDate(start.getDate() + i);
             const dateKey = d.toLocaleDateString('en-CA');
-
-            const found = dbHistory.find(item => {
-                const itemDate = item.created_at.split('T')[0];
-                return itemDate === dateKey;
-            });
-
+            const found = dbHistory.find(item => item.created_at.split('T')[0] === dateKey);
             days.push(found ? { ...found, isMissing: false } : {
                 created_at: d.toISOString(),
                 isMissing: true,
-                sam_level: '-',
-                arousal_level: '-'
+                sam_level: '-', arousal_level: '-'
             });
         }
-        return days; // מציג מהתאריך המוקדם למאוחר
+        return days;
     }, [dbHistory, appliedRange]);
-
-    // פונקציית עזר להמרת URL ל-Base64 עבור ה-PDF
-    const getBase64FromUrl = async (url) => {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-        });
-    };
 
     const userData = JSON.parse(sessionStorage.getItem('user'));
     const displayUsername = username || userData?.username;
 
     const exportToPDF = async () => {
+        const userData = JSON.parse(sessionStorage.getItem('user'));
+        const displayUsername = username || userData?.username;
         const isRTL = language === 'he';
         const doc = jsPDF({ orientation: 'landscape', format: 'a4' });
 
-        // 1. טעינה וקיבוע פונט Heebo
         doc.addFileToVFS('Heebo.ttf', HEEBO_BASE64);
         doc.addFont('Heebo.ttf', 'Heebo', 'normal');
         doc.setFont('Heebo');
@@ -123,24 +116,11 @@ const WeeklySummary = ({ username, onViewChange }) => {
             return str.split('').reverse().join('');
         };
 
-        // 2. כותרת המסמך
         doc.setFontSize(22);
         doc.setTextColor(41, 90, 75);
         const titleText = isRTL ? fixHebrew("סיכום שבועי") : "Weekly Summary";
         doc.text(titleText, isRTL ? 280 : 14, 15, { align: isRTL ? 'right' : 'left' });
 
-        // 3. כותרות הטבלה
-        let headers = [
-            t('day'),
-            t('date'),
-            isRTL ? "היצור שלי" : "My Creature",
-            t('weather'), // SAM
-            t('arousal')
-        ].map(h => fixHebrew(h));
-
-        if (isRTL) headers = headers.reverse();
-
-        // 4. טעינה מוקדמת של כל התמונות ל-Base64
         const historyWithImages = await Promise.all(fullHistory.map(async (entry) => {
             let base64 = null;
             if (entry.image_url) {
@@ -152,56 +132,97 @@ const WeeklySummary = ({ username, onViewChange }) => {
                         reader.onloadend = () => resolve(reader.result);
                         reader.readAsDataURL(blob);
                     });
-                } catch (e) { console.error("Img load failed", e); }
+                } catch (e) { console.error("Image loading failed", e); }
             }
             return { ...entry, base64 };
         }));
 
-        // 5. יצירת הטבלה עם מניעת שבירת שורות
+        let headers = isRTL ? [
+            fixHebrew('יום'), fixHebrew('תאריך'), fixHebrew('היצור שלי'),
+            fixHebrew('כאב'), fixHebrew('רגש'), fixHebrew('עוררות'), fixHebrew('אנרגיה'),
+            fixHebrew('תחושה'), fixHebrew('פעולה'), fixHebrew('צורך'), fixHebrew('מסר'),
+            fixHebrew('שאלה יומית'), fixHebrew('תשובה יומית'),
+        ] : [
+            'Day', 'Date', 'My Creature',
+            'Pain', 'Emotion', 'Arousal', 'Energy',
+            'Feeling', 'Action', 'Need', 'Message',
+            'Daily Question', 'Daily Answer'
+        ];
+
+        if (isRTL) headers = headers.reverse();
+
         autoTable(doc, {
             head: [headers],
             body: historyWithImages.map(entry => {
                 const dateObj = new Date(entry.created_at);
                 const dayName = dateObj.toLocaleDateString(isRTL ? 'he-IL' : 'en-US', { weekday: 'long' });
                 const dateStr = dateObj.toLocaleDateString(isRTL ? 'he-IL' : 'en-US');
-                const sam = entry.isMissing ? (isRTL ? "אין תיעוד" : "No Entry") : `${entry.sam_level}`;
-                const arousal = entry.isMissing ? "-" : `${entry.arousal_level}`;
 
-                const row = [fixHebrew(dayName), dateStr, "", fixHebrew(sam), arousal];
+                const qIndex = entry.daily_question_index;
+                const question = (qIndex !== null && qIndex !== undefined)
+                    ? dailyQuestions[qIndex % dailyQuestions.length]
+                    : null;
+
+                const row = [
+                    fixHebrew(dayName),
+                    dateStr,
+                    "",
+                    entry.isMissing ? "-" : `${entry.pain_level ?? '-'}`,
+                    entry.isMissing ? "-" : `${entry.sam_level ?? '-'}`,
+                    entry.isMissing ? "-" : `${entry.arousal_level ?? '-'}`,
+                    entry.isMissing ? "-" : `${entry.energy_level ?? '-'}`,
+                    entry.isMissing ? "-" : `${entry.feeling_level ?? '-'}`,
+                    entry.isMissing ? "-" : (!isProcessing(entry.avatar_do) ? fixHebrew(entry.avatar_do) : '-'),
+                    entry.isMissing ? "-" : (!isProcessing(entry.avatar_need) ? fixHebrew(entry.avatar_need) : '-'),
+                    entry.isMissing ? "-" : (!isProcessing(entry.avatar_tells) ? fixHebrew(entry.avatar_tells) : '-'),
+                    entry.isMissing ? "-" : (question ? fixHebrew(isRTL ? question.he : question.en) : '-'),
+                    entry.isMissing ? "-" : (!isProcessing(entry.daily_answer) ? fixHebrew(entry.daily_answer) : '-'),
+                ];
                 return isRTL ? row.reverse() : row;
             }),
             startY: 25,
             theme: 'grid',
-            rowPageBreak: 'avoid', // התיקון הקריטי: מונע מהשורה להיחצות בין עמודים
+            rowPageBreak: 'avoid',
+            showHead: 'everyPage',
+            pageBreak: 'auto',
             styles: {
                 font: 'Heebo',
-                fontStyle: 'normal',
                 halign: isRTL ? 'right' : 'left',
-                valign: 'middle'
+                valign: 'middle',
+                fontSize: 7,
+                minCellHeight: 30,
+                overflow: 'linebreak',
+                lineColor: [96, 96, 96],
+                lineWidth: 0.1,
             },
             headStyles: {
                 font: 'Heebo',
+                fontStyle: 'normal',
                 fillColor: [41, 90, 75],
                 textColor: [255, 255, 255],
-                halign: isRTL ? 'right' : 'left'
+                halign: isRTL ? 'right' : 'left',
+                fontSize: 7,
+                cellPadding: 3
             },
             columnStyles: {
-                [isRTL ? 2 : 2]: { cellWidth: 40, minCellHeight: 40 } // שטח מרווח ליצור
+                [isRTL ? 10 : 2]: { cellWidth: 28, halign: 'center' },  // תמונה
+                [isRTL ? 0 : 12]: { cellWidth: 45 },                     // תשובה יומית
+                [isRTL ? 1 : 11]: { cellWidth: 45 },                     // שאלה יומית
             },
             didDrawCell: (data) => {
-                const imgColIndex = isRTL ? 2 : 2;
+                const imgColIndex = isRTL ? 10 : 2;
                 if (data.section === 'body' && data.column.index === imgColIndex) {
                     const entry = historyWithImages[data.row.index];
                     if (entry && entry.base64) {
-                        // הוספת התמונה במרכז התא המוגדל
-                        doc.addImage(entry.base64, 'PNG', data.cell.x + 10, data.cell.y + 10, 20, 20);
+                        const imgSize = 22;
+                        const x = data.cell.x + (data.cell.width - imgSize) / 2;
+                        const y = data.cell.y + (data.cell.height - imgSize) / 2;
+                        doc.addImage(entry.base64, 'PNG', x, y, imgSize, imgSize);
                     }
                 }
             }
         });
-
-        const userData = JSON.parse(sessionStorage.getItem('user'));
-        doc.save(`Summary_${username || userData?.username}.pdf`);
+        doc.save(`Weekly_Summary_${displayUsername}.pdf`);
     };
 
     return (

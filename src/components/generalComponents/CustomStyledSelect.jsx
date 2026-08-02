@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
-import './CustomStyledSelect.css'; // Import your custom styles
+import './CustomStyledSelect.css';
 
 function CustomStyledSelect({ question, value, onChange }) {
     // Handle both string options and object options {value, label}
@@ -22,8 +22,8 @@ function CustomStyledSelect({ question, value, onChange }) {
             onChange={(selected) => onChange(question.id, selected ? selected.value : null)}
             placeholder={question.text}
             isClearable={false}
-            className="custom-react-select" //  Main class for the component
-            classNamePrefix="custom-react-select" // Class prefix for react-select's internal elements
+            className="custom-react-select"
+            classNamePrefix="custom-react-select"
         />
     );
 }

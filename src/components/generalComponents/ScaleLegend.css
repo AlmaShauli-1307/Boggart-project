@@ -18,7 +18,6 @@
     border-radius: 4px;
     overflow: hidden;
     box-shadow: 0 0 0 1px #B9B9B9;
-    /* Single pixel border around the entire table */
 }
 
 .scale-table th {
@@ -55,4 +54,17 @@
 
 .scale-table td:last-child {
     border-right: none;
+}
+
+@media (max-width: 600px) {
+    .scale-legend {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+    }
+
+    .scale-table {
+        min-width: max-content;
+        overflow: visible;
+    }
 }

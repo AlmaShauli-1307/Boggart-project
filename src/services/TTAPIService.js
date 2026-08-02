@@ -1,14 +1,14 @@
 // src/services/TTAPIService.js
 import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_URL;
-const TTAPI_ENDPOINT = `${API_BASE_URL}/api`; // או כתובת השרת שלך
+const TTAPI_ENDPOINT = `${API_BASE_URL}/api`;
 
 class TTAPIService {
     constructor() {
         this.baseURL = TTAPI_ENDPOINT;
         this.axios = axios.create({
             baseURL: this.baseURL,
-            timeout: 60000, // 60 שניות timeout
+            timeout: 60000,
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -16,7 +16,6 @@ class TTAPIService {
     }
 
     /**
-     * שולח בקשה ליצירת תמונה ומחזיר את מזהה הבקשה
      * @param {Object} answers - תשובות המשתמש מהשאלון
      * @param {String} prompt - הפרומפט ליצירת התמונה
      * @returns {Promise<Object>} - מחזיר את התשובה מהשרת כולל requestId
@@ -32,7 +31,7 @@ class TTAPIService {
             });
 
             console.log('✅ TTAPI response:', response.data);
-            return response.data; // אמור לכלול requestId
+            return response.data;
         } catch (error) {
             console.error('❌ Error creating image request:', error);
             throw error;
@@ -48,7 +47,7 @@ class TTAPIService {
         try {
             const response = await this.axios.get(`/check-status/${requestId}`);
             console.log('✅ Status check:', response.data);
-            return response.data; // צפוי להכיל status ו-imageUrl אם מוכן
+            return response.data;
         } catch (error) {
             console.error('❌ Error checking image status:', error);
             throw error;
@@ -62,7 +61,6 @@ class TTAPIService {
      * @param {Number} interval - מרווח זמן בין בדיקות במילישניות (ברירת מחדל: 5000 - 5 שניות)
      * @returns {Promise<String>} - מחזיר את כתובת ה-URL של התמונה כשהיא מוכנה
      */
-    // הוסיפי את הפונקציה הזו ל-TTAPIService.js:
 
     async waitForImageByFormId(form1Id, maxAttempts = 30, interval = 5000) {
         return new Promise((resolve, reject) => {
@@ -72,8 +70,6 @@ class TTAPIService {
                 try {
                     attempts++;
                     console.log(`🔍 Checking image status for form ${form1Id} (attempt ${attempts}/${maxAttempts})...`);
-
-                    // תקני את הכתובת - השתמשי ב-this.baseURL ובלי /api נוסף
                     const statusResponse = await fetch(`${this.baseURL}/image-status-by-form/${form1Id}`);
                     const data = await statusResponse.json();
 

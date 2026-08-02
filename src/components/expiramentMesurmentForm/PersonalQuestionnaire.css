@@ -1,7 +1,4 @@
-/* BodyMapQuestionnaire.css */
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Roboto:wght@400;500;700;800&display=swap');
-
-/* IASPage.css */
 
 * {
     margin: 0;
@@ -9,7 +6,6 @@
     box-sizing: border-box;
 }
 
-/* פונט ספציפי לעברית - חזק יותר */
 .form-page[lang="he"],
 .form-page[lang="he"] *,
 .form-page[lang="he"] .instructions-text,
@@ -17,7 +13,6 @@
     font-family: 'Heebo', sans-serif !important;
 }
 
-/* Set the background color on the html and body elements to ensure full coverage */
 html,
 body {
     background-color: #EEF0ED;
@@ -27,7 +22,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Main container */
 .form-page {
     background-color: #EEF0ED;
     min-height: 100vh;
@@ -46,7 +40,6 @@ body {
     align-items: center;
 }
 
-/* Header */
 .form-header {
     padding: 20px 0;
     width: 100%;
@@ -62,7 +55,6 @@ body {
     direction: ltr;
 }
 
-/* Content area */
 .form-content {
     display: flex;
     flex-direction: column;
@@ -71,7 +63,6 @@ body {
     width: 100%;
 }
 
-/* Instructions */
 .instructions {
     margin: 20px 0 30px;
     text-align: center;
@@ -86,14 +77,10 @@ body {
     max-width: 850px;
 }
 
-
-/* Navigation */
 .navigation {
     margin-bottom: 40px;
 }
 
-
-/* Questionnaire */
 .questionnaire {
     width: 100%;
     display: flex;
@@ -101,12 +88,6 @@ body {
     margin-bottom: 60px;
 }
 
-/* Navigation */
-.navigation {
-    margin-bottom: 40px;
-}
-
-/* Progress bar */
 .progress-bar {
     width: 320px;
     height: 10px;
@@ -122,133 +103,133 @@ body {
     border-radius: 4px;
 }
 
-.question-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 30px;
-    width: 100%;
-    max-width: 100%;
-}
-
-.question-text {
-    font-size: 16px;
-    font-weight: 400;
-    text-align: center;
-    margin-bottom: 15px;
-    font-family: 'Inter', sans-serif;
-}
-
-/* Body parts checkboxes styling */
+/* --- Question grid: uniform two-column layout --- */
 .question-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    grid-column-gap: 20px;
-    max-width: 100%;
+    gap: 24px 40px;
+    max-width: 900px;
     margin: 0 auto;
+    align-items: start;
 }
 
-/* General select styling */
+/* Each field gets a wrapper with a label above the input */
+.field-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.field-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000000;
+    text-align: inherit;
+}
+
+/* --- Inputs / dropdowns --- */
 .input-personal-question-field {
     appearance: none;
-    /* Remove default browser styles */
     -webkit-appearance: none;
-    /* For Safari */
     -moz-appearance: none;
-    /* For Firefox */
     box-sizing: border-box;
-    border: 1px solid #686666;
-    border-radius: 20px;
+    border: 1px solid #B9B9B9;
+    border-radius: 12px;
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     line-height: 130%;
     background-color: #FFFBFB;
     color: #000000;
-    padding: 10px 40px 10px 20px;
-    /* Add padding for the arrow */
+    padding: 10px 16px;
     width: 100%;
-    max-width: 410px;
     height: 52px;
     display: block;
-    margin: 0 auto;
-    position: relative;
     cursor: pointer;
 }
 
-/* Placeholder styling */
 .input-personal-question-field option[value=""] {
     color: rgba(0, 0, 0, 0.5);
-    /* Match placeholder color */
 }
 
-/* Add a custom arrow */
-.input-personal-question-field::after {
-    content: '▼';
-    /* Custom arrow */
-    position: absolute;
-    right: 20px;
-    /* Align arrow with padding */
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    /* Prevent interaction with the arrow */
-    color: #686666;
-    /* Arrow color */
-}
-
-/* Dropdown popup styling */
 .input-personal-question-field option {
     background-color: #FFFBFB;
-    /* Match input background */
     color: #000000;
-    /* Text color */
     padding: 10px;
-    /* Add padding for better spacing */
 }
 
-/* Hover and focus states */
 .input-personal-question-field:focus {
     outline: none;
     border-color: #295A4B;
-    /* Match your design's focus color */
 }
 
 .input-personal-question-field option:hover {
     background-color: #EEF0ED;
-    /* Highlight color for options */
     color: #295A4B;
-    /* Text color on hover */
 }
 
 .input-personal-question-field::placeholder {
     color: rgba(0, 0, 0, 0.5);
 }
 
-.place-holder-dropdown {
-    color: rgba(0, 0, 0, 0.5);
+/* --- Yes/No question item, styled to fit the grid like other fields --- */
+.question-grid .question-item {
+    margin-bottom: 0;
+    align-items: stretch;
+    width: 100%;
 }
 
-.input-personal-question-field:focus {
-    outline: none;
+.question-grid .question-item .question-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: #295A4B;
+    text-align: inherit;
+    margin-bottom: 8px;
 }
 
-/* Responsive adjustments */
+.question-grid .rating-table-container {
+    width: 100%;
+}
+
+.question-grid .rating-table {
+    width: 100%;
+    height: 52px;
+    border-collapse: collapse;
+}
+
+.question-grid .rating-cell {
+    border: 1px solid #B9B9B9;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #FFFBFB;
+    transition: background-color 0.15s ease;
+}
+
+.question-grid .rating-cell:hover {
+    background-color: #EEF0ED;
+}
+
+.question-grid .rating-cell.selected {
+    background-color: #295A4B;
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+/* Responsive */
 @media (max-width: 700px) {
-
-    .input-personal-question-field.short-text,
-    textarea.input-personal-question-field.long-text {
-        width: 90%;
-        max-width: 628px;
+    .question-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
     }
 }
 
 @media (max-width: 500px) {
-    .input-question-text {
+    .input-personal-question-field {
         font-size: 14px;
     }
 
-    .input-personal-question-field {
+    .question-grid .question-item .question-text {
         font-size: 14px;
     }
 }
@@ -257,24 +238,16 @@ body {
     .instructions-text {
         font-size: 14px;
     }
-
 }
 
-
-/* Responsive styles */
 @media (max-width: 768px) {
     .body-map-container {
         flex-direction: column;
-        /* Stack vertically on mobile */
     }
 
     .body-map-section,
     .body-parts-section {
         width: 100%;
         margin-bottom: 30px;
-    }
-
-    .question-grid {
-        grid-template-columns: repeat(2, 1fr);
     }
 }

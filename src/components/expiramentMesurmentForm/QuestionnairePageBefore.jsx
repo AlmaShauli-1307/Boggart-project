@@ -10,6 +10,11 @@ import ScaleLegend from '../generalComponents/ScaleLegend';
 import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
 import EmotionScalePage from './EmotionScalePage';
+import BodyMapQuestionnaire from '../boggartForm/BodyMapQuestionnaire';
+import InputQuestion from '../generalComponents/InputQuestion';
+
+const YES_NO_QUESTION_ID = 101;
+const BODY_MAP_QUESTION_ID = 102;
 
 const QuestionnairePageBefore = () => {
     const navigate = useNavigate();
@@ -23,6 +28,11 @@ const QuestionnairePageBefore = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [currentScale, setCurrentScale] = useState({});
     const [showScale, setShowScale] = useState(false);
+
+    // מצב לשאלת BodyMap
+    const [selectedBodyParts, setSelectedBodyParts] = useState([]);
+    const [mostPainfulPart, setMostPainfulPart] = useState(null);
+
     const location = useLocation();
     const introData = location.state?.introData || null;
 
@@ -32,10 +42,8 @@ const QuestionnairePageBefore = () => {
             navigate('/introduction');
             return;
         }
-        console.log('✅ IntroData received:', introData);
     }, [introData, navigate]);
 
-    // Load questions from CSV
     useEffect(() => {
         fetch(`/First_Questionnaire.csv`)
             .then(response => response.text())
@@ -45,67 +53,52 @@ const QuestionnairePageBefore = () => {
                     dynamicTyping: true,
                     skipEmptyLines: true,
                     complete: (results) => {
-                        console.log('CSV Loaded:', results.data);
-                        setQuestions(results.data);
-                        const maxPage = Math.max(...results.data.map(q => Number(q.Page)));
+                        const validQuestions = results.data.filter(q => q.question_ID !== null && q.question_ID !== undefined);
+                        setQuestions(validQuestions);
+                        const maxPage = Math.max(...validQuestions.map(q => Number(q.Page)));
                         setTotalPages(maxPage);
-                        updatePageData(results.data, 1);
+                        updatePageData(validQuestions, 1);
                     }
                 });
             })
             .catch(error => console.error('❌ Error loading CSV:', error));
     }, []);
 
-    // עדכן רק כשהשפה משתנה - אבל שמור על הדף הנוכחי!
     useEffect(() => {
         if (questions.length > 0 && currentPage > 0) {
-            console.log('🔍 Language changed to:', language);
-            console.log('🔍 Current page:', currentPage);
-
             const currentPageQuestions = questions.filter(q => Number(q.Page) === currentPage);
             if (currentPageQuestions.length > 0) {
                 const pageInfo = currentPageQuestions[0];
                 const pageTitle = pageInfo['Page Title'];
 
-                console.log('🔍 Current page title:', pageTitle);
-
-                // רק עדכן את ההוראות - אל תקראי ל-updatePageData!
                 setPageData(prev => ({
-                    ...prev,  // ✅ שמור הכל כמו שהיה
+                    ...prev,
                     instructions: language === 'he'
                         ? (pageInfo['Instructions_Hebrew'] || pageInfo.Instructions)
                         : pageInfo.Instructions
                 }));
 
-                // עדכן את ה-scale labels רק אם יש scale וזה לא VAS/SAM
                 if (pageTitle !== 'VAS' && pageTitle !== 'SAM' && pageInfo.scale_labels) {
                     const scaleObj = {};
                     let min = pageInfo.scale_min || 1;
-                    let max = pageInfo.scale_max || 5;
-
                     const labelsColumn = language === 'he'
                         ? (pageInfo.scale_labels_Hebrew || pageInfo.scale_labels)
                         : pageInfo.scale_labels;
-
                     const labels = labelsColumn.split(',');
                     for (let i = 0; i < labels.length; i++) {
                         scaleObj[min + i] = labels[i].trim();
                     }
-
                     setCurrentScale(scaleObj);
                 }
-                // ✅ אל תשני את showScale!
             }
         }
-    }, [language]); // רק language!
+    }, [language]);
 
-    // Update page data when current page changes
     const updatePageData = (data, page) => {
         const pageQuestions = data.filter(q => Number(q.Page) === page);
 
         if (pageQuestions.length > 0) {
             const pageInfo = pageQuestions[0];
-            console.log('Page title:', pageInfo['Page Title']);
             setPageData({
                 title: pageInfo['Page Title'] || '',
                 instructions: language === 'he'
@@ -113,40 +106,23 @@ const QuestionnairePageBefore = () => {
                     : pageInfo.Instructions
             });
 
-            // Check if we should show scale based on CSV data
             const hasScaleLabels = !!pageInfo.scale_labels;
-            const hasLeftRightLabels = !!pageInfo.left_label && !!pageInfo.right_label;
-            const shouldShowScale = hasScaleLabels || hasLeftRightLabels;
+            setShowScale(hasScaleLabels);
 
-            setShowScale(shouldShowScale);
-
-            // Only set up scale if we should show it
-            if (shouldShowScale) {
-                // Set up the scale for the current page
+            if (hasScaleLabels) {
                 const scaleObj = {};
-                let min = 1;
-                let max = 5;
+                let min = pageInfo.scale_min !== undefined ? pageInfo.scale_min : 1;
+                let max = pageInfo.scale_max !== undefined ? pageInfo.scale_max : 5;
 
-                // Find representative scale from first question
-                if (pageInfo.scale_min !== undefined && pageInfo.scale_max !== undefined) {
-                    min = pageInfo.scale_min;
-                    max = pageInfo.scale_max;
-                }
-
-                // Try to get scale labels if available
                 if (pageInfo.scale_labels) {
-                    // ✅ בחר את העמודה הנכונה לפי השפה
                     const labelsColumn = language === 'he'
                         ? (pageInfo.scale_labels_Hebrew || pageInfo.scale_labels)
                         : pageInfo.scale_labels;
-
                     const labels = labelsColumn.split(',');
                     for (let i = 0; i < labels.length; i++) {
                         scaleObj[min + i] = labels[i].trim();
                     }
                 } else {
-
-                    // Create default scale from min to max
                     for (let i = min; i <= max; i++) {
                         if (i === min) scaleObj[i] = pageInfo.left_label || 'Strongly Disagree';
                         else if (i === max) scaleObj[i] = pageInfo.right_label || 'Strongly Agree';
@@ -155,7 +131,6 @@ const QuestionnairePageBefore = () => {
                         else scaleObj[i] = 'Agree';
                     }
                 }
-
                 setCurrentScale(scaleObj);
             } else {
                 setCurrentScale({});
@@ -167,7 +142,7 @@ const QuestionnairePageBefore = () => {
         }
     };
 
-    // Check if all questions on current page are answered
+    // בדיקת השלמת שאלות בעמוד הנוכחי
     useEffect(() => {
         const currentPageQuestions = getCurrentPageQuestions();
 
@@ -176,22 +151,41 @@ const QuestionnairePageBefore = () => {
             return;
         }
 
-        const allAnswered = currentPageQuestions.every(q =>
-            responses[q.question_ID] !== undefined && responses[q.question_ID] !== null
-        );
+        const allAnswered = currentPageQuestions.every(q => {
+            if (q.question_ID === BODY_MAP_QUESTION_ID) {
+                // BodyMap — צריך לפחות אזור אחד וגם אזור הכי כואב
+                return selectedBodyParts.length > 0 && mostPainfulPart !== null;
+            }
+            return responses[q.question_ID] !== undefined && responses[q.question_ID] !== null;
+        });
 
         setAllQuestionsAnswered(allAnswered);
-    }, [responses, currentPage, questions]);
+    }, [responses, currentPage, questions, selectedBodyParts, mostPainfulPart]);
+
+    // סנכרון BodyMap לתוך responses
+    useEffect(() => {
+        if (selectedBodyParts.length > 0 || mostPainfulPart) {
+            setResponses(prev => ({
+                ...prev,
+                [BODY_MAP_QUESTION_ID]: {
+                    painAreas: selectedBodyParts,
+                    mostPainful: mostPainfulPart
+                }
+            }));
+        }
+    }, [selectedBodyParts, mostPainfulPart]);
+
+    useEffect(() => {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }, [currentPage]);
 
     const getCurrentPageQuestions = () => {
         return questions.filter(q => Number(q.Page) === currentPage);
     };
 
     const handleOptionSelect = (questionId, value) => {
-        setResponses({
-            ...responses,
-            [questionId]: value
-        });
+        setResponses(prev => ({ ...prev, [questionId]: value }));
     };
 
     const handlePrevious = () => {
@@ -201,6 +195,7 @@ const QuestionnairePageBefore = () => {
                 updatePageData(questions, prevPage);
                 return prevPage;
             });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -211,6 +206,7 @@ const QuestionnairePageBefore = () => {
                 updatePageData(questions, nextPage);
                 return nextPage;
             });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -225,13 +221,7 @@ const QuestionnairePageBefore = () => {
         const API_BASE_URL = process.env.REACT_APP_API_URL;
 
         try {
-            const requestBody = {
-                answers: responses,
-                introData: introData,
-            };
-
-            console.log('📤 Form1 - Sending to server:', JSON.stringify(requestBody, null, 2));
-
+            const requestBody = { answers: responses, introData };
             const response = await fetch(`${API_BASE_URL}/submit-form1`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -239,17 +229,13 @@ const QuestionnairePageBefore = () => {
             });
 
             const data = await response.json();
-            console.log('✅ Form1 - Response from server:', JSON.stringify(data, null, 2));
 
             if (data.form1Id) {
-                console.log('✅ Form1 - Success! form1Id:', data.form1Id);
                 navigate(`/form2?form1Id=${data.form1Id}&intensity=${responses[24]}`);
             } else {
-                console.error('❌ Form1 - No form1Id received from server:', data);
                 alert('Form 1 submitted but no ID received');
                 navigate('/landing-boggart');
             }
-
         } catch (error) {
             console.error('❌ Error submitting Form 1:', error);
             alert('An error occurred while submitting Form 1.');
@@ -258,37 +244,48 @@ const QuestionnairePageBefore = () => {
         setIsSubmitting(false);
     };
 
-    // Determine if this is a special page type
     const isVAS = pageData.title === 'VAS';
     const isSAM = pageData.title === 'SAM';
 
-    // Format questions for our Question component
-    const formattedQuestions = getCurrentPageQuestions().map(q => {
-        let options = [];
+    const currentPageQuestions = getCurrentPageQuestions();
+    const hasBodyMap = currentPageQuestions.some(q => q.question_ID === BODY_MAP_QUESTION_ID);
+    const hasYesNo = currentPageQuestions.some(q => q.question_ID === YES_NO_QUESTION_ID);
 
-        // Determine options based on scale min/max or defined options
-        if (q.scale_min !== undefined && q.scale_max !== undefined) {
-            for (let i = q.scale_min; i <= q.scale_max; i++) {
-                options.push(i);
+    const formattedQuestions = currentPageQuestions
+        .filter(q => q.question_ID !== BODY_MAP_QUESTION_ID)
+        .map(q => {
+            let options = [];
+            if (q.question_ID === YES_NO_QUESTION_ID) {
+                options = language === 'he' ? ['כן', 'לא'] : ['Yes', 'No'];
+            } else if (q.scale_min !== undefined && q.scale_max !== undefined) {
+                const minStr = String(q.scale_min);
+                const maxStr = String(q.scale_max);
+                const isPercent = minStr.includes('%') || maxStr.includes('%');
+                if (isPercent) {
+                    const min = parseInt(minStr);
+                    const max = parseInt(maxStr);
+                    for (let i = min; i <= max; i += 10) options.push(`${i}%`);
+                } else {
+                    for (let i = q.scale_min; i <= q.scale_max; i++) options.push(i);
+                }
+            } else if (q.options) {
+                options = q.options.split(',').map(opt => opt.trim());
+            } else {
+                options = [1, 2, 3, 4, 5];
             }
-        } else if (q.options) {
-            options = q.options.split(',').map(opt => opt.trim());
-        } else {
-            // Default to 1-5 scale
-            options = [1, 2, 3, 4, 5];
-        }
 
-        return {
-            id: q.question_ID,
-            text: language === 'he' ? q.Question_Hebrew : q.Question,
-            options: options,
-            questionType: q.question_type,
-            scaleMin: q.scale_min,
-            scaleMax: q.scale_max
-        };
-    });
+            return {
+                id: q.question_ID,
+                text: language === 'he' ? q.Question_Hebrew : q.Question,
+                options,
+                questionType: q.question_ID === YES_NO_QUESTION_ID ? 'yes_no' : q.question_type,
+                scaleMin: q.scale_min,
+                scaleMax: q.scale_max,
+                leftLabel: language === 'he' ? (q.left_label_Hebrew || q.left_label) : q.left_label,
+                rightLabel: language === 'he' ? (q.right_label_Hebrew || q.right_label) : q.right_label,
+            };
+        });
 
-    // Calculate progress percentage
     const progressPercentage = (currentPage / totalPages) * 100;
 
     return (
@@ -299,22 +296,17 @@ const QuestionnairePageBefore = () => {
             </header>
             <div className="form-container">
                 <main className="form-content">
-                    {/* Show instructions if available */}
                     {!isSAM && pageData.instructions && (
                         <div className="instructions">
-                            <p className="instructions-text">
-                                {pageData.instructions}
-                            </p>
+                            <p className="instructions-text">{pageData.instructions}</p>
                         </div>
                     )}
 
-                    {/* Show scale legend only when we have scale data and it's not a special page */}
                     {showScale && !isVAS && !isSAM && Object.keys(currentScale).length > 0 && (
                         <ScaleLegend scale={currentScale} />
                     )}
 
                     <div className="questionnaire">
-                        {/* Special case for pain scale page */}
                         {isVAS && formattedQuestions.map(question => (
                             <PainScaleQuestion
                                 key={question.id}
@@ -327,7 +319,6 @@ const QuestionnairePageBefore = () => {
                             />
                         ))}
 
-                        {/* Special case for emotion scale page */}
                         {isSAM && (
                             <EmotionScalePage
                                 questions={formattedQuestions}
@@ -336,17 +327,66 @@ const QuestionnairePageBefore = () => {
                             />
                         )}
 
-                        {/* Regular questions for all other pages */}
-                        {!isVAS && !isSAM && formattedQuestions.map(question => (
-                            <Question
-                                key={question.id}
-                                id={question.id}
-                                text={question.text}
-                                selectedValue={responses[question.id]}
-                                onSelect={handleOptionSelect}
-                                options={question.options}
+                        {!isVAS && !isSAM && formattedQuestions.map(question => {
+                            if (question.questionType === 'yes_no') {
+                                return (
+                                    <div key={question.id} className="question-item">
+                                        <p className="question-text">{question.text}</p>
+                                        <div className="rating-table-container">
+                                            <table className="rating-table">
+                                                <tbody>
+                                                    <tr>
+                                                        {question.options.map(opt => (
+                                                            <td
+                                                                key={opt}
+                                                                className={`rating-cell ${responses[question.id] === opt ? 'selected' : ''}`}
+                                                                onClick={() => handleOptionSelect(question.id, opt)}
+                                                            >
+                                                                {opt}
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            if (question.questionType === 'shortText') {
+                                return (
+                                    <InputQuestion
+                                        key={question.id}
+                                        id={question.id}
+                                        text={question.text}
+                                        selectedValue={responses[question.id]}
+                                        onChange={handleOptionSelect}
+                                        inputType="shortText"
+                                    />
+                                );
+                            }
+                            return (
+                                <Question
+                                    key={question.id}
+                                    id={question.id}
+                                    text={question.text}
+                                    selectedValue={responses[question.id]}
+                                    onSelect={handleOptionSelect}
+                                    options={question.options}
+                                    leftLabel={question.leftLabel}
+                                    rightLabel={question.rightLabel}
+                                />
+                            );
+                        })}
+
+                        {hasBodyMap && (
+                            <BodyMapQuestionnaire
+                                selectedBodyParts={selectedBodyParts}
+                                setSelectedBodyParts={setSelectedBodyParts}
+                                mostPainfulPart={mostPainfulPart}
+                                setMostPainfulPart={setMostPainfulPart}
+                                showMostPainful={true}
                             />
-                        ))}
+                        )}
                     </div>
 
                     <div className="navigation">
@@ -357,7 +397,6 @@ const QuestionnairePageBefore = () => {
                                 className="previous-button"
                             />
                         )}
-
                         {currentPage < totalPages ? (
                             <PrimaryButton
                                 text={t('next')}
@@ -374,10 +413,7 @@ const QuestionnairePageBefore = () => {
                     </div>
 
                     <div className="progress-bar">
-                        <div
-                            className="progress-indicator"
-                            style={{ width: `${progressPercentage}%` }}
-                        ></div>
+                        <div className="progress-indicator" style={{ width: `${progressPercentage}%` }} />
                     </div>
                 </main>
             </div>

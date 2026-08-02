@@ -4,11 +4,10 @@ import asyncio
 from typing import Dict, Any, Optional
 import logging
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TTAPI_ENDPOINT = 'http://localhost:5001/api'  # או כתובת אחרת של השרת שלך
+TTAPI_ENDPOINT = 'http://localhost:5001/api' 
 
 class TTAPIService:
     def __init__(self, base_url: str = TTAPI_ENDPOINT):
@@ -19,7 +18,7 @@ class TTAPIService:
             base_url (str): Base URL for the TTAPI endpoint
         """
         self.base_url = base_url
-        self.timeout = 30  # 30 seconds timeout
+        self.timeout = 30 
         self.session = requests.Session()
         self.session.headers.update({
             'Content-Type': 'application/json'
@@ -44,14 +43,12 @@ class TTAPIService:
             data = {
                 'answers': answers,
                 'prompt': prompt
-            }
-            
+            }  
             response = self.session.post(url, json=data, timeout=self.timeout)
             response.raise_for_status()
-            
             result = response.json()
             logger.info(f"✅ Image request created: {result}")
-            return result  # אמור לכלול requestId
+            return result 
             
         except requests.RequestException as error:
             logger.error(f"❌ Error creating image request: {error}")
@@ -74,10 +71,9 @@ class TTAPIService:
             url = f"{self.base_url}/check-status/{request_id}"
             response = self.session.get(url, timeout=self.timeout)
             response.raise_for_status()
-            
             result = response.json()
             logger.info(f"✅ Image status checked: {result}")
-            return result  # צפוי להכיל status ו-imageUrl אם מוכן
+            return result 
             
         except requests.RequestException as error:
             logger.error(f"❌ Error checking image status: {error}")
@@ -102,7 +98,7 @@ class TTAPIService:
             if status_response.get('status') == 'completed':
                 return status_response.get('imageUrl')
             elif status_response.get('status') == 'processing':
-                return None  # עדיין בעיבוד
+                return None 
             else:
                 raise Exception(f"Unexpected status: {status_response.get('status')}")
                 
@@ -141,8 +137,6 @@ class TTAPIService:
                     raise Exception('Image generation failed')
                 elif attempts >= max_attempts:
                     raise Exception('Max attempts reached waiting for image')
-                
-                # עדיין בעיבוד, המשך לבדוק
                 time.sleep(interval)
                 
             except Exception as error:
@@ -182,8 +176,6 @@ class TTAPIService:
                     raise Exception('Image generation failed')
                 elif attempts >= max_attempts:
                     raise Exception('Max attempts reached waiting for image')
-                
-                # עדיין בעיבוד, המשך לבדוק
                 await asyncio.sleep(interval)
                 
             except Exception as error:
@@ -268,14 +260,12 @@ def create_image_from_answers(answers: Dict[str, Any], prompt: str) -> str:
     Returns:
         str: URL של התמונה המוכנה
     """
-    # יצירת בקשה
     response = ttapi_service.create_image_request(answers, prompt)
     request_id = response.get('requestId')
     
     if not request_id:
         raise Exception('No request ID received')
-    
-    # המתנה לתמונה
+
     image_url = ttapi_service.wait_for_image(request_id)
     return image_url
 
@@ -290,13 +280,11 @@ async def create_image_from_answers_async(answers: Dict[str, Any], prompt: str) 
     Returns:
         str: URL של התמונה המוכנה
     """
-    # יצירת בקשה
     response = ttapi_service.create_image_request(answers, prompt)
     request_id = response.get('requestId')
     
     if not request_id:
         raise Exception('No request ID received')
     
-    # המתנה לתמונה (אסינכרונית)
     image_url = await ttapi_service.wait_for_image_async(request_id)
     return image_url 

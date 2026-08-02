@@ -1,9 +1,10 @@
-/* 🎨 General Page Styling */
+/* General Page Styling */
 :root {
   --primary-color: #11564F;
   --secondary-color: #A7CAB680;
   --text-color: #333;
-  --background-color: #EEF0ED; /* Changed to match IAS page */
+  --background-color: #EEF0ED;
+  /* Changed to match IAS page */
   --font-family: 'Roboto', Arial, sans-serif;
   --font-size-base: 16px;
   --font-size-heading: 32px;
@@ -14,7 +15,8 @@
   --padding-base: 20px;
   --padding-large: 40px;
   --margin-base: 15px;
-  --container-width: 1200px; /* Increased width */
+  --container-width: 1200px;
+  /* Increased width */
 }
 
 * {
@@ -31,7 +33,7 @@ body {
   /* Removed the flex centering that was causing layout issues */
 }
 
-/* 📦 Container - Only apply to certain pages, not IAS or Landing */
+/* Container - Only apply to certain pages, not IAS or Landing */
 .app-container {
   width: 100%;
   max-width: var(--container-width);
@@ -43,7 +45,7 @@ body {
 }
 
 /* The rest of your styles remain the same */
-/* ❓ Question Styling */
+/* Question Styling */
 .question {
   display: flex;
   flex-direction: column;
@@ -62,7 +64,7 @@ body {
   background-color: var(--secondary-color);
 }
 
-/* 📊 Likert Scale - Modern Look */
+/* Likert Scale - Modern Look */
 .likert-scale {
   display: flex;
   flex-direction: column;
@@ -109,7 +111,7 @@ body {
   color: white;
 }
 
-/* 🏷️ Scale Labels */
+/* Scale Labels */
 .scale-labels {
   display: flex;
   align-items: center;
@@ -132,7 +134,7 @@ body {
   text-align: right;
 }
 
-/* 📱 Responsive Design */
+/* Responsive Design */
 @media (max-width: 768px) {
   .app-container {
     padding: 25px;
@@ -166,7 +168,7 @@ body {
   }
 }
 
-/* 🖱️ Navigation Buttons */
+/* Navigation Buttons */
 .navigation {
   display: flex;
   justify-content: space-between;
@@ -190,7 +192,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ⬅️ Previous Button */
+/* Previous Button */
 .app-button.previous {
   background: linear-gradient(135deg, #bbb, #999);
   color: white;
@@ -203,7 +205,7 @@ body {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* ➡️ Next Button */
+/* Next Button */
 .app-button.next {
   background: linear-gradient(135deg, var(--primary-color), #0d4540);
   color: white;
@@ -216,7 +218,7 @@ body {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* ✅ Disabled Button State */
+/* Disabled Button State */
 .app-button:disabled {
   background: #ccc;
   color: #666;
@@ -226,7 +228,7 @@ body {
   opacity: 0.7;
 }
 
-/* 📊 Progress Bar */
+/* Progress Bar */
 .progress-container {
   width: 100%;
   background: #e0e0e0;
@@ -244,7 +246,7 @@ body {
   border-radius: var(--border-radius);
 }
 
-/* 📊 Progress Bar - Hover Effect */
+/* Progress Bar - Hover Effect */
 .progress-container:hover {
   background-color: #d4d4d4;
 }

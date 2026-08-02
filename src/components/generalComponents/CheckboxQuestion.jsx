@@ -5,17 +5,23 @@ import './CheckboxQuestion.css';
 const CheckboxQuestion = ({
     id,
     text,
-    selectedValues = [], // Default to an empty array
-    other = "", // Default to an empty string
+    selectedValues = [],
+    other = "",
     onSelect,
     onOther,
     options,
+    showOther = true,
+    singleSelect = false,
 }) => {
     const [otherSelected, setOtherSelected] = useState(false)
     const { language } = useLanguage();
 
 
     const handleCheckboxChange = (value) => {
+        if (singleSelect) {
+            onSelect(id, [value]);
+            return;
+        }
         if (value === 'Other') {
             setOtherSelected(!otherSelected);
         }
@@ -52,23 +58,25 @@ const CheckboxQuestion = ({
                         <label htmlFor={option}>{option}</label>
                     </div>
                 ))}
-                <div className="option-checkbox other-option">
-                    <input
-                        type="checkbox"
-                        id="Other"
-                        checked={otherSelected}
-                        onChange={() => handleCheckboxChange('Other')}
-                    />
-                    <label htmlFor="Other">
+                {showOther && (
+                    <div className="option-checkbox other-option">
                         <input
-                            type="text"
-                            value={other}
-                            onChange={onOtherChange}
-                            placeholder="Other..."
-                            className="other-input"
-                            aria-label="Other input"
-                        /></label>
-                </div>
+                            type="checkbox"
+                            id="Other"
+                            checked={otherSelected}
+                            onChange={() => handleCheckboxChange('Other')}
+                        />
+                        <label htmlFor="Other">
+                            <input
+                                type="text"
+                                value={other}
+                                onChange={onOtherChange}
+                                placeholder="Other..."
+                                className="other-input"
+                                aria-label="Other input"
+                            /></label>
+                    </div>
+                )}
             </div>
         </div>
     );

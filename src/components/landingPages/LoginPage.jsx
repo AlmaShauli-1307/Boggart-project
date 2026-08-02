@@ -36,10 +36,7 @@ const LoginPage = () => {
             const data = await response.json();
 
             if (data.success) {
-                // שמירת המשתמש ב-sessionStorage
                 sessionStorage.setItem('user', JSON.stringify(data.user));
-
-                // מעבר לדף הבית עם המידע האם המשתמש הוא אדמין
                 navigate('/home-login', {
                     state: { isAdmin: data.user.role === 'admin' }
                 });

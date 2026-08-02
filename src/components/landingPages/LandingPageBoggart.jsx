@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
 import './LandingPageBoggart.css';
-import logo from '../../images/logo.png'; // Adjust path as needed
-import PrimaryButton from '../generalComponents/PrimaryButton'; // Import the reusable button component
+import logo from '../../images/logo.png';
+import PrimaryButton from '../generalComponents/PrimaryButton';
 
 const LandingPage = () => {
     const navigate = useNavigate();
     const { t, language } = useLanguage();
 
     const handleStartClick = () => {
-        // Navigate to the IAS page
         navigate('/questionnaire-boggart');
     };
 

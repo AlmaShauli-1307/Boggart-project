@@ -3,7 +3,7 @@ import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
 import { useNavigate } from 'react-router-dom';
 import './CompletionPage.css';
-import logo from '../../images/logo.png'; // Adjust path as needed
+import logo from '../../images/logo.png'; 
 import PrimaryButton from '../generalComponents/PrimaryButton';
 
 const CompletionPage = () => {

@@ -1,6 +1,3 @@
-/* IntroductionPage.css */
-
-/* Import La Belle Aurore font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&family=Heebo&family=Playpen+Sans+Hebrew&display=swap');
 
 /* Design tokens based on the screenshot */
@@ -92,9 +89,24 @@ body {
     margin-bottom: 30px;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .intro-title {
     font-family: 'Playpen Sans Hebrew', sans-serif !important;
+}
+
+/* איחוד כל הפונטים לעברית תחת סלקטור אחד */
+[lang="he"],
+[lang="he"] body,
+[lang="he"] button,
+[lang="he"] input,
+[lang="he"] textarea {
+    font-family: 'Heebo', 'Playpen Sans Hebrew', sans-serif !important;
+}
+
+/* טיפול ספציפי בכותרת אם אתה עדיין רוצה פונט שונה עבורה בעברית */
+[lang="he"] .intro-title {
+    font-family: 'Playpen Sans Hebrew', sans-serif !important;
+    font-weight: 700;
+    /* או המשקל המועדף עליך */
 }
 
 /* Consent form styling */
@@ -111,7 +123,6 @@ body {
     text-align: justify;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .consent-header p {
     font-family: 'Heebo', sans-serif !important;
 }
@@ -130,7 +141,6 @@ body {
     line-height: 1.6;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .consent-conten p {
     font-family: 'Heebo', sans-serif !important;
 }
@@ -152,7 +162,6 @@ body {
     text-align: justify;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .consent-content li {
     font-family: 'Heebo', sans-serif !important;
 }
@@ -190,12 +199,10 @@ html[dir="rtl"] .consent-list li::before {
     padding: 15px 0;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .consent-declaration {
     font-family: 'Heebo', sans-serif !important;
 }
 
-/* Form section */
 .intro-form-section {
     width: 100%;
     max-width: 500px;
@@ -219,7 +226,6 @@ html[dir="rtl"] .consent-list li::before {
     color: var(--color-text);
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .form-label {
     font-family: 'Heebo', sans-serif !important;
 }
@@ -235,7 +241,6 @@ html[dir="rtl"] .consent-list li::before {
     transition: border-color 0.3s ease;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .form-input {
     font-family: 'Heebo', sans-serif !important;
 }
@@ -250,7 +255,6 @@ html[dir="rtl"] .consent-list li::before {
     font-style: italic;
 }
 
-/* Checkbox styling */
 .checkbox-group {
     display: flex;
     align-items: flex-start;
@@ -268,7 +272,6 @@ html[dir="rtl"] .consent-list li::before {
     line-height: 1.4;
 }
 
-/* פונט ספציפי לעברית */
 [lang="he"] .checkbox-label {
     font-family: 'Heebo', sans-serif !important;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
 import './LoadingPage.css';
-import logo from '../../images/logo.png'; // Adjust path as needed
+import logo from '../../images/logo.png';
 
 const LoadingPage = () => {
     const { t } = useLanguage();

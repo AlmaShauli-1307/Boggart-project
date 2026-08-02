@@ -25,13 +25,12 @@ const DetailedQuestionnairePage = () => {
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedBodyParts, setSelectedBodyParts] = useState([]);
-    const [form1Id, setForm1Id] = useState(null); // הוסף state לform1Id
+    const [form1Id, setForm1Id] = useState(null);
     const [intensityFromForm1, setIntensityFromForm1] = useState(null);
     const location = useLocation();
     const isDemo = location.state?.isDemo || false;
     const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-    // 📥 קבל את form1Id מכמה מקורות
     useEffect(() => {
         if (isDemo) {
             console.log('🎭 Demo mode - skipping form1Id check');
@@ -56,8 +55,6 @@ const DetailedQuestionnairePage = () => {
         }
     }, [searchParams, navigate, isDemo]);
 
-
-    // פונקציה לקבלת הID האחרון מהשרת
     const getLatestForm1Id = async () => {
 
         try {
@@ -106,7 +103,6 @@ const DetailedQuestionnairePage = () => {
             if (currentPageQuestions.length > 0) {
                 const pageInfo = currentPageQuestions[0];
 
-                // רק עדכן את ההוראות - אל תשני כלום אחר
                 setPageData(prev => ({
                     ...prev,
                     instructions: language === 'he'
@@ -115,7 +111,7 @@ const DetailedQuestionnairePage = () => {
                 }));
             }
         }
-    }, [language]); // רץ כשהשפה משתנה
+    }, [language]);
 
     const updatePageData = (data, page) => {
         const pageQuestions = data.filter(q => Number(q.Page) === page);
@@ -142,16 +138,23 @@ const DetailedQuestionnairePage = () => {
             return;
         }
 
-        const allAnswered = currentPageQuestions.every(q =>
-            responses[q.question_ID] !== undefined && responses[q.question_ID] !== null
-        );
-
+        const allAnswered = currentPageQuestions.every(q => {
+            if (q.question_ID === 117) {
+                return selectedBodyParts.length > 0;
+            }
+            return responses[q.question_ID] !== undefined && responses[q.question_ID] !== null;
+        });
         setAllQuestionsAnswered(allAnswered);
     }, [responses, currentPage, questions]);
 
     useEffect(() => {
-        handleOptionSelect(63, selectedBodyParts);
+        handleOptionSelect(117, selectedBodyParts);
     }, [selectedBodyParts]);
+
+    useEffect(() => {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }, [currentPage]);
 
     const getCurrentPageQuestions = () => {
         return questions.filter(q => Number(q.Page) === currentPage);
@@ -171,6 +174,7 @@ const DetailedQuestionnairePage = () => {
                 updatePageData(questions, prevPage);
                 return prevPage;
             });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -201,6 +205,7 @@ const DetailedQuestionnairePage = () => {
                 updatePageData(questions, nextPage);
                 return nextPage;
             });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -250,7 +255,6 @@ const DetailedQuestionnairePage = () => {
             console.log('✅ Form2 - Response from server:', data);
 
             if (response.ok) {
-                // התחל ליצור תמונה ברקע מיד
                 if (data.prompt) {
                     startImageGeneration(data.prompt, form1Id);
                 }
@@ -279,7 +283,6 @@ const DetailedQuestionnairePage = () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    //answers: responses,
                     prompt: prompt,
                     form1Id: form1Id
                 })

@@ -8,12 +8,9 @@ module.exports = function (app) {
             target: 'http://localhost:5000',
             changeOrigin: true,
             secure: false,
-            // רק אם זה באמת מתחיל עם אחד מהנתיבים האלה
             pathRewrite: function (path, req) {
                 return path;
             }
         })
     );
-
-    // ✅ כל השאר (CSV, תמונות, manifest) נשאר ב-React!
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from './LanguageContext';
 
-const LanguageButton = ({ isInNavbar }) => { // הוספת המאפיין כאן
+const LanguageButton = ({ isInNavbar }) => {
     const { language, buttonLanguage } = useLanguage();
 
     const handleLanguageChange = () => {
@@ -13,7 +13,6 @@ const LanguageButton = ({ isInNavbar }) => { // הוספת המאפיין כאן
     };
 
     const buttonStyle = {
-        // אם הוא ב-NavBar, המיקום יהיה רגיל (static). אם לא, הוא יהיה fixed
         position: isInNavbar ? 'static' : 'fixed',
         top: isInNavbar ? 'auto' : '20px',
         right: isInNavbar ? 'auto' : '20px',
@@ -25,7 +24,7 @@ const LanguageButton = ({ isInNavbar }) => { // הוספת המאפיין כאן
         fontSize: '14px',
         fontWeight: 'bold',
         zIndex: 1000,
-        padding: isInNavbar ? '8px 16px' : '12px 25px' // עיצוב קצת יותר עדין ל-NavBar
+        padding: isInNavbar ? '8px 16px' : '12px 25px'
     };
 
     return (

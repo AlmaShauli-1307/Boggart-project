@@ -1,6 +1,6 @@
 {
   "appService.showBuildDuringDeployPrompt": false,
-  "appService.defaultWebAppToDeploy": "",
+  "appService.defaultWebAppToDeploy": "/subscriptions/d2ff6d9c-1cbb-4ebd-964f-84b973e67081/resourceGroups/boggart-rg/providers/Microsoft.Web/sites/Boggart-backend",
   "appService.deploySubpath": "backend",
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",

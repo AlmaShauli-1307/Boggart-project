@@ -29,16 +29,13 @@ const MeetYourPain = () => {
     const [error, setError] = useState(null);
     const canvasRef = useRef(null);
     const API_BASE_URL = process.env.REACT_APP_API_URL;
-
-    // Get data from previous page (if coming from questionnaire)
-    const answers = location.state?.answers || {}; // תשובות אישיות
-    const detailedAnswers = location.state?.detailedAnswers || {}; // תשובות מפורטות
-    const allAnswers = location.state?.allAnswers || { ...detailedAnswers, ...answers }; // כל התשובות
+    const answers = location.state?.answers || {};
+    const detailedAnswers = location.state?.detailedAnswers || {};
+    const allAnswers = location.state?.allAnswers || { ...detailedAnswers, ...answers };
     const prompt = location.state?.prompt || '';
     const form1Id = location.state?.form1Id || null;
     const isDemo = location.state?.isDemo || false;
 
-    // הוסף debug בתחילת הקומפוננט:
     console.log("🔍 MeetYourPain Debug:");
     console.log("- answers (personal):", answers);
     console.log("- detailedAnswers:", detailedAnswers);
@@ -48,8 +45,6 @@ const MeetYourPain = () => {
     console.log("- showImageViewer:", showImageViewer);
     console.log("- isLoading:", isLoading);
 
-
-    // פונקציה לחיתוך דינמי של התמונה ל-4 חלקים (זהה ל-MidjourneyViewer)
     const splitImageIntoQuadrants = (img) => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
@@ -89,20 +84,18 @@ const MeetYourPain = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsLoading(false);
-            // ✅ הצג את מציג התמונות אם יש נתונים כלשהם
             if (Object.keys(allAnswers).length > 0 || prompt) {
                 setShowImageViewer(true);
                 console.log("✅ Showing image viewer - has data");
             } else {
                 console.log("⚠️ No data found, but continuing anyway");
-                setShowImageViewer(true); // הצג בכל מקרה
+                setShowImageViewer(true);
             }
         }, 5000);
 
         return () => clearTimeout(timer);
     }, [allAnswers, prompt]);
 
-    // פונקציה לטעינת תמונה עם תמיכה ב-proxy (מותאמת מ-MidjourneyViewer)
     const loadImageAndProcess = (imageSrc, retryCount = 0, maxRetries = 3) => {
         const img = new Image();
         img.crossOrigin = "anonymous";
@@ -140,7 +133,6 @@ const MeetYourPain = () => {
             console.error("❌ All image loading attempts failed");
             setError(`Failed to load image after ${maxRetries + 1} attempts.`);
 
-            // יצירת תמונות ריקות לדוגמה
             const emptyQuadrants = Array(4).fill().map((_, index) => {
                 const canvas = document.createElement('canvas');
                 canvas.width = 200;
@@ -163,7 +155,6 @@ const MeetYourPain = () => {
         img.src = imageSrc;
     };
 
-    // חכה לתמונה שכבר התחילה להיווצר ב-DetailedQuestionnaire
     useEffect(() => {
         const waitForExistingImage = async () => {
             if (!form1Id || !showImageViewer) return;
@@ -175,7 +166,6 @@ const MeetYourPain = () => {
 
                 console.log("⏳ Waiting for image that started in background for form1Id:", form1Id);
 
-                // חכה לתמונה שכבר התחילה ברקע ב-DetailedQuestionnaire
                 const imageUrl = await TTAPIService.waitForImageByFormId(form1Id, 25, 5000);
 
                 if (imageUrl) {
@@ -188,8 +178,6 @@ const MeetYourPain = () => {
             } catch (waitError) {
                 console.error('Error waiting for background image:', waitError);
                 setError(`Background image not ready. Using sample image.`);
-
-                // השתמש בתמונת גיבוי
                 console.log("🔄 Using sample image as fallback");
                 loadImageAndProcess('/sample_images/pain_sample_1.png');
             } finally {
@@ -211,7 +199,6 @@ const MeetYourPain = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsLoading(false);
-            // אם יש נתונים מהשאלון, תעבור ישירות לתצוגת התמונות
             if (answers && Object.keys(answers).length > 0) {
                 setShowImageViewer(true);
             }
@@ -227,7 +214,6 @@ const MeetYourPain = () => {
 
     const handleNextClick = async () => {
         setSelectedImageIndex(currentImageIndex);
-        // שמור את הבחירה בבסיס הנתונים
         try {
             await fetch(`${API_BASE_URL}/api/save-selected-image`, {
                 method: 'POST',
@@ -253,13 +239,10 @@ const MeetYourPain = () => {
         });
     };
 
-    // שונה לעבוד כמו regenerate ב-MidjourneyViewer
     const handleChangeClick = () => {
-        // במקום לטעון תמונה חדשה, טען מחדש את הדף (כמו ב-MidjourneyViewer)
         window.location.reload();
     };
 
-    // פונקציות ניווט בין תמונות (מתווספות כמו ב-MidjourneyViewer)
     const nextImage = () => {
         setCurrentImageIndex((prevIndex) =>
             prevIndex === croppedImages.length - 1 ? 0 : prevIndex + 1
@@ -272,7 +255,6 @@ const MeetYourPain = () => {
         );
     };
 
-    // פונקציה להורדת התמונה הנוכחית
     const handleDownloadImage = () => {
         const link = document.createElement('a');
         link.href = croppedImages[currentImageIndex];
@@ -286,7 +268,6 @@ const MeetYourPain = () => {
         return <LoadingPage />;
     }
 
-    // אם צריך להציג את מציג התמונות (אחרי השאלון)
     if (showImageViewer) {
         return (
             <main className="landing-meet-boggart-page" >
@@ -302,14 +283,12 @@ const MeetYourPain = () => {
                         <h2 className="welcome-meet-boggart-title">{t('meetYourPainTitle')}</h2>
                         <p className='welcome-description'>{t('meetYourPainDescription')}</p>
 
-                        {/* הוספת אינדיקטור טעינה כמו ב-MidjourneyViewer */}
                         {isLoadingImage && (
                             <div className="loading-status">
                                 <div className="loading-spinner"></div>
                             </div>
                         )}
 
-                        {/* הוספת הודעת שגיאה מפורטת כמו ב-MidjourneyViewer */}
                         {error && (
                             <div className="error-message">
                                 <p>{error}</p>

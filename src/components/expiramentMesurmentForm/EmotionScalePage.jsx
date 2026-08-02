@@ -2,7 +2,7 @@ import React from 'react';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
 import './EmotionScalePage.css';
-import emotionScaleImage from '../../images/emotion-scale.png'; // Add your emotion scale image
+import emotionScaleImage from '../../images/emotion-scale.png';
 
 const EmotionScalePage = ({
     questions,
@@ -38,7 +38,7 @@ const EmotionScalePage = ({
                             <table className="rating-table wide-scale">
                                 <tbody>
                                     <tr>
-                                        {Array.from({ length: 11 }, (_, i) => i).map(value => (
+                                        {Array.from({ length: 9 }, (_, i) => i + 1).map(value => (
                                             <td
                                                 key={`${question.id}-${value}`}
                                                 className={`rating-cell ${responses[question.id] === value ? 'selected' : ''}`}

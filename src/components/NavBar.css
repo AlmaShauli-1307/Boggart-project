@@ -10,12 +10,10 @@
     height: 50px;
 }
 
-/* ה-NavBar שמתחיל אחרי הסמל ונמשך עד הסוף ימינה */
 .top-navbar-short {
     position: fixed;
     top: 0;
     left: 170px;
-    /* הרווח שמשאיר מקום לסמל בצד שמאל */
     right: 0;
     height: 70px;
     background-color: #ffffff;

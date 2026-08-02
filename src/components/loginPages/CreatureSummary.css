@@ -1,4 +1,3 @@
-/* --- הגדרות בסיס ומכולה --- */
 .summary-page-wrapper {
     min-height: 100vh;
     background-color: #f4f7f6;
@@ -10,7 +9,6 @@
     margin: 0 auto;
 }
 
-/* --- ניהול כיווניות גלובלי (הקלאסים שנוספים לדיב הראשי) --- */
 .rtl-layout {
     direction: rtl;
 }
@@ -19,7 +17,6 @@
     direction: ltr;
 }
 
-/* --- כפתורי פעולה וכותרת --- */
 .summary-actions-top {
     display: flex;
     justify-content: space-between;
@@ -71,7 +68,6 @@
     cursor: not-allowed;
 }
 
-/* הפיכת סדר הכפתורים באנגלית כדי שה-PDF יישאר בשמאל והחזור בימין */
 .ltr-layout .summary-actions-top {
     flex-direction: row-reverse;
 }
@@ -85,7 +81,6 @@
     font-weight: bold;
 }
 
-/* --- בחירת תאריכים --- */
 .date-selection-container {
     display: flex;
     flex-direction: column;
@@ -125,7 +120,6 @@
     outline: none;
 }
 
-
 .range-error-row {
     width: 100%;
     text-align: center;
@@ -138,7 +132,6 @@
     padding-top: 5px;
 }
 
-/* --- עיצוב הטבלה (כאן קורה ההיפוך) --- */
 .diary-table-container {
     background: white;
     border-radius: 15px;
@@ -149,24 +142,20 @@
 .diary-table {
     width: 100%;
     border-collapse: collapse;
-    /* הסרנו direction: rtl קשיח מכאן */
 }
 
-/* הפיכת השורות לגמישות */
 .diary-table thead tr,
 .diary-table tbody tr {
     display: flex;
     width: 100%;
 }
 
-/* הגדרת התאים */
 .diary-table th,
 .diary-table td {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* מרכוז התוכן בתוך התא */
     padding: 15px;
     border-bottom: 1px solid #eee;
 }
@@ -177,21 +166,16 @@
     font-size: 1rem;
 }
 
-/* --- לוגיקת ההיפוך הפיזי של העמודות --- */
-
-/* בעברית: העמודה הראשונה (יום) תהיה בימין */
 .rtl-layout .diary-table thead tr,
 .rtl-layout .diary-table tbody tr {
     flex-direction: row-reverse;
 }
 
-/* באנגלית: העמודה הראשונה (day) תהיה בשמאל */
 .ltr-layout .diary-table thead tr,
 .ltr-layout .diary-table tbody tr {
     flex-direction: row;
 }
 
-/* יישור טקסט לפי שפה */
 .rtl-layout .diary-table th,
 .rtl-layout .diary-table td {
     text-align: right;
@@ -202,7 +186,6 @@
     text-align: left;
 }
 
-/* --- אלמנטים בתוך הטבלה --- */
 .diary-thumb {
     width: 65px;
     height: 65px;
@@ -229,4 +212,11 @@
     font-family: 'Courier New', Courier, monospace;
     color: #6a9955;
     font-weight: bold;
+}
+
+.question-text {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #333;
 }

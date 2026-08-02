@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
 import { getNames } from 'country-list';
@@ -15,17 +15,18 @@ const PersonalQuestionnaire = () => {
     const [responses, setResponses] = useState({});
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(""); // שדה להצגת שגיאות (כמו סיסמה תפוסה)
+    const [errorMessage, setErrorMessage] = useState("");
+    const [currentStep, setCurrentStep] = useState(1);
+    const totalSteps = 2;
     const location = useLocation();
     const form1Id = location.state?.form1Id || null;
     const promptText = location.state?.prompt || "";
 
-    const countryNames = Object.values(getNames());
     const languageNames = languages.getAllNames();
 
-    const translateOption = (optionKey) => {
+    const translateOption = useMemo(() => (optionKey) => {
         const translations = {
-            'Male': t('male'), 'Female': t('female'), 'Non-binary / Third gender': t('nonBinary'),
+            'Male': t('male'), 'Female': t('female'), 'Intersex': t('intersex'),
             'Other': t('other'), 'Prefer not to say': t('preferNotToSay'),
             'Judaism': t('judaism'), 'Islam': t('islam'), 'Christianity': t('christianity'),
             'Hinduism': t('hinduism'), 'Buddhism': t('buddhism'), 'Non-religious / Atheist': t('nonReligious'),
@@ -35,12 +36,39 @@ const PersonalQuestionnaire = () => {
             'Primary education': t('primaryEducation'), 'High school diploma or equivalent': t('highSchool'),
             'Some college / vocational training': t('someCollege'), "Bachelor's degree": t('bachelors'),
             "Master's degree": t('masters'), 'Doctoral degree (PhD)': t('doctorate'),
+            'Full-time': language === 'he' ? 'משרה מלאה' : 'Full-time',
+            'Part-time': language === 'he' ? 'משרה חלקית' : 'Part-time',
+            'Student': language === 'he' ? 'סטודנט/ית' : 'Student',
+            'Unemployed': language === 'he' ? 'מובטל/ת' : 'Unemployed',
+            'Retired': language === 'he' ? 'גמלאי' : 'Retired',
+            'Single': language === 'he' ? 'רווק/ה' : 'Single',
+            'Partnered': language === 'he' ? 'בזוגיות' : 'Partnered',
+            'Married': language === 'he' ? 'נשוי/אה' : 'Married',
+            'Separated or divorced': language === 'he' ? 'פרוד/ה או גרוש/ה' : 'Separated or divorced',
+            'Widowed': language === 'he' ? 'אלמן/ה' : 'Widowed',
+            '3–6 months': language === 'he' ? '3–6 חודשים' : '3–6 months',
+            '6–12 months': language === 'he' ? '6–12 חודשים' : '6–12 months',
+            '1–3 years': language === 'he' ? '1–3 שנים' : '1–3 years',
+            '3–10 years': language === 'he' ? '3–10 שנים' : '3–10 years',
+            '>10 years': language === 'he' ? 'יותר מ-10 שנים' : '>10 years',
+            'Lower back': language === 'he' ? 'גב תחתון' : 'Lower back',
+            'Neck': language === 'he' ? 'צוואר' : 'Neck',
+            'Head or migraine': language === 'he' ? 'ראש או מיגרנה' : 'Head or migraine',
+            'Limbs': language === 'he' ? 'גפיים' : 'Limbs',
+            'Widespread': language === 'he' ? 'כאב נרחב' : 'Widespread',
+            'Abdomen or pelvis': language === 'he' ? 'בטן או אגן' : 'Abdomen or pelvis',
+            'Analgesics': language === 'he' ? 'משככי כאבים' : 'Analgesics',
+            'Antidepressants': language === 'he' ? 'נוגדי דיכאון' : 'Antidepressants',
+            'Anxiolytics': language === 'he' ? 'נוגדי חרדה' : 'Anxiolytics',
+            'Sleep aids': language === 'he' ? 'תרופות שינה' : 'Sleep aids',
+            'Opioids': language === 'he' ? 'אופיואידים' : 'Opioids',
+            'Yes': language === 'he' ? 'כן' : 'Yes',
+            'No': language === 'he' ? 'לא' : 'No',
         };
         return translations[optionKey] || optionKey;
-    };
+    }, [language, t]);
 
-    // מערך השאלות המעודכן עם שם משתמש וסיסמה בראש הרשימה
-    const questions = [
+    const step1Questions = useMemo(() => [
         {
             id: "username",
             text: language === 'he' ? "שם משתמש" : "Username",
@@ -53,71 +81,154 @@ const PersonalQuestionnaire = () => {
             options: [],
             questionType: "password",
         },
-        { id: 82, text: t('name'), options: [], questionType: "shortText" },
-        { id: 83, text: t('date'), options: [], questionType: "date" },
-        { id: 84, text: t('age'), options: [], questionType: "number" },
+        { id: 136, text: t('name'), options: [], questionType: "shortText" },
+        { id: 137, text: t('date'), options: [], questionType: "date" },
+        { id: 138, text: t('age'), options: [], questionType: "number" },
         {
-            id: 85,
-            text: t('gender'),
-            options: ["Male", "Female", "Non-binary / Third gender", "Other", "Prefer not to say"]
+            id: 139,
+            text: t('sex'),
+            options: ["Male", "Female", "Intersex", "Prefer not to say"]
                 .map(opt => ({ value: opt, label: translateOption(opt) })),
             questionType: "dropdown",
         },
         {
-            id: 86,
+            id: 140,
             text: t('religion'),
-            options: ["Judaism", "Islam", "Christianity", "Hinduism", "Buddhism", "Non-religious / Atheist", "Prefer not to say", "Other"]
-                .map(opt => ({ value: opt, label: translateOption(opt) })),
-            questionType: "dropdown",
+            options: [],
+            questionType: "shortText",
         },
         {
-            id: 87,
+            id: 141,
             text: t('nationality'),
-            options: countryNames.map(country => ({ value: country, label: country })),
-            questionType: "dropdown",
+            options: [],
+            questionType: "shortText",
         },
         {
-            id: 88,
+            id: 142,
             text: t('motherTongue'),
             options: languageNames.map(lang => ({ value: lang, label: lang })),
             questionType: "dropdown",
         },
         {
-            id: 89,
+            id: 143,
             text: t('socioEconomic'),
             options: ["Lower income", "Lower-middle income", "Middle income", "Upper-middle income", "Upper income", "Prefer not to say"]
                 .map(opt => ({ value: opt, label: translateOption(opt) })),
             questionType: "dropdown",
         },
         {
-            id: 90,
+            id: 144,
             text: t('education'),
             options: ["No formal schooling", "Primary education", "High school diploma or equivalent", "Some college / vocational training", "Bachelor's degree", "Master's degree", "Doctoral degree (PhD)", "Prefer not to say"]
                 .map(opt => ({ value: opt, label: translateOption(opt) })),
             questionType: "dropdown",
         },
+    ], [language, t, translateOption]);
+
+    const step2Questions = useMemo(() => [
         {
-            id: 91,
+            id: 145,
+            text: t('employment'),
+            options: ['Full-time', 'Part-time', 'Student', 'Unemployed', 'Retired', 'Prefer not to say']
+                .map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "dropdown",
+        },
+        {
+            id: 146,
+            text: t('relationship'),
+            options: ['Single', 'Partnered', 'Married', 'Separated or divorced', 'Widowed', 'Prefer not to say']
+                .map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "dropdown",
+        },
+        {
+            id: 147,
+            text: t('chronicPain'),
+            options: ['Yes', 'No'].map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "yesno",
+        },
+        {
+            id: 148,
+            text: t('painDuration'),
+            options: ['3–6 months', '6–12 months', '1–3 years', '3–10 years', '>10 years']
+                .map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "dropdown",
+        },
+        {
+            id: 149,
+            text: t('painLocation'),
+            options: ['Lower back', 'Neck', 'Head or migraine', 'Limbs', 'Widespread', 'Abdomen or pelvis', 'Other']
+                .map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "dropdown",
+        },
+        {
+            id: 150,
+            text: t('medication'),
+            options: ['Yes', 'No'].map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "yesno",
+        },
+        {
+            id: 151,
+            text: t('medicationType'),
+            options: ['Analgesics', 'Antidepressants', 'Anxiolytics', 'Sleep aids', 'Opioids', 'Other']
+                .map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "dropdown",
+        },
+        {
+            id: 152,
+            text: t('psychological'),
+            options: ['Yes', 'No'].map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "yesno",
+        },
+        {
+            id: 153,
+            text: t('medicalFollowUp'),
+            options: ['Yes', 'No'].map(opt => ({ value: opt, label: translateOption(opt) })),
+            questionType: "yesno",
+        },
+        {
+            id: 154,
             text: t('painDiagnosis'),
             options: [],
             questionType: "shortText",
         },
-    ];
+    ], [language, t, translateOption]);
+
+    const questions = currentStep === 1 ? step1Questions : step2Questions;
+
+    const optionalQuestionIds = [155];
+
+    const step1RequiredIds = step1Questions.map(q => q.id);
+    const step2RequiredIds = step2Questions
+        .filter(q => !optionalQuestionIds.includes(q.id))
+        .map(q => q.id);
+
+    const isStep1Complete = step1RequiredIds.every(id =>
+        responses[id] !== undefined && responses[id] !== null && responses[id] !== ""
+    );
+
+    const isStep2Complete = step2RequiredIds.every(id =>
+        responses[id] !== undefined && responses[id] !== null && responses[id] !== ""
+    );
 
     useEffect(() => {
-        const allAnswered = questions.every(q =>
-            q.id === 91 ||
-            (responses[q.id] !== undefined && responses[q.id] !== null && responses[q.id] !== "")
-        );
-        setAllQuestionsAnswered(allAnswered);
-    }, [responses]);
+        setAllQuestionsAnswered(currentStep === 1 ? isStep1Complete : isStep2Complete);
+    }, [responses, currentStep]);
 
     const handleOptionSelect = (questionId, value) => {
-        setErrorMessage(""); // איפוס שגיאה כשמתחילים להקליד
-        setResponses({
-            ...responses,
-            [questionId]: value
-        });
+        setErrorMessage("");
+        setResponses(prev => ({ ...prev, [questionId]: value }));
+    };
+
+    const handleNext = () => {
+        if (isStep1Complete) {
+            setCurrentStep(2);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    const handleBack = () => {
+        setCurrentStep(1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleSubmit = async () => {
@@ -131,9 +242,8 @@ const PersonalQuestionnaire = () => {
         setIsSubmitting(true);
         setErrorMessage("");
         const API_BASE_URL = process.env.REACT_APP_API_URL;
-        
+
         try {
-            // שימוש בכתובת לוקלית לבדיקה
             const response = await fetch(`${API_BASE_URL}/submit-personal-info`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -174,6 +284,92 @@ const PersonalQuestionnaire = () => {
         setIsSubmitting(false);
     };
 
+    const renderQuestion = (question) => {
+        if (question.questionType === "shortText" || question.questionType === "password") {
+            return (
+                <div key={question.id} className="field-wrapper">
+                    <label className="field-label">{question.text}</label>
+                    <input
+                        id={question.id}
+                        type={question.questionType === "password" ? "password" : "text"}
+                        className="input-personal-question-field"
+                        value={responses[question.id] || ''}
+                        onChange={(e) => handleOptionSelect(question.id, e.target.value)}
+                        style={{ textAlign: language === 'he' ? 'right' : 'left' }}
+                    />
+                </div>
+            );
+        }
+        else if (question.questionType === "number") {
+            return (
+                <div key={question.id} className="field-wrapper">
+                    <label className="field-label">{question.text}</label>
+                    <input
+                        id={question.id}
+                        type="number"
+                        className="input-personal-question-field"
+                        value={responses[question.id] || ''}
+                        onChange={(e) => handleOptionSelect(question.id, e.target.value)}
+                        min="0"
+                        style={{ textAlign: language === 'he' ? 'right' : 'left' }}
+                    />
+                </div>
+            );
+        }
+        else if (question.questionType === "date") {
+            return (
+                <div key={question.id} className="field-wrapper">
+                    <label className="field-label">{question.text}</label>
+                    <input
+                        id={question.id}
+                        type="text"
+                        className="input-personal-question-field"
+                        value={responses[question.id] || ''}
+                        onChange={(e) => handleOptionSelect(question.id, e.target.value)}
+                        style={{ textAlign: language === 'he' ? 'right' : 'left' }}
+                    />
+                </div>
+            );
+        }
+        else if (question.questionType === "dropdown") {
+            return (
+                <div key={question.id} className="field-wrapper">
+                    <label className="field-label">{question.text}</label>
+                    <CustomStyledSelect
+                        question={{ ...question, text: '' }}
+                        value={responses[question.id]}
+                        onChange={handleOptionSelect}
+                    />
+                </div>
+            );
+        }
+        else if (question.questionType === "yesno") {
+            return (
+                <div key={question.id} className="field-wrapper">
+                    <label className="field-label">{question.text}</label>
+                    <div className="rating-table-container">
+                        <table className="rating-table">
+                            <tbody>
+                                <tr>
+                                    {question.options.map(opt => (
+                                        <td
+                                            key={opt.value}
+                                            className={`rating-cell ${responses[question.id] === opt.value ? 'selected' : ''}`}
+                                            onClick={() => handleOptionSelect(question.id, opt.value)}
+                                        >
+                                            {opt.label}
+                                        </td>
+                                    ))}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    };
+
     return (
         <div className="form-page" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
             <LanguageToggle />
@@ -189,82 +385,39 @@ const PersonalQuestionnaire = () => {
                     </div>
 
                     <div className="questionnaire">
-                        <div className="question-item">
-                            <div className="question-grid">
-                                {questions.map((question) => {
-                                    // טיפול בשדות טקסט וסיסמה
-                                    if (question.questionType === "shortText" || question.questionType === "password") {
-                                        return (
-                                            <input
-                                                key={question.id}
-                                                id={question.id}
-                                                type={question.questionType === "password" ? "password" : "text"}
-                                                className="input-personal-question-field"
-                                                value={responses[question.id] || ''}
-                                                onChange={(e) => handleOptionSelect(question.id, e.target.value)}
-                                                placeholder={question.text}
-                                                style={{ textAlign: language === 'he' ? 'right' : 'left' }}
-                                            />
-                                        );
-                                    }
-                                    else if (question.questionType === "number") {
-                                        return (
-                                            <input
-                                                key={question.id}
-                                                id={question.id}
-                                                type="number"
-                                                className="input-personal-question-field"
-                                                value={responses[question.id] || ''}
-                                                onChange={(e) => handleOptionSelect(question.id, e.target.value)}
-                                                placeholder={question.text}
-                                                min="0"
-                                                style={{ textAlign: language === 'he' ? 'right' : 'left' }}
-                                            />
-                                        );
-                                    }
-                                    else if (question.questionType === "date") {
-                                        return (
-                                            <input
-                                                key={question.id}
-                                                id={question.id}
-                                                type="text"
-                                                className="input-personal-question-field"
-                                                value={responses[question.id] || ''}
-                                                onChange={(e) => handleOptionSelect(question.id, e.target.value)}
-                                                placeholder={question.text}
-                                                style={{ textAlign: language === 'he' ? 'right' : 'left' }}
-                                            />
-                                        );
-                                    }
-                                    else if (question.questionType === "dropdown") {
-                                        return (
-                                            <CustomStyledSelect
-                                                key={question.id}
-                                                question={question}
-                                                value={responses[question.id]}
-                                                onChange={handleOptionSelect}
-                                            />
-                                        );
-                                    }
-                                    return null;
-                                })}
-                            </div>
+                        <div className="question-grid">
+                            {questions.map((question) => renderQuestion(question))}
                         </div>
                     </div>
 
-                    {/* הצגת הודעת שגיאה במידה והסיסמה תפוסה */}
                     {errorMessage && (
                         <div style={{ color: 'red', textAlign: 'center', marginTop: '15px', fontWeight: 'bold' }}>
                             {errorMessage}
                         </div>
                     )}
 
-                    <div className="navigation">
-                        <PrimaryButton
-                            text={isSubmitting ? t('submitting') : t('submit')}
-                            onClick={handleSubmit}
-                            disabled={!allQuestionsAnswered || isSubmitting}
-                        />
+                    <div className="navigation step-navigation">
+                        {currentStep === 2 && (
+                            <PrimaryButton
+                                text={t('previous')}
+                                onClick={handleBack}
+                                className="previous-button"
+                            />
+                        )}
+
+                        {currentStep === 1 ? (
+                            <PrimaryButton
+                                text={t('next')}
+                                onClick={handleNext}
+                                disabled={!allQuestionsAnswered}
+                            />
+                        ) : (
+                            <PrimaryButton
+                                text={isSubmitting ? t('submitting') : t('submit')}
+                                onClick={handleSubmit}
+                                disabled={!isStep2Complete || isSubmitting}
+                            />
+                        )}
                     </div>
                 </main>
             </div>

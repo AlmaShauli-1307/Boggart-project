@@ -1,5 +1,3 @@
-/* Custom Styles for React Select to Match Input Fields */
-
 .custom-react-select__control {
     box-sizing: border-box !important;
     border: 1px solid #686666 !important;
@@ -13,7 +11,7 @@
     background-color: #FFFBFB !important;
     width: 410px !important;
     height: 52px !important;
-    min-height: unset !important; /* Override react-select's min-height */
+    min-height: unset !important;
 }
 
 .custom-react-select__control:hover {
@@ -34,11 +32,11 @@
 
 .custom-react-select__option--is-selected {
     color: white !important;
-    background-color: #295A4B !important;  /* Your selected option color */
+    background-color: #295A4B !important;
 }
 
 .custom-react-select__option:hover {
-    background-color: #D3E5DB !important;  /* Your hover option color */
+    background-color: #D3E5DB !important;
 }
 
 .custom-react-select__single-value {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
-import { useNavigate, useLocation } from 'react-router-dom'; // וודאי שיש useLocation
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../boggartForm/MeetYourPainRate.css';
 import demoBoggart from '../../images/demoBoggart.png';
 import logo from '../../images/logo.png';
@@ -14,7 +14,6 @@ const MeetYourPainRate = () => {
     const [responses, setResponses] = useState({});
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    // Get form1Id from previous page
     const location = useLocation();
     const isDemo = location.state?.isDemo || false;
     const form1Id = location.state?.form1Id || null;
@@ -22,25 +21,31 @@ const MeetYourPainRate = () => {
     const pageData = { instructions: t('introMeetYourPainRate') };
     const questions = React.useMemo(() => [
         {
-            question_ID: 0,
-            Question: t('question0'),
+            question_ID: 155,
+            Question: t('question155'),
             scale_min: 1,
             scale_max: 10,
             type: "scale"
         },
         {
-            question_ID: 1,
-            Question: t('question1'),
+            question_ID: 156,
+            Question: t('question156'),
             scale_min: 1,
             scale_max: 10,
             type: "scale"
         },
         {
-            question_ID: 2,
-            Question: t('question2'),
+            question_ID: 157,
+            Question: t('question157'),
             type: "text"
+        }, {
+            question_ID: 158,
+            Question: t('question158'),
+            scale_min: 1,
+            scale_max: 10,
+            type: "scale"
         }
-    ], []);
+    ], [t]);
     useEffect(() => {
 
         if (questions.length === 0) {
@@ -103,8 +108,7 @@ const MeetYourPainRate = () => {
 
             if (response.ok) {
                 console.log('🎯 Form-meet - Success! Navigating to Form3 with form1Id:', form1Id);
-                // 🎯 העבר את form1Id ב-state ל-QuestionnairePageAfter
-                navigate('/questionnaire-after', {
+                navigate('/completion', {
                     state: { form1Id: form1Id }
                 });
             } else {
@@ -113,7 +117,7 @@ const MeetYourPainRate = () => {
 
         } catch (error) {
             console.error('❌ Error submitting answers:', error);
-            navigate('/questionnaire-after');
+            navigate('/completion');
             setIsSubmitting(false);
         }
     };
@@ -138,7 +142,7 @@ const MeetYourPainRate = () => {
                         <div className="emotion-scale-page">
                             <div className="boggart-image-container">
                                 <img
-                                    src={selectedImage}  // השתמש בתמונה הנבחרת
+                                    src={selectedImage}
                                     alt="Selected pain visualization"
                                     className="boggart-image"
                                 />
