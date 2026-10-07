@@ -88,29 +88,31 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
 
     const texts = translations[language];
 
+    // Calibrated against body.png (1534×1153): percentages of the image box.
+    // left = horizontal centre of the region (translateX(-50%)), top = top edge.
     const bodyPartRegions = {
-        'Head': { top: '3%', left: '50%', width: '15%', height: '15%', borderRadius: '50%' },
-        'Neck': { top: '13%', left: '50%', width: '7%', height: '5%' },
-        'Shoulders': { top: '19%', left: '50%', width: '25%', height: '5%' },
-        'Back': { top: '20%', left: '50%', width: '20%', height: '25%' },
-        'Chest': { top: '20%', left: '50%', width: '20%', height: '13%' },
-        'Stomach': { top: '32%', left: '50%', width: '16%', height: '13%' },
-        'Pelvis': { top: '45%', left: '50%', width: '16%', height: '8%' },
-        'Knees': { top: '63%', left: '50%', width: '16%', height: '8%' },
-        'Legs': { top: '49%', left: '50%', width: '16%', height: '40%' },
-        'Ankles': { top: '85%', left: '50%', width: '17%', height: '5%' },
-        'Feet': { top: '87%', left: '50%', width: '22%', height: '9%' },
-        'Hands': { areas: [{ top: '25%', left: '37%', width: '15%', height: '30%' }, { top: '25%', left: '63%', width: '15%', height: '30%' }] },
-        'Elbows': { areas: [{ top: '35%', left: '40%', width: '7%', height: '5%' }, { top: '35%', left: '60%', width: '7%', height: '5%' }] },
-        'Eyes': { top: '8%', left: '50%', width: '10%', height: '3%' },
-        'Ears': { areas: [{ top: '10%', left: '47%', width: '3%', height: '4%' }, { top: '10%', left: '53%', width: '3%', height: '4%' }] },
-        'Nose': { top: '11%', left: '50%', width: '3%', height: '3%' },
-        'Teeth': { top: '13%', left: '50%', width: '5%', height: '3%' },
-        'Tongue': { top: '13%', left: '50%', width: '5%', height: '3%' },
-        'Throat': { top: '15%', left: '50%', width: '8%', height: '3%' },
-        'Nape': { top: '13%', left: '50%', width: '7%', height: '5%' },
-        'Clavicle': { top: '18%', left: '50%', width: '20%', height: '4%' },
-        'Ribs': { top: '23%', left: '50%', width: '15%', height: '13%' }
+        'Head': { top: '4.5%', left: '50%', width: '11%', height: '11.5%', borderRadius: '50%' },
+        'Neck': { top: '14%', left: '50%', width: '6%', height: '5%' },
+        'Shoulders': { areas: [{ top: '18%', left: '42.5%', width: '7%', height: '7%' }, { top: '18%', left: '57.5%', width: '7%', height: '7%' }] },
+        'Back': { top: '20%', left: '50%', width: '18%', height: '25%' },
+        'Chest': { top: '20.5%', left: '50%', width: '17%', height: '11.5%' },
+        'Stomach': { top: '32%', left: '50%', width: '14%', height: '13%' },
+        'Pelvis': { top: '45%', left: '50%', width: '17%', height: '8%' },
+        'Knees': { top: '64%', left: '50%', width: '15%', height: '8%' },
+        'Legs': { top: '50%', left: '50%', width: '17%', height: '35%' },
+        'Ankles': { top: '84%', left: '50%', width: '15%', height: '5%' },
+        'Feet': { top: '88%', left: '50%', width: '22%', height: '8%' },
+        'Hands': { areas: [{ top: '46%', left: '35%', width: '7.5%', height: '10%' }, { top: '46%', left: '65%', width: '7.5%', height: '10%' }] },
+        'Elbows': { areas: [{ top: '35%', left: '40%', width: '6%', height: '6%' }, { top: '35%', left: '60%', width: '6%', height: '6%' }] },
+        'Eyes': { top: '8.5%', left: '50%', width: '7%', height: '2.5%' },
+        'Ears': { areas: [{ top: '9.5%', left: '45.6%', width: '2.5%', height: '4%' }, { top: '9.5%', left: '54.4%', width: '2.5%', height: '4%' }] },
+        'Nose': { top: '10.5%', left: '50%', width: '3%', height: '2.5%' },
+        'Teeth': { top: '13%', left: '50%', width: '4%', height: '1.8%' },
+        'Tongue': { top: '13%', left: '50%', width: '4%', height: '1.8%' },
+        'Throat': { top: '15.5%', left: '50%', width: '6%', height: '3%' },
+        'Nape': { top: '14%', left: '50%', width: '6%', height: '5%' },
+        'Clavicle': { top: '18.5%', left: '50%', width: '14%', height: '3.5%' },
+        'Ribs': { top: '25%', left: '50%', width: '16%', height: '9%' }
     };
 
     const handleCheckboxChange = (bodyPart) => {
