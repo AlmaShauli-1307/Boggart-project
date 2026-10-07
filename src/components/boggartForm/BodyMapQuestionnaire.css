@@ -12,8 +12,12 @@ html,
 body {
     background-color: #EEF0ED;
     font-family: 'Roboto', sans-serif;
-    height: 100%;
     width: 100%;
+}
+
+/* overflow-x only on body (not html + height:100%) so the window stays the
+   scroll container — otherwise iOS Safari ignores window.scrollTo(0, 0) */
+body {
     overflow-x: hidden;
 }
 

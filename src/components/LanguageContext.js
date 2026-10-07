@@ -164,6 +164,11 @@ const translations = {
     submit: 'שלח',
     submitting: 'שולח...',
 
+    // Questionnaire navigation
+    pageOf: 'עמוד {current} מתוך {total}',
+    fieldRequired: 'נא להשלים שדה זה',
+    textFieldHint: "אפשר לכתוב 'ללא' אם אין",
+
     // Error messages
     errorMissingConnection: 'שגיאה: חסר חיבור לטפסים קודמים. אנא התחל מחדש את התהליך.',
     errorCreateAvatar: 'שגיאה ביצירת הדמות. אנא נסה/י שוב.',
@@ -359,6 +364,11 @@ const translations = {
     // Buttons
     submit: 'SUBMIT',
     submitting: 'SUBMITTING...',
+
+    // Questionnaire navigation
+    pageOf: 'Page {current} of {total}',
+    fieldRequired: 'Please complete this field',
+    textFieldHint: "You can write 'none' if not applicable",
 
     // Error messages
     errorMissingConnection: 'Error: Missing connection to previous forms. Please restart the process.',

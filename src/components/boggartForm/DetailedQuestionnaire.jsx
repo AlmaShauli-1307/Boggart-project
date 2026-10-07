@@ -5,6 +5,8 @@ import Papa from 'papaparse';
 import './DetailedQuestionnaire.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
+import ProgressIndicator from '../generalComponents/ProgressIndicator';
+import useQuestionnaireNav from '../generalComponents/useQuestionnaireNav';
 import Question from '../generalComponents/Question';
 import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
@@ -20,6 +22,7 @@ const DetailedQuestionnairePage = () => {
     const [responses, setResponses] = useState({});
     const [others, setOthers] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
+    useQuestionnaireNav(currentPage);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
@@ -151,10 +154,6 @@ const DetailedQuestionnairePage = () => {
         handleOptionSelect(117, selectedBodyParts);
     }, [selectedBodyParts]);
 
-    useEffect(() => {
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-    }, [currentPage]);
 
     const getCurrentPageQuestions = () => {
         return questions.filter(q => Number(q.Page) === currentPage);
@@ -174,7 +173,6 @@ const DetailedQuestionnairePage = () => {
                 updatePageData(questions, prevPage);
                 return prevPage;
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -205,7 +203,6 @@ const DetailedQuestionnairePage = () => {
                 updatePageData(questions, nextPage);
                 return nextPage;
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -348,8 +345,6 @@ const DetailedQuestionnairePage = () => {
         });
     }
 
-    // Calculate progress percentage
-    const progressPercentage = (currentPage / totalPages) * 100;
 
     // תצוגת השאלון הרגילה
     return (
@@ -452,12 +447,7 @@ const DetailedQuestionnairePage = () => {
                         )}
                     </div>
 
-                    <div className="progress-bar">
-                        <div
-                            className="progress-indicator"
-                            style={{ width: `${progressPercentage}%` }}
-                        ></div>
-                    </div>
+                    <ProgressIndicator current={currentPage} total={totalPages} />
                 </main>
             </div>
         </div >

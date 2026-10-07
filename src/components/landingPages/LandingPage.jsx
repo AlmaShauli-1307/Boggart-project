@@ -33,9 +33,8 @@ const LandingPage = () => {
                     </p>
                 </section>
 
-                <section className="cta-section">
+                <section className="cta-section landing-cta">
                     <PrimaryButton text={t('letsStart')} onClick={handleStartClick} />
-                    <p id="space"></p>
                     <PrimaryButton text={t('login')} onClick={handleLoginClick} />
                 </section>
             </div>

@@ -105,8 +105,19 @@ body {
     margin: 20px 0 60px;
 }
 
-#space {
-    margin-right: 20px;
+/* Landing CTAs: stacked, full width on mobile.
+   (LandingPageBoggart.css also defines a global .cta-section as a flex row,
+   so these selectors are deliberately more specific.) */
+.cta-section.landing-cta {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.cta-section.login-cta {
+    display: block;
 }
 
 .login-form {
@@ -135,11 +146,18 @@ body {
     margin: 0;
 }
 
-.login-link-button {
+.cta-section .login-link-button {
     background: none;
+    color: inherit;
     border: none;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
+    text-decoration: underline;
+    /* 44px minimum touch target, and clear separation from the login button */
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 16px;
+    margin-top: 8px;
 }
 
 .login-link-button:hover {
@@ -150,6 +168,20 @@ body {
 @media (min-width: 768px) {
     .welcome-description {
         max-width: 675px;
+    }
+}
+
+@media (max-width: 600px) {
+    .cta-section.landing-cta {
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding: 0 16px;
+    }
+
+    .cta-section.landing-cta .primary-button {
+        width: 100%;
+        max-width: 340px;
     }
 }
 

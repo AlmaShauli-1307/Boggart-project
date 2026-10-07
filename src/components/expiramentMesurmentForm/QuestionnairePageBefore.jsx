@@ -6,6 +6,8 @@ import Papa from 'papaparse';
 import './QuestionnairePage.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
+import ProgressIndicator from '../generalComponents/ProgressIndicator';
+import useQuestionnaireNav from '../generalComponents/useQuestionnaireNav';
 import ScaleLegend from '../generalComponents/ScaleLegend';
 import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
@@ -22,6 +24,7 @@ const QuestionnairePageBefore = () => {
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
+    useQuestionnaireNav(currentPage);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
@@ -175,10 +178,6 @@ const QuestionnairePageBefore = () => {
         }
     }, [selectedBodyParts, mostPainfulPart]);
 
-    useEffect(() => {
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-    }, [currentPage]);
 
     const getCurrentPageQuestions = () => {
         return questions.filter(q => Number(q.Page) === currentPage);
@@ -195,7 +194,6 @@ const QuestionnairePageBefore = () => {
                 updatePageData(questions, prevPage);
                 return prevPage;
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -206,7 +204,6 @@ const QuestionnairePageBefore = () => {
                 updatePageData(questions, nextPage);
                 return nextPage;
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -286,7 +283,6 @@ const QuestionnairePageBefore = () => {
             };
         });
 
-    const progressPercentage = (currentPage / totalPages) * 100;
 
     return (
         <div className="form-page" lang={language}>
@@ -412,9 +408,7 @@ const QuestionnairePageBefore = () => {
                         )}
                     </div>
 
-                    <div className="progress-bar">
-                        <div className="progress-indicator" style={{ width: `${progressPercentage}%` }} />
-                    </div>
+                    <ProgressIndicator current={currentPage} total={totalPages} />
                 </main>
             </div>
         </div>

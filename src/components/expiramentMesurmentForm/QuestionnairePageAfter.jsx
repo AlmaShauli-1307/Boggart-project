@@ -7,6 +7,8 @@ import axios from 'axios';
 import './QuestionnairePage.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
+import ProgressIndicator from '../generalComponents/ProgressIndicator';
+import useQuestionnaireNav from '../generalComponents/useQuestionnaireNav';
 import ScaleLegend from '../generalComponents/ScaleLegend';
 import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
@@ -25,6 +27,7 @@ const QuestionnairePageAfter = () => {
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
+    useQuestionnaireNav(currentPage);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
@@ -166,10 +169,6 @@ const QuestionnairePageAfter = () => {
         }
     }, [selectedBodyParts, mostPainfulPart]);
 
-    useEffect(() => {
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-    }, [currentPage]);
 
     const getCurrentPageQuestions = () => questions.filter(q => Number(q.Page) === currentPage);
 
@@ -184,7 +183,6 @@ const QuestionnairePageAfter = () => {
                 updatePageData(questions, prevPage);
                 return prevPage;
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -195,7 +193,6 @@ const QuestionnairePageAfter = () => {
                 updatePageData(questions, nextPage);
                 return nextPage;
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -264,7 +261,6 @@ const QuestionnairePageAfter = () => {
             };
         });
 
-    const progressPercentage = (currentPage / totalPages) * 100;
 
     return (
         <div className="form-page" lang={language}>
@@ -398,9 +394,7 @@ const QuestionnairePageAfter = () => {
                         )}
                     </div>
 
-                    <div className="progress-bar">
-                        <div className="progress-indicator" style={{ width: `${progressPercentage}%` }} />
-                    </div>
+                    <ProgressIndicator current={currentPage} total={totalPages} />
                 </main>
             </div>
         </div>

@@ -8,6 +8,13 @@ import PrimaryButton from '../generalComponents/PrimaryButton';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+// On mobile (especially iOS Safari) the keyboard can cover the focused field —
+// wait for the keyboard to open, then bring the field into view.
+const scrollFieldIntoView = (e) => {
+    const field = e.target;
+    setTimeout(() => field.scrollIntoView({ block: 'center', behavior: 'smooth' }), 300);
+};
+
 const LoginPage = () => {
     const navigate = useNavigate();
     const { t } = useLanguage();
@@ -63,12 +70,13 @@ const LoginPage = () => {
                     <h2 className="welcome-title">{t('loginTitle')}</h2>
                 </section>
 
-                <section className="cta-section">
+                <section className="cta-section login-cta">
                     <div className="login-form">
                         <input
                             className="login-input"
                             type="text"
                             placeholder={t('loginUsername')}
+                            onFocus={scrollFieldIntoView}
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
@@ -76,6 +84,7 @@ const LoginPage = () => {
                             className="login-input"
                             type="password"
                             placeholder={t('loginPassword')}
+                            onFocus={scrollFieldIntoView}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
