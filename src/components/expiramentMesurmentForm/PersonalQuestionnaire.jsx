@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
 import { getNames } from 'country-list';
@@ -8,13 +8,14 @@ import './PersonalQuestionnaire.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
 import Question from '../generalComponents/Question';
+import QuestionShell from '../generalComponents/QuestionShell';
+import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
 import CustomStyledSelect from "../generalComponents/CustomStyledSelect";
 
 const PersonalQuestionnaire = () => {
     const navigate = useNavigate();
     const { t, language } = useLanguage();
     const [responses, setResponses] = useState({});
-    const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [currentStep, setCurrentStep] = useState(1);
@@ -207,13 +208,11 @@ const PersonalQuestionnaire = () => {
         responses[id] !== undefined && responses[id] !== null && responses[id] !== ""
     );
 
-    const isStep2Complete = step2RequiredIds.every(id =>
-        responses[id] !== undefined && responses[id] !== null && responses[id] !== ""
-    );
-
-    useEffect(() => {
-        setAllQuestionsAnswered(currentStep === 1 ? isStep1Complete : isStep2Complete);
-    }, [responses, currentStep]);
+    // UX 1.3 / 1.4: "Next" stays clickable and points to missing fields;
+    // every step change jumps to the top of the page
+    const { showErrors, tryAdvance } = useQuestionnaireNav(currentStep);
+    const missingIds = (currentStep === 1 ? step1RequiredIds : step2RequiredIds)
+        .filter(id => !isAnswered(responses[id]));
 
     const handleOptionSelect = (questionId, value) => {
         setErrorMessage("");
@@ -223,13 +222,11 @@ const PersonalQuestionnaire = () => {
     const handleNext = () => {
         if (isStep1Complete) {
             setCurrentStep(2);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
     const handleBack = () => {
         setCurrentStep(1);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleSubmit = async () => {
@@ -376,7 +373,18 @@ const PersonalQuestionnaire = () => {
 
                     <div className="questionnaire">
                         <div className="question-grid">
-                            {questions.map((question) => renderQuestion(question))}
+                            {questions.map((question) => {
+                                const element = renderQuestion(question);
+                                return element && (
+                                    <QuestionShell
+                                        key={question.id}
+                                        id={question.id}
+                                        missing={showErrors && missingIds.includes(question.id)}
+                                    >
+                                        {element}
+                                    </QuestionShell>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -398,14 +406,13 @@ const PersonalQuestionnaire = () => {
                         {currentStep === 1 ? (
                             <PrimaryButton
                                 text={t('next')}
-                                onClick={handleNext}
-                                disabled={!allQuestionsAnswered}
+                                onClick={() => tryAdvance(missingIds, handleNext)}
                             />
                         ) : (
                             <PrimaryButton
                                 text={isSubmitting ? t('submitting') : t('submit')}
-                                onClick={handleSubmit}
-                                disabled={!isStep2Complete || isSubmitting}
+                                onClick={() => tryAdvance(missingIds, handleSubmit)}
+                                disabled={isSubmitting}
                             />
                         )}
                     </div>

@@ -7,7 +7,8 @@ import './QuestionnairePage.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
 import ProgressIndicator from '../generalComponents/ProgressIndicator';
-import useQuestionnaireNav from '../generalComponents/useQuestionnaireNav';
+import QuestionShell from '../generalComponents/QuestionShell';
+import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
 import ScaleLegend from '../generalComponents/ScaleLegend';
 import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
@@ -19,10 +20,9 @@ const QuestionnairePage = ({ csvName }) => {
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    useQuestionnaireNav(currentPage);
+    const { showErrors, tryAdvance } = useQuestionnaireNav(currentPage);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
-    const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [currentScale, setCurrentScale] = useState({});
     const [showScale, setShowScale] = useState(false);
@@ -114,17 +114,6 @@ const QuestionnairePage = ({ csvName }) => {
         }
     }, [language]);
 
-    useEffect(() => {
-        const currentPageQuestions = getCurrentPageQuestions();
-        if (currentPageQuestions.length === 0) {
-            setAllQuestionsAnswered(true);
-            return;
-        }
-        const allAnswered = currentPageQuestions.every(q =>
-            responses[q.question_ID] !== undefined && responses[q.question_ID] !== null
-        );
-        setAllQuestionsAnswered(allAnswered);
-    }, [responses, currentPage, questions]);
 
 
     const getCurrentPageQuestions = () => {
@@ -217,6 +206,18 @@ const QuestionnairePage = ({ csvName }) => {
     const legendLeft = hasLegend ? currentScale[legendKeys[0]] : undefined;
     const legendRight = hasLegend ? currentScale[legendKeys[legendKeys.length - 1]] : undefined;
 
+    // Questions on this page that still need an answer (UX 1.3: "Next" stays
+    // clickable and points the user to these instead of being greyed out)
+    const missingIds = getCurrentPageQuestions()
+        .filter(q => !isAnswered(responses[q.question_ID]))
+        .map(q => q.question_ID);
+
+    const shell = (id, element) => element && (
+        <QuestionShell key={id} id={id} missing={showErrors && missingIds.includes(id)}>
+            {element}
+        </QuestionShell>
+    );
+
     return (
         <div className="form-page">
             <LanguageToggle />
@@ -237,7 +238,7 @@ const QuestionnairePage = ({ csvName }) => {
                     )}
 
                     <div className="questionnaire">
-                        {isVAS && formattedQuestions.map(question => (
+                        {isVAS && formattedQuestions.map(question => shell(question.id, (
                             <PainScaleQuestion
                                 key={question.id}
                                 id={question.id}
@@ -247,17 +248,19 @@ const QuestionnairePage = ({ csvName }) => {
                                 min={0}
                                 max={10}
                             />
-                        ))}
+                        )))}
 
                         {isSAM && (
                             <EmotionScalePage
                                 questions={formattedQuestions}
                                 responses={responses}
                                 onSelect={handleOptionSelect}
+                                showErrors={showErrors}
+                                missingIds={missingIds}
                             />
                         )}
 
-                        {!isVAS && !isSAM && formattedQuestions.map(question => (
+                        {!isVAS && !isSAM && formattedQuestions.map(question => shell(question.id, (
                             <Question
                                 key={question.id}
                                 id={question.id}
@@ -269,7 +272,7 @@ const QuestionnairePage = ({ csvName }) => {
                                 rightLabel={question.rightLabel || legendRight}
                                 mobileOnlyLabels={!question.leftLabel && !question.rightLabel && hasLegend}
                             />
-                        ))}
+                        )))}
                     </div>
 
                     <div className="navigation">
@@ -283,14 +286,13 @@ const QuestionnairePage = ({ csvName }) => {
                         {currentPage < totalPages ? (
                             <PrimaryButton
                                 text={t('next')}
-                                onClick={handleNext}
-                                disabled={!allQuestionsAnswered}
+                                onClick={() => tryAdvance(missingIds, handleNext)}
                             />
                         ) : (
                             <PrimaryButton
                                 text={isSubmitting ? t('submitting') : t('submit')}
-                                onClick={handleSubmit}
-                                disabled={!allQuestionsAnswered || isSubmitting}
+                                onClick={() => tryAdvance(missingIds, handleSubmit)}
+                                disabled={isSubmitting}
                             />
                         )}
                     </div>

@@ -6,7 +6,8 @@ import './DetailedQuestionnaire.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
 import ProgressIndicator from '../generalComponents/ProgressIndicator';
-import useQuestionnaireNav from '../generalComponents/useQuestionnaireNav';
+import QuestionShell from '../generalComponents/QuestionShell';
+import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
 import Question from '../generalComponents/Question';
 import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
@@ -22,10 +23,9 @@ const DetailedQuestionnairePage = () => {
     const [responses, setResponses] = useState({});
     const [others, setOthers] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    useQuestionnaireNav(currentPage);
+    const { showErrors, tryAdvance } = useQuestionnaireNav(currentPage);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
-    const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedBodyParts, setSelectedBodyParts] = useState([]);
     const [form1Id, setForm1Id] = useState(null);
@@ -132,23 +132,6 @@ const DetailedQuestionnairePage = () => {
         }
     };
 
-    // Check if all questions on current page are answered
-    useEffect(() => {
-        const currentPageQuestions = getCurrentPageQuestions();
-
-        if (currentPageQuestions.length === 0) {
-            setAllQuestionsAnswered(true);
-            return;
-        }
-
-        const allAnswered = currentPageQuestions.every(q => {
-            if (q.question_ID === 117) {
-                return selectedBodyParts.length > 0;
-            }
-            return responses[q.question_ID] !== undefined && responses[q.question_ID] !== null;
-        });
-        setAllQuestionsAnswered(allAnswered);
-    }, [responses, currentPage, questions]);
 
     useEffect(() => {
         handleOptionSelect(117, selectedBodyParts);
@@ -347,6 +330,20 @@ const DetailedQuestionnairePage = () => {
 
 
     // תצוגת השאלון הרגילה
+    // Questions on this page that still need an answer (UX 1.3: "Next" stays
+    // clickable and points the user to these instead of being greyed out)
+    const missingIds = getCurrentPageQuestions()
+        .filter(q => q.question_ID === 117
+            ? selectedBodyParts.length === 0
+            : !(isAnswered(responses[q.question_ID]) || isAnswered(others[q.question_ID])))
+        .map(q => q.question_ID);
+
+    const shell = (id, element) => element && (
+        <QuestionShell key={id} id={id} missing={showErrors && missingIds.includes(id)}>
+            {element}
+        </QuestionShell>
+    );
+
     return (
         <div className="form-page" lang={language}>
             < LanguageToggle />
@@ -365,15 +362,15 @@ const DetailedQuestionnairePage = () => {
                     )}
                     <div className="questionnaire">
                         {/* Special case for pain scale page */}
-                        {isPainLocationPage && formattedQuestions.map(question => (
+                        {isPainLocationPage && formattedQuestions.map(question => shell(question.id, (
                             <BodyMapQuestionnaire
                                 key="body-map"
                                 selectedBodyParts={selectedBodyParts}
                                 setSelectedBodyParts={setSelectedBodyParts}
                             />
-                        ))}
+                        )))}
                         {/* Regular questions for all other pages */}
-                        {!isPainLocationPage && formattedQuestions.map(question => {
+                        {!isPainLocationPage && formattedQuestions.map(question => shell(question.id, (() => {
                             if (question.questionType === 'scale') {
                                 return (<Question
                                     key={question.id}
@@ -420,7 +417,7 @@ const DetailedQuestionnairePage = () => {
                                     options={question.options} />
                             }
                             return null;
-                        })}
+                        })()))}
                     </div>
 
                     <div className="navigation">
@@ -435,14 +432,13 @@ const DetailedQuestionnairePage = () => {
                         {currentPage < totalPages ? (
                             <PrimaryButton
                                 text={t('next')}
-                                onClick={handleNext}
-                                disabled={!allQuestionsAnswered}
+                                onClick={() => tryAdvance(missingIds, handleNext)}
                             />
                         ) : (
                             <PrimaryButton
                                 text={isSubmitting ? t('submitting') : t('visualize')}
-                                onClick={handleSubmit}
-                                disabled={!allQuestionsAnswered || isSubmitting || (!form1Id && !isDemo)}
+                                onClick={() => tryAdvance(missingIds, handleSubmit)}
+                                disabled={isSubmitting || (!form1Id && !isDemo)}
                             />
                         )}
                     </div>
