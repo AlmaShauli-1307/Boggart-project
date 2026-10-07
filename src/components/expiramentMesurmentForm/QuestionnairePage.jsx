@@ -211,6 +211,12 @@ const QuestionnairePage = ({ csvName }) => {
     });
 
 
+    // End labels of the page legend, shown on mobile in place of the legend table (UX 1.1)
+    const legendKeys = Object.keys(currentScale).map(Number).sort((a, b) => a - b);
+    const hasLegend = showScale && !isVAS && !isSAM && legendKeys.length > 0;
+    const legendLeft = hasLegend ? currentScale[legendKeys[0]] : undefined;
+    const legendRight = hasLegend ? currentScale[legendKeys[legendKeys.length - 1]] : undefined;
+
     return (
         <div className="form-page">
             <LanguageToggle />
@@ -259,8 +265,9 @@ const QuestionnairePage = ({ csvName }) => {
                                 selectedValue={responses[question.id]}
                                 onSelect={handleOptionSelect}
                                 options={question.options}
-                                leftLabel={question.leftLabel}
-                                rightLabel={question.rightLabel}
+                                leftLabel={question.leftLabel || legendLeft}
+                                rightLabel={question.rightLabel || legendRight}
+                                mobileOnlyLabels={!question.leftLabel && !question.rightLabel && hasLegend}
                             />
                         ))}
                     </div>

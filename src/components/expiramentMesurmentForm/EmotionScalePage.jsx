@@ -1,8 +1,10 @@
 import React from 'react';
 import { useLanguage } from '../LanguageContext';
-import LanguageToggle from '../LanguageButton';
 import './EmotionScalePage.css';
 import emotionScaleImage from '../../images/emotion-scale.png';
+import Question from '../generalComponents/Question';
+
+const NINE_POINT_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const EmotionScalePage = ({
     questions,
@@ -33,24 +35,13 @@ const EmotionScalePage = ({
             <div className="emotion-scale-questions">
                 {questions.map(question => (
                     <div key={question.id} className="emotion-question-item">
-                        <p className="emotion-question-text">{question.text}</p>
-                        <div className="rating-table-container wide-scale">
-                            <table className="rating-table wide-scale">
-                                <tbody>
-                                    <tr>
-                                        {Array.from({ length: 9 }, (_, i) => i + 1).map(value => (
-                                            <td
-                                                key={`${question.id}-${value}`}
-                                                className={`rating-cell ${responses[question.id] === value ? 'selected' : ''}`}
-                                                onClick={() => onSelect(question.id, value)}
-                                            >
-                                                {value}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <Question
+                            id={question.id}
+                            text={question.text}
+                            selectedValue={responses[question.id]}
+                            onSelect={onSelect}
+                            options={NINE_POINT_OPTIONS}
+                        />
                     </div>
                 ))}
             </div>

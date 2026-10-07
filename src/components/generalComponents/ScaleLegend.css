@@ -56,15 +56,10 @@
     border-right: none;
 }
 
+/* Mobile: the 5-column legend can't fit, so it is hidden and each question
+   shows the two end labels above its buttons instead (UX 1.1). */
 @media (max-width: 600px) {
     .scale-legend {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
-    }
-
-    .scale-table {
-        min-width: max-content;
-        overflow: visible;
+        display: none;
     }
 }

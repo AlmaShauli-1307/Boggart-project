@@ -188,3 +188,38 @@ body {
         padding: 0 2px;
     }
 }
+/* Mobile: tighter vertical rhythm so a question and its answers fit on one
+   screen without scrolling (UX 1.7) */
+@media (max-width: 600px) {
+    /* leave room for the fixed language button (top-right) */
+    .form-page .form-header {
+        padding: 14px 0 14px 16px;
+        min-height: 76px;
+    }
+
+    .form-page .logo-image {
+        max-width: 96px;
+    }
+
+    .form-page .form-container {
+        padding: 0 16px;
+    }
+
+    .form-page .instructions {
+        margin: 4px 0 16px;
+    }
+
+    .form-page .questionnaire {
+        margin-bottom: 24px;
+    }
+
+    .form-page .navigation {
+        margin-top: 8px;
+        padding-top: 16px;
+        margin-bottom: 20px;
+    }
+
+    .form-page .question-item {
+        margin-bottom: 22px;
+    }
+}

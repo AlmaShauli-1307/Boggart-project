@@ -262,6 +262,12 @@ const QuestionnairePageAfter = () => {
         });
 
 
+    // End labels of the page legend, shown on mobile in place of the legend table (UX 1.1)
+    const legendKeys = Object.keys(currentScale).map(Number).sort((a, b) => a - b);
+    const hasLegend = showScale && !isVAS && !isSAM && legendKeys.length > 0;
+    const legendLeft = hasLegend ? currentScale[legendKeys[0]] : undefined;
+    const legendRight = hasLegend ? currentScale[legendKeys[legendKeys.length - 1]] : undefined;
+
     return (
         <div className="form-page" lang={language}>
             <LanguageToggle />
@@ -320,26 +326,14 @@ const QuestionnairePageAfter = () => {
                         {!isVAS && !isSAM && formattedQuestions.map(question => {
                             if (question.questionType === 'yes_no') {
                                 return (
-                                    <div key={question.id} className="question-item">
-                                        <p className="question-text">{question.text}</p>
-                                        <div className="rating-table-container">
-                                            <table className="rating-table">
-                                                <tbody>
-                                                    <tr>
-                                                        {question.options.map(opt => (
-                                                            <td
-                                                                key={opt}
-                                                                className={`rating-cell ${responses[question.id] === opt ? 'selected' : ''}`}
-                                                                onClick={() => handleOptionSelect(question.id, opt)}
-                                                            >
-                                                                {opt}
-                                                            </td>
-                                                        ))}
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                    <Question
+                                        key={question.id}
+                                        id={question.id}
+                                        text={question.text}
+                                        selectedValue={responses[question.id]}
+                                        onSelect={handleOptionSelect}
+                                        options={question.options}
+                                    />
                                 );
                             }
                             if (question.questionType === 'shortText') {
@@ -362,8 +356,9 @@ const QuestionnairePageAfter = () => {
                                     selectedValue={responses[question.id]}
                                     onSelect={handleOptionSelect}
                                     options={question.options}
-                                    leftLabel={question.leftLabel}
-                                    rightLabel={question.rightLabel}
+                                    leftLabel={question.leftLabel || legendLeft}
+                                    rightLabel={question.rightLabel || legendRight}
+                                    mobileOnlyLabels={!question.leftLabel && !question.rightLabel && hasLegend}
                                 />
                             );
                         })}

@@ -1,5 +1,6 @@
 import React from 'react';
 import './PainScaleQuestion.css';
+import Question from '../generalComponents/Question';
 
 
 // Import all face images
@@ -51,37 +52,40 @@ const PainScaleQuestion = ({
         <div className="pain-scale-question">
             <p className="question-text-pain">{text}</p>
 
-            <div className="pain-scale-faces" dir="ltr">
-                {options.map((value) => (
-                    <div key={`face-${value}`} className="pain-face-container">
-                        <img
-                            src={faceImages[value]}
-                            alt={`Pain level ${value}`}
-                            className="pain-face"
-                        />
-                        <span className="pain-label">{faceLabels[value]}</span>
-                        <span className="pain-value">{value}</span>
-                    </div>
-                ))}
+            {/* Faces are clickable too. On mobile they become the answer buttons
+                (two rows of large cards) and the separate number row is hidden. */}
+            <div className="pain-scale-faces" dir="ltr" role="radiogroup" aria-label={text}>
+                {options.map((value) => {
+                    const selected = selectedValue === value;
+                    return (
+                        <button
+                            type="button"
+                            key={`face-${value}`}
+                            role="radio"
+                            aria-checked={selected}
+                            className={`pain-face-container ${selected ? 'selected' : ''}`}
+                            onClick={() => onSelect(id, value)}
+                        >
+                            <img
+                                src={faceImages[value]}
+                                alt=""
+                                className="pain-face"
+                            />
+                            <span className="pain-label">{faceLabels[value]}</span>
+                            <span className="pain-value">{value}</span>
+                        </button>
+                    );
+                })}
                 <div className="pain-scale-line"></div>
             </div>
 
-            <div className="rating-table-container-pain" dir="ltr">
-                <table className="rating-table-pain">
-                    <tbody>
-                        <tr>
-                            {options.map((value) => (
-                                <td
-                                    key={`${id}-${value}`}
-                                    className={`rating-cell ${selectedValue === value ? 'selected' : ''}`}
-                                    onClick={() => onSelect(id, value)}
-                                >
-                                    {value}
-                                </td>
-                            ))}
-                        </tr>
-                    </tbody>
-                </table>
+            <div className="pain-number-row">
+                <Question
+                    id={id}
+                    selectedValue={selectedValue}
+                    onSelect={onSelect}
+                    options={options}
+                />
             </div>
         </div>
     );

@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './PersonalQuestionnaire.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
+import Question from '../generalComponents/Question';
 import CustomStyledSelect from "../generalComponents/CustomStyledSelect";
 
 const PersonalQuestionnaire = () => {
@@ -347,23 +348,12 @@ const PersonalQuestionnaire = () => {
             return (
                 <div key={question.id} className="field-wrapper">
                     <label className="field-label">{question.text}</label>
-                    <div className="rating-table-container">
-                        <table className="rating-table">
-                            <tbody>
-                                <tr>
-                                    {question.options.map(opt => (
-                                        <td
-                                            key={opt.value}
-                                            className={`rating-cell ${responses[question.id] === opt.value ? 'selected' : ''}`}
-                                            onClick={() => handleOptionSelect(question.id, opt.value)}
-                                        >
-                                            {opt.label}
-                                        </td>
-                                    ))}
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <Question
+                        id={question.id}
+                        selectedValue={responses[question.id]}
+                        onSelect={handleOptionSelect}
+                        options={question.options}
+                    />
                 </div>
             );
         }

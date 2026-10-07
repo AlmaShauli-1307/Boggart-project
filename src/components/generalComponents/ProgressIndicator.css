@@ -11,3 +11,12 @@
     color: #3D4A45;
     margin: 0;
 }
+
+.progress-wrapper {
+    width: 100%;
+}
+
+.progress-wrapper .progress-bar {
+    width: 100%;
+    max-width: 320px;
+}
