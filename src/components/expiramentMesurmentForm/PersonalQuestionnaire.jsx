@@ -10,6 +10,7 @@ import PrimaryButton from '../generalComponents/PrimaryButton';
 import Question from '../generalComponents/Question';
 import QuestionShell from '../generalComponents/QuestionShell';
 import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
+import ScrollHint from '../generalComponents/ScrollHint';
 import CustomStyledSelect from "../generalComponents/CustomStyledSelect";
 
 const PersonalQuestionnaire = () => {
@@ -394,6 +395,7 @@ const PersonalQuestionnaire = () => {
                         </div>
                     )}
 
+                    <ScrollHint watch={currentStep} />
                     <div className="navigation step-navigation">
                         {currentStep === 2 && (
                             <PrimaryButton

@@ -167,6 +167,7 @@ const translations = {
     // Questionnaire navigation
     pageOf: 'עמוד {current} מתוך {total}',
     fieldRequired: 'נא להשלים שדה זה',
+    scrollHint: 'יש עוד שאלות למטה',
     textFieldHint: "אפשר לכתוב 'ללא' אם אין",
 
     // Error messages
@@ -369,6 +370,7 @@ const translations = {
     // Questionnaire navigation
     pageOf: 'Page {current} of {total}',
     fieldRequired: 'Please complete this field',
+    scrollHint: 'More questions below',
     textFieldHint: "You can write 'none' if not applicable",
 
     // Error messages

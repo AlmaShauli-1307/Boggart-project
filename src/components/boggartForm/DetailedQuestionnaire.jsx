@@ -8,6 +8,8 @@ import PrimaryButton from '../generalComponents/PrimaryButton';
 import ProgressIndicator from '../generalComponents/ProgressIndicator';
 import QuestionShell from '../generalComponents/QuestionShell';
 import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
+import ScrollHint from '../generalComponents/ScrollHint';
+import useQuestionScreens from '../generalComponents/useQuestionScreens';
 import Question from '../generalComponents/Question';
 import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
@@ -23,7 +25,6 @@ const DetailedQuestionnairePage = () => {
     const [responses, setResponses] = useState({});
     const [others, setOthers] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const { showErrors, tryAdvance } = useQuestionnaireNav(currentPage);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,6 +34,13 @@ const DetailedQuestionnairePage = () => {
     const location = useLocation();
     const isDemo = location.state?.isDemo || false;
     const API_BASE_URL = process.env.REACT_APP_API_URL;
+
+    // Phones: at most 3 questions per screen (UX 3.3)
+    const screens = useQuestionScreens({
+        questions, currentPage, totalPages,
+        keepTogether: () => false,
+    });
+    const { showErrors, tryAdvance } = useQuestionnaireNav(`${currentPage}-${screens.subPage}`);
 
     useEffect(() => {
         if (isDemo) {
@@ -138,9 +146,7 @@ const DetailedQuestionnairePage = () => {
     }, [selectedBodyParts]);
 
 
-    const getCurrentPageQuestions = () => {
-        return questions.filter(q => Number(q.Page) === currentPage);
-    };
+    const getCurrentPageQuestions = () => screens.currentQuestions;
 
     const handleOptionSelect = (questionId, value) => {
         setResponses({
@@ -150,10 +156,15 @@ const DetailedQuestionnairePage = () => {
     };
 
     const handlePrevious = () => {
+        if (screens.subPage > 0) {
+            screens.prevSubPage();
+            return;
+        }
         if (currentPage > 1) {
             setCurrentPage(prev => {
                 const prevPage = prev - 1;
                 updatePageData(questions, prevPage);
+                screens.enterPage(prevPage, true);
                 return prevPage;
             });
         }
@@ -179,11 +190,18 @@ const DetailedQuestionnairePage = () => {
         setResponses(updatedResponses);
         setOthers({});
 
+        // Next screen within the same page (phones)
+        if (!screens.isLastScreenOfPage) {
+            screens.nextSubPage();
+            return;
+        }
+
         // Navigate to the next page
         if (currentPage < totalPages) {
             setCurrentPage((prev) => {
                 const nextPage = prev + 1;
                 updatePageData(questions, nextPage);
+                screens.enterPage(nextPage);
                 return nextPage;
             });
         }
@@ -287,14 +305,14 @@ const DetailedQuestionnairePage = () => {
                 scaleOptions.push(i);
             }
         } else if (q.options || q.options_Hebrew) {
-            // Text options from CSV
-            const rawOptions = language === 'he'
-                ? (q.options_Hebrew || q.options)
-                : q.options;
-
-            if (rawOptions) {
-                textOptions = rawOptions.split(', ');
-            }
+            // Text options from CSV. The saved value is always the English
+            // option (same in both languages); only the label is translated.
+            const englishOptions = (q.options || q.options_Hebrew || '').split(', ');
+            const hebrewOptions = (q.options_Hebrew || '').split(', ');
+            textOptions = englishOptions.map((value, i) => ({
+                value,
+                label: language === 'he' && hebrewOptions[i] ? hebrewOptions[i] : value,
+            }));
         } else {
             // Default to 1-5 scale
             scaleOptions = [1, 2, 3, 4, 5];
@@ -421,7 +439,7 @@ const DetailedQuestionnairePage = () => {
                     </div>
 
                     <div className="navigation">
-                        {currentPage > 1 && (
+                        {!screens.isFirstScreen && (
                             <PrimaryButton
                                 text={t('previous')}
                                 onClick={handlePrevious}
@@ -429,7 +447,7 @@ const DetailedQuestionnairePage = () => {
                             />
                         )}
 
-                        {currentPage < totalPages ? (
+                        {!screens.isLastScreen ? (
                             <PrimaryButton
                                 text={t('next')}
                                 onClick={() => tryAdvance(missingIds, handleNext)}
@@ -443,7 +461,9 @@ const DetailedQuestionnairePage = () => {
                         )}
                     </div>
 
-                    <ProgressIndicator current={currentPage} total={totalPages} />
+                    <ProgressIndicator current={screens.screenNumber} total={screens.screenTotal} />
+
+                    <ScrollHint watch={`${currentPage}-${screens.subPage}`} />
                 </main>
             </div>
         </div >

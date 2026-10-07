@@ -9,6 +9,8 @@ import PrimaryButton from '../generalComponents/PrimaryButton';
 import ProgressIndicator from '../generalComponents/ProgressIndicator';
 import QuestionShell from '../generalComponents/QuestionShell';
 import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
+import ScrollHint from '../generalComponents/ScrollHint';
+import useQuestionScreens from '../generalComponents/useQuestionScreens';
 import ScaleLegend from '../generalComponents/ScaleLegend';
 import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
@@ -25,7 +27,6 @@ const QuestionnairePageBefore = () => {
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const { showErrors, tryAdvance } = useQuestionnaireNav(currentPage);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,6 +39,13 @@ const QuestionnairePageBefore = () => {
 
     const location = useLocation();
     const introData = location.state?.introData || null;
+
+    // Phones: at most 3 questions per screen (UX 3.3)
+    const screens = useQuestionScreens({
+        questions, currentPage, totalPages,
+        keepTogether: (qs) => qs.some(q => q['Page Title'] === 'SAM'),
+    });
+    const { showErrors, tryAdvance } = useQuestionnaireNav(`${currentPage}-${screens.subPage}`);
 
     useEffect(() => {
         if (!introData) {
@@ -160,29 +168,37 @@ const QuestionnairePageBefore = () => {
     }, [selectedBodyParts, mostPainfulPart]);
 
 
-    const getCurrentPageQuestions = () => {
-        return questions.filter(q => Number(q.Page) === currentPage);
-    };
+    const getCurrentPageQuestions = () => screens.currentQuestions;
 
     const handleOptionSelect = (questionId, value) => {
         setResponses(prev => ({ ...prev, [questionId]: value }));
     };
 
     const handlePrevious = () => {
+        if (screens.subPage > 0) {
+            screens.prevSubPage();
+            return;
+        }
         if (currentPage > 1) {
             setCurrentPage(prev => {
                 const prevPage = prev - 1;
                 updatePageData(questions, prevPage);
+                screens.enterPage(prevPage, true);
                 return prevPage;
             });
         }
     };
 
     const handleNext = () => {
+        if (!screens.isLastScreenOfPage) {
+            screens.nextSubPage();
+            return;
+        }
         if (currentPage < totalPages) {
             setCurrentPage(prev => {
                 const nextPage = prev + 1;
                 updatePageData(questions, nextPage);
+                screens.enterPage(nextPage);
                 return nextPage;
             });
         }
@@ -234,7 +250,11 @@ const QuestionnairePageBefore = () => {
         .map(q => {
             let options = [];
             if (q.question_ID === YES_NO_QUESTION_ID) {
-                options = language === 'he' ? ['כן', 'לא'] : ['Yes', 'No'];
+                // saved value is always 'Yes' / 'No' whatever the display language
+                options = [
+                    { value: 'Yes', label: language === 'he' ? 'כן' : 'Yes' },
+                    { value: 'No', label: language === 'he' ? 'לא' : 'No' },
+                ];
             } else if (q.scale_min !== undefined && q.scale_max !== undefined) {
                 const minStr = String(q.scale_min);
                 const maxStr = String(q.scale_max);
@@ -379,14 +399,14 @@ const QuestionnairePageBefore = () => {
                     </div>
 
                     <div className="navigation">
-                        {currentPage > 1 && (
+                        {!screens.isFirstScreen && (
                             <PrimaryButton
                                 text={t('previous')}
                                 onClick={handlePrevious}
                                 className="previous-button"
                             />
                         )}
-                        {currentPage < totalPages ? (
+                        {!screens.isLastScreen ? (
                             <PrimaryButton
                                 text={t('next')}
                                 onClick={() => tryAdvance(missingIds, handleNext)}
@@ -400,7 +420,9 @@ const QuestionnairePageBefore = () => {
                         )}
                     </div>
 
-                    <ProgressIndicator current={currentPage} total={totalPages} />
+                    <ProgressIndicator current={screens.screenNumber} total={screens.screenTotal} />
+
+                    <ScrollHint watch={`${currentPage}-${screens.subPage}`} />
                 </main>
             </div>
         </div>

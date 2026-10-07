@@ -1,0 +1,45 @@
+.scroll-hint {
+    position: fixed;
+    left: 50%;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 900;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 999px;
+    background-color: #295A4B;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    white-space: nowrap;
+    animation: scroll-hint-in 0.25s ease-out;
+}
+
+.scroll-hint-arrow {
+    display: inline-block;
+    font-size: 18px;
+    animation: scroll-hint-bounce 1.4s ease-in-out infinite;
+}
+
+@keyframes scroll-hint-in {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes scroll-hint-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-hint,
+    .scroll-hint-arrow {
+        animation: none;
+    }
+}
