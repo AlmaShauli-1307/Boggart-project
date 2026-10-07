@@ -476,3 +476,9 @@ body {
         width: 100%;
     }
 }
+
+/* "span 3" created an extra implicit column in the 2-column phone grid as soon
+   as anything was selected, squeezing every label to ~60px. Span the full row. */
+.body-parts-grid .clear-button-container {
+    grid-column: 1 / -1;
+}

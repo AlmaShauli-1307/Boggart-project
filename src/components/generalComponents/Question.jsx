@@ -38,6 +38,9 @@ const Question = ({
     // text options (Yes/No) follow the page direction.
     const isNumeric = normalized.every(o => typeof o.value === 'number' || /^\d+%?$/.test(String(o.value)));
 
+    // e.g. "100%" — slightly smaller text so it fits a 44px button on a 320px phone
+    const hasLongLabels = normalized.some(o => String(o.label).length >= 4);
+
     const hasLabels = Boolean(leftLabel || rightLabel);
     const first = normalized[0];
     const last = normalized[count - 1];
@@ -47,7 +50,7 @@ const Question = ({
             {text && <p className="question-text">{text}</p>}
 
             <div
-                className={`scale ${isWide ? 'scale-wide' : ''}`}
+                className={`scale ${isWide ? 'scale-wide' : ''} ${hasLongLabels ? 'scale-long-labels' : ''}`}
                 dir={isNumeric ? 'ltr' : undefined}
                 style={{ '--scale-count': count, '--scale-mobile-columns': mobileColumns }}
             >

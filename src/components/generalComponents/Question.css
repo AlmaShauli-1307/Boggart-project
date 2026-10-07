@@ -288,3 +288,12 @@
         margin-bottom: 10px;
     }
 }
+
+@media (max-width: 600px) {
+    .scale-long-labels .scale-option {
+        font-size: 15px;
+        padding-left: 0;
+        padding-right: 0;
+        letter-spacing: -0.02em;
+    }
+}
