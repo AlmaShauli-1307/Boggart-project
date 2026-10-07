@@ -164,17 +164,19 @@ button.pain-face-container.selected {
         padding-bottom: 12px;
     }
 
-    /* Two rows of large face cards: 0–5 / 6–10 */
+    /* Rows of large face cards (0–3 / 4–7 / 8–10). Four per row instead of six
+       so the descriptive labels ("Discomforting", "Unimaginable") fit whole
+       words and are never broken mid-word. */
     .pain-scale-faces {
         display: grid;
-        grid-template-columns: repeat(6, minmax(44px, 1fr));
+        grid-template-columns: repeat(4, minmax(60px, 1fr));
         gap: 4px;
         padding-bottom: 0;
     }
 
     button.pain-face-container {
         width: auto;
-        min-height: 96px;
+        min-height: 88px;
         border: 1px solid #B9B9B9;
         background: #FFFFFF;
         padding: 6px 2px;
@@ -192,9 +194,11 @@ button.pain-face-container.selected {
     }
 
     .pain-label {
-        font-size: 10px;
-        line-height: 1.15;
+        font-size: 11px;
+        line-height: 1.2;
         max-width: 100%;
+        word-break: normal;
+        overflow-wrap: normal;
     }
 
     /* the number is the main anchor (UX 3.2) */
@@ -208,5 +212,17 @@ button.pain-face-container.selected {
 
     .pain-number-row {
         display: none;
+    }
+}
+
+/* very narrow phones (320px): keep the longest labels on whole words */
+@media (max-width: 360px) {
+    .pain-label {
+        font-size: 10px;
+        letter-spacing: -0.01em;
+    }
+
+    .pain-scale-faces {
+        gap: 3px;
     }
 }

@@ -203,6 +203,7 @@ const translations = {
 
   },
   en: {
+    backToLanding: 'Back to home page',
     next: 'NEXT',
     previous: 'PREVIOUS',
     visualize: "VISUALIZE PAIN",
