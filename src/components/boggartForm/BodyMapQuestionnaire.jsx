@@ -4,22 +4,23 @@ import './BodyMapQuestionnaire.css';
 import body from '../../images/body.png';
 
 // Regions that can be tapped directly on the diagram (UX 2.3.1). Small face
-// parts (eyes, nose, teeth…), Back (hidden in a front view) and Ribs/Clavicle
-// stay list-only, because their drawn areas are too small or overlap.
+// parts (eyes, nose, teeth…), Back (hidden in a front view), Ribs/Clavicle and
+// the general "Legs" stay list-only; on the diagram a leg tap picks the
+// thigh, knee or shin.
 const TAPPABLE_PARTS = ['Head', 'Neck', 'Shoulders', 'Chest', 'Stomach', 'Pelvis',
-    'Hands', 'Forearms', 'Elbows', 'UpperArms', 'Legs', 'Knees', 'Ankles', 'Feet'];
+    'Hands', 'Forearms', 'Elbows', 'UpperArms', 'Thighs', 'Knees', 'Shins', 'Ankles', 'Feet'];
 // Touch area is 150% of the drawn region, centred on it.
 const HITBOX_SCALE = 1.5;
 
-const toHitboxes = (region) => (region.areas || [region]).map(a => {
+const toHitboxes = (region, scale = HITBOX_SCALE) => (region.areas || [region]).map(a => {
     const cx = parseFloat(a.left);
     const top = parseFloat(a.top);
     const w = parseFloat(a.width);
     const h = parseFloat(a.height);
     const cy = top + h / 2;
     return {
-        x1: cx - (w * HITBOX_SCALE) / 2, x2: cx + (w * HITBOX_SCALE) / 2,
-        y1: cy - (h * HITBOX_SCALE) / 2, y2: cy + (h * HITBOX_SCALE) / 2,
+        x1: cx - (w * scale) / 2, x2: cx + (w * scale) / 2,
+        y1: cy - (h * scale) / 2, y2: cy + (h * scale) / 2,
         area: w * h,
     };
 });
@@ -29,7 +30,7 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
     const imageRef = useRef(null);
 
     const bodyParts = [
-        'Head', 'Neck', 'Shoulders', 'Back', 'Stomach', 'Pelvis', 'Knees',
+        'Head', 'Neck', 'Shoulders', 'Back', 'Stomach', 'Pelvis', 'Thighs', 'Knees', 'Shins',
         'Legs', 'Ankles', 'Feet', 'Hands', 'Forearms', 'Elbows', 'UpperArms', 'Chest',
         'Eyes', 'Ears', 'Nose', 'Teeth', 'Tongue', 'Throat',
         'Nape', 'Clavicle', 'Ribs', 'Entire body'
@@ -52,7 +53,7 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
             bodyParts: {
                 'Head': 'Head', 'Neck': 'Neck', 'Shoulders': 'Shoulders',
                 'Back': 'Back', 'Stomach': 'Stomach', 'Pelvis': 'Pelvis', 'Knees': 'Knees',
-                'Legs': 'Legs', 'Ankles': 'Ankles', 'Feet': 'Feet',
+                'Legs': 'Legs', 'Thighs': 'Thighs', 'Shins': 'Shins', 'Ankles': 'Ankles', 'Feet': 'Feet',
                 'Hands': 'Hands', 'Forearms': 'Forearms', 'Elbows': 'Elbows', 'UpperArms': 'Upper arms', 'Chest': 'Chest',
                 'Eyes': 'Eyes', 'Ears': 'Ears', 'Nose': 'Nose',
                 'Teeth': 'Teeth', 'Tongue': 'Tongue', 'Throat': 'Throat',
@@ -76,7 +77,7 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
             bodyParts: {
                 'Head': 'ראש', 'Neck': 'צוואר', 'Shoulders': 'כתפיים',
                 'Back': 'גב', 'Stomach': 'בטן', 'Pelvis': 'אגן', 'Knees': 'ברכיים',
-                'Legs': 'רגליים', 'Ankles': 'קרסוליים', 'Feet': 'כפות רגליים',
+                'Legs': 'רגליים', 'Thighs': 'ירכיים', 'Shins': 'שוקיים', 'Ankles': 'קרסוליים', 'Feet': 'כפות רגליים',
                 'Hands': 'כפות ידיים', 'Forearms': 'אמות', 'Elbows': 'מרפקים', 'UpperArms': 'זרועות', 'Chest': 'חזה',
                 'Eyes': 'עיניים', 'Ears': 'אוזניים', 'Nose': 'אף',
                 'Teeth': 'שיניים', 'Tongue': 'לשון', 'Throat': 'גרון',
@@ -98,7 +99,9 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
         'Chest': { top: '20.5%', left: '50%', width: '13.5%', height: '11.5%' },
         'Stomach': { top: '32%', left: '50%', width: '14%', height: '13%' },
         'Pelvis': { top: '45%', left: '50%', width: '17%', height: '8%' },
-        'Knees': { top: '64%', left: '50%', width: '15%', height: '8%' },
+        'Thighs': { areas: [{ top: '51%', left: '45.4%', width: '7.5%', height: '13%' }, { top: '51%', left: '54.6%', width: '7.5%', height: '13%' }] },
+        'Knees': { areas: [{ top: '64.5%', left: '45.6%', width: '6.5%', height: '7%' }, { top: '64.5%', left: '54.4%', width: '6.5%', height: '7%' }] },
+        'Shins': { areas: [{ top: '71.5%', left: '45.9%', width: '5.5%', height: '12.5%' }, { top: '71.5%', left: '54.1%', width: '5.5%', height: '12.5%' }] },
         'Legs': { top: '50%', left: '50%', width: '17%', height: '35%' },
         'Ankles': { top: '84%', left: '50%', width: '15%', height: '5%' },
         'Feet': { top: '88%', left: '50%', width: '22%', height: '8%' },
@@ -171,22 +174,28 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [radioKey, showMostPainful]);
 
-    // Tap on the diagram (UX 2.3.1): pick the smallest region whose enlarged
-    // hitbox contains the touch point, so e.g. knees win over legs.
+    // Tap on the diagram (UX 2.3.1): pick the smallest region containing the
+    // touch point (exact shape first, then the enlarged 150% touch zone).
     const wrapperRef = useRef(null);
     const [lastTapped, setLastTapped] = useState(null);
     const handleDiagramTap = (e) => {
         const rect = wrapperRef.current.getBoundingClientRect();
         const px = ((e.clientX - rect.left) / rect.width) * 100;
         const py = ((e.clientY - rect.top) / rect.height) * 100;
-        let best = null;
-        TAPPABLE_PARTS.forEach(part => {
-            toHitboxes(bodyPartRegions[part]).forEach(b => {
-                if (px >= b.x1 && px <= b.x2 && py >= b.y1 && py <= b.y2 && (!best || b.area < best.area)) {
-                    best = { part, area: b.area };
-                }
+        // 1) a tap inside a drawn area always picks that area;
+        // 2) only taps that fall between areas use the enlarged (150%) zones.
+        const pick = (scale) => {
+            let best = null;
+            TAPPABLE_PARTS.forEach(part => {
+                toHitboxes(bodyPartRegions[part], scale).forEach(b => {
+                    if (px >= b.x1 && px <= b.x2 && py >= b.y1 && py <= b.y2 && (!best || b.area < best.area)) {
+                        best = { part, area: b.area };
+                    }
+                });
             });
-        });
+            return best;
+        };
+        const best = pick(1) || pick(HITBOX_SCALE);
         if (best) {
             handleCheckboxChange(best.part);
             setLastTapped(best.part);
