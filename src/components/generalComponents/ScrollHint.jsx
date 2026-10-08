@@ -14,11 +14,21 @@ const ScrollHint = ({ watch }) => {
         // scrolling it is gone for this screen, so it never sits on top of an
         // answer button they are trying to tap.
         let dismissed = false;
-        const check = () => {
+        let frame = 0;
+        const measure = () => {
+            frame = 0;
             const doc = document.documentElement;
             const remaining = doc.scrollHeight - (window.scrollY + window.innerHeight);
             if (window.scrollY > 30) dismissed = true;
-            setVisible(!dismissed && remaining > 120);
+            const next = !dismissed && remaining > 120;
+            setVisible(prev => (prev === next ? prev : next));
+        };
+        // Measure on the next animation frame, never inside the ResizeObserver
+        // callback itself — otherwise Chrome reports "ResizeObserver loop
+        // completed with undelivered notifications" (shown as a red overlay
+        // by the dev server).
+        const check = () => {
+            if (!frame) frame = requestAnimationFrame(measure);
         };
         check();
         const timer = setTimeout(check, 400); // after images/fonts settle
@@ -28,6 +38,7 @@ const ScrollHint = ({ watch }) => {
         if (ro) ro.observe(document.body);
         return () => {
             clearTimeout(timer);
+            if (frame) cancelAnimationFrame(frame);
             window.removeEventListener('scroll', check);
             window.removeEventListener('resize', check);
             if (ro) ro.disconnect();
