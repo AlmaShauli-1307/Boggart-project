@@ -148,72 +148,70 @@
     }
 }
 /* ------------------------------------------------------------------ */
-/* Answer scale (buttons) — replaces the old one-row table.            */
+/* Answer scale (buttons) — same design on phone and desktop:          */
+/* separate boxes, the two end labels above them, no legend table.     */
 /* The .rating-table styles above are still used by MeetYourPainRate.  */
 /* ------------------------------------------------------------------ */
 
 .scale {
     width: 100%;
-    max-width: 850px;
+    /* ~96px per answer box on wide screens, never wider than the page */
+    max-width: min(100%, calc(var(--scale-count) * 96px + 120px));
     margin: 0 auto;
 }
 
 .scale-row {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 12px;
+}
+
+.scale-row .desktop-only {
+    display: none;
 }
 
 .scale-options {
     display: grid;
     grid-template-columns: repeat(var(--scale-count), minmax(44px, 1fr));
+    gap: 6px;
     width: 100%;
-    max-width: calc(var(--scale-count) * 82px);
-    background-color: #FFFFFF;
-    border-radius: 4px;
-    box-shadow: 0 0 0 1px #B9B9B9;
-    overflow: hidden;
 }
 
 .scale-option {
-    min-height: 44px;
+    min-height: 48px;
     min-width: 44px;
-    border: none;
-    border-right: 1px solid #B9B9B9;
+    border: 1px solid #B9B9B9;
+    border-radius: 6px;
     background: #FFFFFF;
     color: #1A1A1A;
     font-family: 'Inter', sans-serif;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 500;
     line-height: 1.2;
     cursor: pointer;
     padding: 6px 2px;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
     -webkit-tap-highlight-color: transparent;
-}
-
-.scale-option:last-child {
-    border-right: none;
 }
 
 .scale-option:hover {
     background-color: #F1F4F1;
+    border-color: #8A9690;
 }
 
 .scale-option:focus-visible {
     outline: 3px solid #295A4B;
-    outline-offset: -3px;
+    outline-offset: 2px;
 }
 
 .scale-option.selected {
     background-color: #295A4B;
+    border-color: #295A4B;
     color: #FFFFFF;
     font-weight: 700;
 }
 
 .scale-edge-labels {
-    display: none;
+    display: flex;
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 8px;
@@ -250,33 +248,15 @@
     text-align: center;
 }
 
-/* Mobile: end labels above the buttons, wide scales on two rows */
+/* Phones: wide scales (more than 6 answers) wrap onto two balanced rows */
 @media (max-width: 600px) {
-    .scale-edge-labels,
-    .scale-edge-labels.mobile-only {
-        display: flex;
-    }
-
-    .scale-row .desktop-only {
-        display: none;
+    .scale {
+        max-width: 100%;
     }
 
     .scale-options {
-        max-width: 100%;
         grid-template-columns: repeat(var(--scale-mobile-columns), minmax(44px, 1fr));
-        box-shadow: none;
-        background: transparent;
         gap: 4px;
-        border-radius: 0;
-        overflow: visible;
-    }
-
-    .scale-option,
-    .scale-option:last-child {
-        border: 1px solid #B9B9B9;
-        border-radius: 6px;
-        min-height: 48px;
-        font-size: 17px;
     }
 
     .question-item {
@@ -287,9 +267,7 @@
         font-size: 16px;
         margin-bottom: 10px;
     }
-}
 
-@media (max-width: 600px) {
     .scale-long-labels .scale-option {
         font-size: 15px;
         padding-left: 0;
