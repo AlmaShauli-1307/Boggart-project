@@ -12,8 +12,12 @@ html,
 body {
     background-color: #EEF0ED;
     font-family: 'Roboto', sans-serif;
-    height: 100%;
     width: 100%;
+}
+
+/* overflow-x only on body (not html + height:100%) so the window stays the
+   scroll container — otherwise iOS Safari ignores window.scrollTo(0, 0) */
+body {
     overflow-x: hidden;
 }
 
@@ -356,4 +360,125 @@ body {
 [dir="rtl"] .body-part-checkbox input[type="radio"]:checked+label::after {
     left: auto;
     right: 4px;
+}
+/* ---------------- UX 2.3 ---------------- */
+
+/* Reserve the image's space before it loads (body.png is 1534×1153) so
+   nothing — like an empty coloured box — appears or jumps above it (2.3.3) */
+.body-image-wrapper {
+    aspect-ratio: 1534 / 1153;
+    background-color: transparent;
+}
+
+.body-image-wrapper.tappable {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.body-map-step {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #FFFFFF;
+    background-color: #295A4B;
+    border-radius: 999px;
+    padding: 3px 12px;
+    margin: 0 auto 8px;
+}
+
+.body-map-section,
+.most-painful-section {
+    text-align: center;
+}
+
+.body-map-hint {
+    font-size: 14px;
+    color: #4A4A4A;
+    text-align: center;
+    margin: -12px 0 12px;
+}
+
+.body-map-selected {
+    margin-top: 12px;
+    font-size: 16px;
+    text-align: center;
+    color: #4A4A4A;
+}
+
+.body-map-selected.has-selection {
+    color: #1A1A1A;
+}
+
+/* stronger, immediate feedback on the region just tapped */
+.highlight-overlay {
+    background-color: rgba(255, 152, 0, 0.55);
+    border: 2px solid rgba(204, 70, 0, 0.9);
+}
+
+.highlight-overlay.just-selected {
+    animation: body-pulse 0.5s ease-out;
+}
+
+@keyframes body-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(204, 70, 0, 0.7); }
+    100% { box-shadow: 0 0 0 14px rgba(204, 70, 0, 0); }
+}
+
+/* Step 2 card — visually separate from step 1 */
+.most-painful-section {
+    margin-top: 24px;
+    padding: 16px;
+    border-top: none;
+    border: 2px solid #295A4B;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+}
+
+.most-painful-confirm {
+    font-size: 17px;
+    text-align: center;
+}
+
+/* radios look like radios, not checkboxes (single choice) */
+.body-part-checkbox input[type="radio"]+label::before {
+    border-radius: 50%;
+}
+
+.body-part-checkbox input[type="radio"]:checked+label::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    left: 5px;
+}
+
+[dir="rtl"] .body-part-checkbox input[type="radio"]:checked+label::after {
+    right: 5px;
+}
+
+/* bigger touch targets for the list on phones */
+@media (max-width: 768px) {
+    .body-part-checkbox label {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        width: 100%;
+    }
+
+    .body-part-checkbox {
+        margin-bottom: 0;
+    }
+
+    .most-painful-section {
+        width: 100%;
+    }
+}
+
+/* "span 3" created an extra implicit column in the 2-column phone grid as soon
+   as anything was selected, squeezing every label to ~60px. Span the full row. */
+.body-parts-grid .clear-button-container {
+    grid-column: 1 / -1;
 }

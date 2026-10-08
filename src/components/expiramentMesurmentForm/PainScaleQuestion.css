@@ -131,3 +131,98 @@
         width: 50px;
     }
 }
+/* ---- Faces as buttons (UX 1.2 / 1.5) ---- */
+button.pain-face-container {
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 4px 0 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button.pain-face-container.selected {
+    border-color: #295A4B;
+    background-color: rgba(41, 90, 75, 0.08);
+}
+
+.pain-number-row {
+    width: 100%;
+    max-width: 850px;
+    margin-top: 20px;
+}
+
+.pain-number-row .question-item {
+    margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+    .question-text-pain {
+        font-size: 17px;
+        padding-bottom: 12px;
+    }
+
+    /* Rows of large face cards (0–3 / 4–7 / 8–10). Four per row instead of six
+       so the descriptive labels ("Discomforting", "Unimaginable") fit whole
+       words and are never broken mid-word. */
+    .pain-scale-faces {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(60px, 1fr));
+        gap: 4px;
+        padding-bottom: 0;
+    }
+
+    button.pain-face-container {
+        width: auto;
+        min-height: 88px;
+        border: 1px solid #B9B9B9;
+        background: #FFFFFF;
+        padding: 6px 2px;
+        justify-content: flex-start;
+    }
+
+    button.pain-face-container.selected {
+        border: 2px solid #295A4B;
+        background-color: #E3EEE9;
+    }
+
+    .pain-face {
+        width: 32px;
+        height: 32px;
+    }
+
+    .pain-label {
+        font-size: 11px;
+        line-height: 1.2;
+        max-width: 100%;
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+
+    /* the number is the main anchor (UX 3.2) */
+    .pain-value {
+        position: static;
+        order: -1;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+
+    .pain-number-row {
+        display: none;
+    }
+}
+
+/* very narrow phones (320px): keep the longest labels on whole words */
+@media (max-width: 360px) {
+    .pain-label {
+        font-size: 10px;
+        letter-spacing: -0.01em;
+    }
+
+    .pain-scale-faces {
+        gap: 3px;
+    }
+}

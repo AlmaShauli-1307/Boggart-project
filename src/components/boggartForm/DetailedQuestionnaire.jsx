@@ -5,6 +5,11 @@ import Papa from 'papaparse';
 import './DetailedQuestionnaire.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
+import ProgressIndicator from '../generalComponents/ProgressIndicator';
+import QuestionShell from '../generalComponents/QuestionShell';
+import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
+import ScrollHint from '../generalComponents/ScrollHint';
+import useQuestionScreens from '../generalComponents/useQuestionScreens';
 import Question from '../generalComponents/Question';
 import BodyMapQuestionnaire from "./BodyMapQuestionnaire";
 import InputQuestion from "../generalComponents/InputQuestion";
@@ -22,7 +27,6 @@ const DetailedQuestionnairePage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
-    const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedBodyParts, setSelectedBodyParts] = useState([]);
     const [form1Id, setForm1Id] = useState(null);
@@ -30,6 +34,13 @@ const DetailedQuestionnairePage = () => {
     const location = useLocation();
     const isDemo = location.state?.isDemo || false;
     const API_BASE_URL = process.env.REACT_APP_API_URL;
+
+    // Phones: at most 3 questions per screen (UX 3.3)
+    const screens = useQuestionScreens({
+        questions, currentPage, totalPages,
+        keepTogether: () => false,
+    });
+    const { showErrors, tryAdvance } = useQuestionnaireNav(`${currentPage}-${screens.subPage}`);
 
     useEffect(() => {
         if (isDemo) {
@@ -129,36 +140,13 @@ const DetailedQuestionnairePage = () => {
         }
     };
 
-    // Check if all questions on current page are answered
-    useEffect(() => {
-        const currentPageQuestions = getCurrentPageQuestions();
-
-        if (currentPageQuestions.length === 0) {
-            setAllQuestionsAnswered(true);
-            return;
-        }
-
-        const allAnswered = currentPageQuestions.every(q => {
-            if (q.question_ID === 117) {
-                return selectedBodyParts.length > 0;
-            }
-            return responses[q.question_ID] !== undefined && responses[q.question_ID] !== null;
-        });
-        setAllQuestionsAnswered(allAnswered);
-    }, [responses, currentPage, questions]);
 
     useEffect(() => {
         handleOptionSelect(117, selectedBodyParts);
     }, [selectedBodyParts]);
 
-    useEffect(() => {
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-    }, [currentPage]);
 
-    const getCurrentPageQuestions = () => {
-        return questions.filter(q => Number(q.Page) === currentPage);
-    };
+    const getCurrentPageQuestions = () => screens.currentQuestions;
 
     const handleOptionSelect = (questionId, value) => {
         setResponses({
@@ -168,13 +156,17 @@ const DetailedQuestionnairePage = () => {
     };
 
     const handlePrevious = () => {
+        if (screens.subPage > 0) {
+            screens.prevSubPage();
+            return;
+        }
         if (currentPage > 1) {
             setCurrentPage(prev => {
                 const prevPage = prev - 1;
                 updatePageData(questions, prevPage);
+                screens.enterPage(prevPage, true);
                 return prevPage;
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -198,14 +190,20 @@ const DetailedQuestionnairePage = () => {
         setResponses(updatedResponses);
         setOthers({});
 
+        // Next screen within the same page (phones)
+        if (!screens.isLastScreenOfPage) {
+            screens.nextSubPage();
+            return;
+        }
+
         // Navigate to the next page
         if (currentPage < totalPages) {
             setCurrentPage((prev) => {
                 const nextPage = prev + 1;
                 updatePageData(questions, nextPage);
+                screens.enterPage(nextPage);
                 return nextPage;
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -307,14 +305,14 @@ const DetailedQuestionnairePage = () => {
                 scaleOptions.push(i);
             }
         } else if (q.options || q.options_Hebrew) {
-            // Text options from CSV
-            const rawOptions = language === 'he'
-                ? (q.options_Hebrew || q.options)
-                : q.options;
-
-            if (rawOptions) {
-                textOptions = rawOptions.split(', ');
-            }
+            // Text options from CSV. The saved value is always the English
+            // option (same in both languages); only the label is translated.
+            const englishOptions = (q.options || q.options_Hebrew || '').split(', ');
+            const hebrewOptions = (q.options_Hebrew || '').split(', ');
+            textOptions = englishOptions.map((value, i) => ({
+                value,
+                label: language === 'he' && hebrewOptions[i] ? hebrewOptions[i] : value,
+            }));
         } else {
             // Default to 1-5 scale
             scaleOptions = [1, 2, 3, 4, 5];
@@ -348,10 +346,22 @@ const DetailedQuestionnairePage = () => {
         });
     }
 
-    // Calculate progress percentage
-    const progressPercentage = (currentPage / totalPages) * 100;
 
     // תצוגת השאלון הרגילה
+    // Questions on this page that still need an answer (UX 1.3: "Next" stays
+    // clickable and points the user to these instead of being greyed out)
+    const missingIds = getCurrentPageQuestions()
+        .filter(q => q.question_ID === 117
+            ? selectedBodyParts.length === 0
+            : !(isAnswered(responses[q.question_ID]) || isAnswered(others[q.question_ID])))
+        .map(q => q.question_ID);
+
+    const shell = (id, element) => element && (
+        <QuestionShell key={id} id={id} missing={showErrors && missingIds.includes(id)}>
+            {element}
+        </QuestionShell>
+    );
+
     return (
         <div className="form-page" lang={language}>
             < LanguageToggle />
@@ -370,15 +380,15 @@ const DetailedQuestionnairePage = () => {
                     )}
                     <div className="questionnaire">
                         {/* Special case for pain scale page */}
-                        {isPainLocationPage && formattedQuestions.map(question => (
+                        {isPainLocationPage && formattedQuestions.map(question => shell(question.id, (
                             <BodyMapQuestionnaire
                                 key="body-map"
                                 selectedBodyParts={selectedBodyParts}
                                 setSelectedBodyParts={setSelectedBodyParts}
                             />
-                        ))}
+                        )))}
                         {/* Regular questions for all other pages */}
-                        {!isPainLocationPage && formattedQuestions.map(question => {
+                        {!isPainLocationPage && formattedQuestions.map(question => shell(question.id, (() => {
                             if (question.questionType === 'scale') {
                                 return (<Question
                                     key={question.id}
@@ -425,11 +435,11 @@ const DetailedQuestionnairePage = () => {
                                     options={question.options} />
                             }
                             return null;
-                        })}
+                        })()))}
                     </div>
 
                     <div className="navigation">
-                        {currentPage > 1 && (
+                        {!screens.isFirstScreen && (
                             <PrimaryButton
                                 text={t('previous')}
                                 onClick={handlePrevious}
@@ -437,27 +447,23 @@ const DetailedQuestionnairePage = () => {
                             />
                         )}
 
-                        {currentPage < totalPages ? (
+                        {!screens.isLastScreen ? (
                             <PrimaryButton
                                 text={t('next')}
-                                onClick={handleNext}
-                                disabled={!allQuestionsAnswered}
+                                onClick={() => tryAdvance(missingIds, handleNext)}
                             />
                         ) : (
                             <PrimaryButton
                                 text={isSubmitting ? t('submitting') : t('visualize')}
-                                onClick={handleSubmit}
-                                disabled={!allQuestionsAnswered || isSubmitting || (!form1Id && !isDemo)}
+                                onClick={() => tryAdvance(missingIds, handleSubmit)}
+                                disabled={isSubmitting || (!form1Id && !isDemo)}
                             />
                         )}
                     </div>
 
-                    <div className="progress-bar">
-                        <div
-                            className="progress-indicator"
-                            style={{ width: `${progressPercentage}%` }}
-                        ></div>
-                    </div>
+                    <ProgressIndicator current={screens.screenNumber} total={screens.screenTotal} />
+
+                    <ScrollHint watch={`${currentPage}-${screens.subPage}`} />
                 </main>
             </div>
         </div >

@@ -1,0 +1,22 @@
+.progress-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.progress-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #3D4A45;
+    margin: 0;
+}
+
+.progress-wrapper {
+    width: 100%;
+}
+
+.progress-wrapper .progress-bar {
+    width: 100%;
+    max-width: 320px;
+}

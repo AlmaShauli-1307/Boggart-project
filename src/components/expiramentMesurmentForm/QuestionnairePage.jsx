@@ -6,6 +6,11 @@ import Papa from 'papaparse';
 import './QuestionnairePage.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
+import ProgressIndicator from '../generalComponents/ProgressIndicator';
+import QuestionShell from '../generalComponents/QuestionShell';
+import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
+import ScrollHint from '../generalComponents/ScrollHint';
+import useQuestionScreens from '../generalComponents/useQuestionScreens';
 import ScaleLegend from '../generalComponents/ScaleLegend';
 import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
@@ -19,10 +24,16 @@ const QuestionnairePage = ({ csvName }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageData, setPageData] = useState({ title: '', instructions: '' });
     const [totalPages, setTotalPages] = useState(1);
-    const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [currentScale, setCurrentScale] = useState({});
     const [showScale, setShowScale] = useState(false);
+
+    // Phones: at most 3 questions per screen (UX 3.3)
+    const screens = useQuestionScreens({
+        questions, currentPage, totalPages,
+        keepTogether: (qs) => qs.some(q => q['Page Title'] === 'SAM'),
+    });
+    const { showErrors, tryAdvance } = useQuestionnaireNav(`${currentPage}-${screens.subPage}`);
 
     useEffect(() => {
         fetch(`/${csvName}.csv`)
@@ -111,50 +122,41 @@ const QuestionnairePage = ({ csvName }) => {
         }
     }, [language]);
 
-    useEffect(() => {
-        const currentPageQuestions = getCurrentPageQuestions();
-        if (currentPageQuestions.length === 0) {
-            setAllQuestionsAnswered(true);
-            return;
-        }
-        const allAnswered = currentPageQuestions.every(q =>
-            responses[q.question_ID] !== undefined && responses[q.question_ID] !== null
-        );
-        setAllQuestionsAnswered(allAnswered);
-    }, [responses, currentPage, questions]);
 
-    useEffect(() => {
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-    }, [currentPage]);
 
-    const getCurrentPageQuestions = () => {
-        return questions.filter(q => Number(q.Page) === currentPage);
-    };
+    const getCurrentPageQuestions = () => screens.currentQuestions;
 
     const handleOptionSelect = (questionId, value) => {
         setResponses({ ...responses, [questionId]: value });
     };
 
     const handlePrevious = () => {
+        if (screens.subPage > 0) {
+            screens.prevSubPage();
+            return;
+        }
         if (currentPage > 1) {
             setCurrentPage(prev => {
                 const prevPage = prev - 1;
                 updatePageData(questions, prevPage);
+                screens.enterPage(prevPage, true);
                 return prevPage;
             });
-            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
         }
     };
 
     const handleNext = () => {
+        if (!screens.isLastScreenOfPage) {
+            screens.nextSubPage();
+            return;
+        }
         if (currentPage < totalPages) {
             setCurrentPage(prev => {
                 const nextPage = prev + 1;
                 updatePageData(questions, nextPage);
+                screens.enterPage(nextPage);
                 return nextPage;
             });
-            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
         }
     };
 
@@ -213,7 +215,24 @@ const QuestionnairePage = ({ csvName }) => {
         };
     });
 
-    const progressPercentage = (currentPage / totalPages) * 100;
+
+    // End labels of the page legend, shown on mobile in place of the legend table (UX 1.1)
+    const legendKeys = Object.keys(currentScale).map(Number).sort((a, b) => a - b);
+    const hasLegend = showScale && !isVAS && !isSAM && legendKeys.length > 0;
+    const legendLeft = hasLegend ? currentScale[legendKeys[0]] : undefined;
+    const legendRight = hasLegend ? currentScale[legendKeys[legendKeys.length - 1]] : undefined;
+
+    // Questions on this page that still need an answer (UX 1.3: "Next" stays
+    // clickable and points the user to these instead of being greyed out)
+    const missingIds = getCurrentPageQuestions()
+        .filter(q => !isAnswered(responses[q.question_ID]))
+        .map(q => q.question_ID);
+
+    const shell = (id, element) => element && (
+        <QuestionShell key={id} id={id} missing={showErrors && missingIds.includes(id)}>
+            {element}
+        </QuestionShell>
+    );
 
     return (
         <div className="form-page">
@@ -235,7 +254,7 @@ const QuestionnairePage = ({ csvName }) => {
                     )}
 
                     <div className="questionnaire">
-                        {isVAS && formattedQuestions.map(question => (
+                        {isVAS && formattedQuestions.map(question => shell(question.id, (
                             <PainScaleQuestion
                                 key={question.id}
                                 id={question.id}
@@ -245,17 +264,19 @@ const QuestionnairePage = ({ csvName }) => {
                                 min={0}
                                 max={10}
                             />
-                        ))}
+                        )))}
 
                         {isSAM && (
                             <EmotionScalePage
                                 questions={formattedQuestions}
                                 responses={responses}
                                 onSelect={handleOptionSelect}
+                                showErrors={showErrors}
+                                missingIds={missingIds}
                             />
                         )}
 
-                        {!isVAS && !isSAM && formattedQuestions.map(question => (
+                        {!isVAS && !isSAM && formattedQuestions.map(question => shell(question.id, (
                             <Question
                                 key={question.id}
                                 id={question.id}
@@ -263,38 +284,38 @@ const QuestionnairePage = ({ csvName }) => {
                                 selectedValue={responses[question.id]}
                                 onSelect={handleOptionSelect}
                                 options={question.options}
-                                leftLabel={question.leftLabel}
-                                rightLabel={question.rightLabel}
+                                leftLabel={question.leftLabel || legendLeft}
+                                rightLabel={question.rightLabel || legendRight}
+                                mobileOnlyLabels={!question.leftLabel && !question.rightLabel && hasLegend}
                             />
-                        ))}
+                        )))}
                     </div>
 
                     <div className="navigation">
-                        {currentPage > 1 && (
+                        {!screens.isFirstScreen && (
                             <PrimaryButton
                                 text={t('previous')}
                                 onClick={handlePrevious}
                                 className="previous-button"
                             />
                         )}
-                        {currentPage < totalPages ? (
+                        {!screens.isLastScreen ? (
                             <PrimaryButton
                                 text={t('next')}
-                                onClick={handleNext}
-                                disabled={!allQuestionsAnswered}
+                                onClick={() => tryAdvance(missingIds, handleNext)}
                             />
                         ) : (
                             <PrimaryButton
                                 text={isSubmitting ? t('submitting') : t('submit')}
-                                onClick={handleSubmit}
-                                disabled={!allQuestionsAnswered || isSubmitting}
+                                onClick={() => tryAdvance(missingIds, handleSubmit)}
+                                disabled={isSubmitting}
                             />
                         )}
                     </div>
 
-                    <div className="progress-bar">
-                        <div className="progress-indicator" style={{ width: `${progressPercentage}%` }} />
-                    </div>
+                    <ProgressIndicator current={screens.screenNumber} total={screens.screenTotal} />
+
+                    <ScrollHint watch={`${currentPage}-${screens.subPage}`} />
                 </main>
             </div>
         </div>

@@ -83,3 +83,23 @@ textarea.input-question-field.long-text {
         font-size: 14px;
     }
 }
+.required-mark {
+    color: #A93226;
+    font-weight: 700;
+}
+
+.input-question-hint {
+    font-size: 14px;
+    color: #4A4A4A;
+    margin: -12px 0 12px;
+    text-align: center;
+}
+
+/* fixed 628px fields overflow phones */
+@media (max-width: 680px) {
+    .input-question-field.short-text,
+    textarea.input-question-field.long-text {
+        width: 100%;
+        max-width: 628px;
+    }
+}

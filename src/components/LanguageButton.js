@@ -13,7 +13,9 @@ const LanguageButton = ({ isInNavbar }) => {
     };
 
     const buttonStyle = {
-        position: isInNavbar ? 'static' : 'fixed',
+        // absolute (not fixed): scrolls away with the page instead of covering
+        // questions and labels on small screens
+        position: isInNavbar ? 'static' : 'absolute',
         top: isInNavbar ? 'auto' : '20px',
         right: isInNavbar ? 'auto' : '20px',
         backgroundColor: '#295A4B',

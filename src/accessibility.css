@@ -1,0 +1,61 @@
+/*
+ * UX findings section 3 — adjustments for an older population.
+ * Loaded after every component stylesheet would normally win on equal
+ * specificity, so selectors here are prefixed with .form-page / doubled to
+ * take precedence over the per-component mobile shrinking.
+ */
+
+/* 3.2 — contrast (WCAG AA) */
+
+/* disabled buttons were #A0AEA9 at 70% opacity with white text (1.75:1) */
+.primary-button.primary-button:disabled,
+.primary-button.primary-button.disabled {
+    background-color: #5F6E68; /* 5.4:1 with white text */
+    opacity: 1;
+}
+
+/* placeholders were 50% black on the page background (3.9:1) */
+.form-page input::placeholder,
+.form-page textarea::placeholder {
+    color: rgba(0, 0, 0, 0.62); /* ≈6:1 */
+}
+
+/* progress fill was #B9B9B9 on #EEF0ED (1.7:1) — hard to see */
+.form-page .progress-indicator {
+    background-color: #5F6E68;
+}
+
+.form-page .progress-bar {
+    border-color: #8A9690;
+}
+
+/* 3.4 — readable text by default, without browser zoom.
+   Phones used to shrink question text to 12–14px. 16px is also the size below
+   which iOS Safari zooms the page when a field is focused. */
+@media (max-width: 600px) {
+    .form-page .instructions-text,
+    .form-page .question-text,
+    .form-page .input-question-text,
+    .form-page .emotion-question-text,
+    .form-page .question-grid .question-item .question-text,
+    .form-page .field-label {
+        font-size: 16px;
+        line-height: 1.45;
+    }
+
+    .form-page .input-question-field,
+    .form-page .input-personal-question-field,
+    .form-page .other-input,
+    .landing-page .login-input {
+        font-size: 16px;
+    }
+
+    .form-page .body-part-checkbox label,
+    .form-page .option-checkbox label {
+        font-size: 16px;
+    }
+
+    .form-page .emotion-scale-title {
+        font-size: 17px;
+    }
+}

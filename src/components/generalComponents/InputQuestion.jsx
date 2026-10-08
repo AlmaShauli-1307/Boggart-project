@@ -9,9 +9,11 @@ const InputQuestion = ({
     selectedValue,
     onChange,
     placeholder,
-    inputType = "longText"
+    inputType = "longText",
+    hint
 }) => {
     const { language } = useLanguage();
+    const hintId = hint ? `hint-${id}` : undefined;
     const defaultPlaceholder = language === 'he' ? 'כתב/י כאן...' : 'Write in here...';
     const finalPlaceholder = placeholder || defaultPlaceholder;
 
@@ -30,7 +32,12 @@ const InputQuestion = ({
 
     return (
         <div className="input-question-item">
-            <p className="input-question-text">{text}</p>
+            {/* all questionnaire fields are required — say so explicitly (UX 2.4) */}
+            <p className="input-question-text">
+                {text}
+                <span className="required-mark" aria-hidden="true"> *</span>
+            </p>
+            {hint && <p id={hintId} className="input-question-hint">{hint}</p>}
 
             {inputType === "longText" ? (
                 <textarea
@@ -39,6 +46,8 @@ const InputQuestion = ({
                     value={selectedValue || ''}
                     onChange={handleChange}
                     placeholder={finalPlaceholder}
+                    aria-required="true"
+                    aria-describedby={hintId}
                 />
             ) : (
                 <input
@@ -48,6 +57,8 @@ const InputQuestion = ({
                     value={selectedValue || ''}
                     onChange={handleChange}
                     placeholder={finalPlaceholder}
+                    aria-required="true"
+                    aria-describedby={hintId}
                 />
             )}
         </div>

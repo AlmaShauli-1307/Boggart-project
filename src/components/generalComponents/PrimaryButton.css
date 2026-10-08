@@ -13,6 +13,11 @@
     letter-spacing: 0.04em;
     cursor: pointer;
     transition: all 0.3s ease;
+    /* keep the label centred in Hebrew and English alike */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .primary-button:hover:not(:disabled) {

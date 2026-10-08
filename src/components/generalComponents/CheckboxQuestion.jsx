@@ -47,26 +47,33 @@ const CheckboxQuestion = ({
         <div className="question-item" dir={language === 'he' ? 'rtl' : 'ltr'}>
             <p className="question-text">{text}</p>
             <div className="options-grid">
-                {options.map((option) => (
-                    <div key={option} className="option-checkbox">
-                        <input
-                            type="checkbox"
-                            id={option}
-                            checked={selectedValues.includes(option)}
-                            onChange={() => handleCheckboxChange(option)}
-                        />
-                        <label htmlFor={option}>{option}</label>
-                    </div>
-                ))}
+                {options.map((option) => {
+                    // options may be plain strings or { value, label } — the value
+                    // is what gets saved, the label is what the user sees
+                    const value = typeof option === 'object' ? option.value : option;
+                    const label = typeof option === 'object' ? option.label : option;
+                    const inputId = `q${id}-${value}`;
+                    return (
+                        <div key={value} className="option-checkbox">
+                            <input
+                                type="checkbox"
+                                id={inputId}
+                                checked={selectedValues.includes(value)}
+                                onChange={() => handleCheckboxChange(value)}
+                            />
+                            <label htmlFor={inputId}>{label}</label>
+                        </div>
+                    );
+                })}
                 {showOther && (
                     <div className="option-checkbox other-option">
                         <input
                             type="checkbox"
-                            id="Other"
+                            id={`q${id}-Other`}
                             checked={otherSelected}
                             onChange={() => handleCheckboxChange('Other')}
                         />
-                        <label htmlFor="Other">
+                        <label htmlFor={`q${id}-Other`}>
                             <input
                                 type="text"
                                 value={other}
