@@ -59,3 +59,22 @@
         font-size: 17px;
     }
 }
+
+/* Gap between the last question and the Next button.
+   It used to stack four spacings (~135px): last question 30 + list 60 +
+   navigation margin 30 + navigation padding 15. Now ~40px, all screen sizes. */
+.form-page .questionnaire {
+    margin-bottom: 12px;
+}
+
+.form-page .questionnaire > :last-child .question-item,
+.form-page .questionnaire > :last-child.question-item,
+.form-page .questionnaire > :last-child .input-question-item,
+.form-page .questionnaire > :last-child .pain-scale-question {
+    margin-bottom: 0;
+}
+
+.form-page .navigation {
+    margin-top: 12px;
+    padding-top: 16px;
+}
