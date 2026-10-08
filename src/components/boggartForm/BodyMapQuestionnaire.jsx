@@ -7,7 +7,7 @@ import body from '../../images/body.png';
 // parts (eyes, nose, teeth…), Back (hidden in a front view) and Ribs/Clavicle
 // stay list-only, because their drawn areas are too small or overlap.
 const TAPPABLE_PARTS = ['Head', 'Neck', 'Shoulders', 'Chest', 'Stomach', 'Pelvis',
-    'Hands', 'Elbows', 'Legs', 'Knees', 'Ankles', 'Feet'];
+    'Hands', 'Forearms', 'Elbows', 'UpperArms', 'Legs', 'Knees', 'Ankles', 'Feet'];
 // Touch area is 150% of the drawn region, centred on it.
 const HITBOX_SCALE = 1.5;
 
@@ -30,7 +30,7 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
 
     const bodyParts = [
         'Head', 'Neck', 'Shoulders', 'Back', 'Stomach', 'Pelvis', 'Knees',
-        'Legs', 'Ankles', 'Feet', 'Hands', 'Elbows', 'Chest',
+        'Legs', 'Ankles', 'Feet', 'Hands', 'Forearms', 'Elbows', 'UpperArms', 'Chest',
         'Eyes', 'Ears', 'Nose', 'Teeth', 'Tongue', 'Throat',
         'Nape', 'Clavicle', 'Ribs', 'Entire body'
     ];
@@ -53,7 +53,7 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
                 'Head': 'Head', 'Neck': 'Neck', 'Shoulders': 'Shoulders',
                 'Back': 'Back', 'Stomach': 'Stomach', 'Pelvis': 'Pelvis', 'Knees': 'Knees',
                 'Legs': 'Legs', 'Ankles': 'Ankles', 'Feet': 'Feet',
-                'Hands': 'Hands', 'Elbows': 'Elbows', 'Chest': 'Chest',
+                'Hands': 'Hands', 'Forearms': 'Forearms', 'Elbows': 'Elbows', 'UpperArms': 'Upper arms', 'Chest': 'Chest',
                 'Eyes': 'Eyes', 'Ears': 'Ears', 'Nose': 'Nose',
                 'Teeth': 'Teeth', 'Tongue': 'Tongue', 'Throat': 'Throat',
                 'Nape': 'Nape', 'Clavicle': 'Clavicle', 'Ribs': 'Ribs',
@@ -77,7 +77,7 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
                 'Head': 'ראש', 'Neck': 'צוואר', 'Shoulders': 'כתפיים',
                 'Back': 'גב', 'Stomach': 'בטן', 'Pelvis': 'אגן', 'Knees': 'ברכיים',
                 'Legs': 'רגליים', 'Ankles': 'קרסוליים', 'Feet': 'כפות רגליים',
-                'Hands': 'ידיים', 'Elbows': 'מרפקים', 'Chest': 'חזה',
+                'Hands': 'כפות ידיים', 'Forearms': 'אמות', 'Elbows': 'מרפקים', 'UpperArms': 'זרועות', 'Chest': 'חזה',
                 'Eyes': 'עיניים', 'Ears': 'אוזניים', 'Nose': 'אף',
                 'Teeth': 'שיניים', 'Tongue': 'לשון', 'Throat': 'גרון',
                 'Nape': 'עורף', 'Clavicle': 'עצם הבריח', 'Ribs': 'צלעות',
@@ -95,15 +95,17 @@ const BodyMapQuestionnaire = ({ selectedBodyParts, setSelectedBodyParts, mostPai
         'Neck': { top: '14%', left: '50%', width: '6%', height: '5%' },
         'Shoulders': { areas: [{ top: '18%', left: '42.5%', width: '7%', height: '7%' }, { top: '18%', left: '57.5%', width: '7%', height: '7%' }] },
         'Back': { top: '20%', left: '50%', width: '18%', height: '25%' },
-        'Chest': { top: '20.5%', left: '50%', width: '17%', height: '11.5%' },
+        'Chest': { top: '20.5%', left: '50%', width: '13.5%', height: '11.5%' },
         'Stomach': { top: '32%', left: '50%', width: '14%', height: '13%' },
         'Pelvis': { top: '45%', left: '50%', width: '17%', height: '8%' },
         'Knees': { top: '64%', left: '50%', width: '15%', height: '8%' },
         'Legs': { top: '50%', left: '50%', width: '17%', height: '35%' },
         'Ankles': { top: '84%', left: '50%', width: '15%', height: '5%' },
         'Feet': { top: '88%', left: '50%', width: '22%', height: '8%' },
-        'Hands': { areas: [{ top: '46%', left: '35%', width: '7.5%', height: '10%' }, { top: '46%', left: '65%', width: '7.5%', height: '10%' }] },
-        'Elbows': { areas: [{ top: '35%', left: '40%', width: '6%', height: '6%' }, { top: '35%', left: '60%', width: '6%', height: '6%' }] },
+        'Hands': { areas: [{ top: '46.5%', left: '35%', width: '7%', height: '9.5%' }, { top: '46.5%', left: '65%', width: '7%', height: '9.5%' }] },
+        'Forearms': { areas: [{ top: '40.5%', left: '37.8%', width: '5%', height: '6%' }, { top: '40.5%', left: '62.2%', width: '5%', height: '6%' }] },
+        'Elbows': { areas: [{ top: '36%', left: '39.5%', width: '5%', height: '4.5%' }, { top: '36%', left: '60.5%', width: '5%', height: '4.5%' }] },
+        'UpperArms': { areas: [{ top: '24.5%', left: '41.2%', width: '4.5%', height: '11.5%' }, { top: '24.5%', left: '58.8%', width: '4.5%', height: '11.5%' }] },
         'Eyes': { top: '8.5%', left: '50%', width: '7%', height: '2.5%' },
         'Ears': { areas: [{ top: '9.5%', left: '45.6%', width: '2.5%', height: '4%' }, { top: '9.5%', left: '54.4%', width: '2.5%', height: '4%' }] },
         'Nose': { top: '10.5%', left: '50%', width: '3%', height: '2.5%' },
