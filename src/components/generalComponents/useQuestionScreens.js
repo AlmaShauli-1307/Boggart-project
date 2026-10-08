@@ -21,7 +21,13 @@ export const useIsMobile = () => {
     return isMobile;
 };
 
-const useQuestionScreens = ({ questions, currentPage, totalPages, keepTogether = () => false }) => {
+// `perScreen` is a number, or a function (questionsOfThePage) => number, so
+// some sections can use smaller screens (e.g. 2 questions from question 103).
+const useQuestionScreens = ({
+    questions, currentPage, totalPages,
+    keepTogether = () => false,
+    perScreen = QUESTIONS_PER_SCREEN,
+}) => {
     const isMobile = useIsMobile();
     const [subPage, setSubPage] = useState(0);
 
@@ -29,10 +35,11 @@ const useQuestionScreens = ({ questions, currentPage, totalPages, keepTogether =
 
     const screensOf = (page) => {
         const all = pageQuestions(page);
-        if (!isMobile || all.length <= QUESTIONS_PER_SCREEN || keepTogether(all)) return [all];
+        const size = Math.max(1, typeof perScreen === 'function' ? perScreen(all) : perScreen);
+        if (!isMobile || all.length <= size || keepTogether(all)) return [all];
         const chunks = [];
-        for (let i = 0; i < all.length; i += QUESTIONS_PER_SCREEN) {
-            chunks.push(all.slice(i, i + QUESTIONS_PER_SCREEN));
+        for (let i = 0; i < all.length; i += size) {
+            chunks.push(all.slice(i, i + size));
         }
         return chunks;
     };

@@ -44,6 +44,8 @@ const QuestionnairePageBefore = () => {
     const screens = useQuestionScreens({
         questions, currentPage, totalPages,
         keepTogether: (qs) => qs.some(q => q['Page Title'] === 'SAM'),
+        // from question 103 on, only 2 questions per phone screen
+        perScreen: (qs) => (qs.some(q => Number(q.question_ID) >= 103) ? 2 : 3),
     });
     const { showErrors, tryAdvance } = useQuestionnaireNav(`${currentPage}-${screens.subPage}`);
 
