@@ -11,7 +11,6 @@ import QuestionShell from '../generalComponents/QuestionShell';
 import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
 import ScrollHint from '../generalComponents/ScrollHint';
 import useQuestionScreens from '../generalComponents/useQuestionScreens';
-import ScaleLegend from '../generalComponents/ScaleLegend';
 import Question from '../generalComponents/Question';
 import PainScaleQuestion from './PainScaleQuestion';
 import EmotionScalePage from './EmotionScalePage';
@@ -287,7 +286,7 @@ const QuestionnairePageBefore = () => {
         });
 
 
-    // End labels of the page legend, shown on mobile in place of the legend table (UX 1.1)
+    // End labels of the page legend, shown above each question instead of a legend table (UX 1.1)
     const legendKeys = Object.keys(currentScale).map(Number).sort((a, b) => a - b);
     const hasLegend = showScale && !isVAS && !isSAM && legendKeys.length > 0;
     const legendLeft = hasLegend ? currentScale[legendKeys[0]] : undefined;
@@ -319,10 +318,6 @@ const QuestionnairePageBefore = () => {
                         <div className="instructions">
                             <p className="instructions-text">{pageData.instructions}</p>
                         </div>
-                    )}
-
-                    {showScale && !isVAS && !isSAM && Object.keys(currentScale).length > 0 && (
-                        <ScaleLegend scale={currentScale} />
                     )}
 
                     <div className="questionnaire">
@@ -384,7 +379,6 @@ const QuestionnairePageBefore = () => {
                                     options={question.options}
                                     leftLabel={question.leftLabel || legendLeft}
                                     rightLabel={question.rightLabel || legendRight}
-                                    mobileOnlyLabels={!question.leftLabel && !question.rightLabel && hasLegend}
                                 />
                             );
                         })()))}

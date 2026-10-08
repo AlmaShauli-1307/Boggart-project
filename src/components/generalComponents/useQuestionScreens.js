@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-// On phones, long questionnaire pages are split into screens of at most
+// Long questionnaire pages are split into screens of at most
 // QUESTIONS_PER_SCREEN questions, so a participant sees a short, focused set
-// at a time (UX 3.3). Desktop keeps one screen per questionnaire page.
+// at a time (UX 3.3) — on phones and, by default, on desktop too.
 // Pages listed in `keepTogether` (e.g. SAM, whose questions share one image)
 // are never split.
 
@@ -27,6 +27,8 @@ const useQuestionScreens = ({
     questions, currentPage, totalPages,
     keepTogether = () => false,
     perScreen = QUESTIONS_PER_SCREEN,
+    // split into screens on desktop as well (same experience everywhere)
+    splitOnDesktop = true,
 }) => {
     const isMobile = useIsMobile();
     const [subPage, setSubPage] = useState(0);
@@ -36,7 +38,7 @@ const useQuestionScreens = ({
     const screensOf = (page) => {
         const all = pageQuestions(page);
         const size = Math.max(1, typeof perScreen === 'function' ? perScreen(all) : perScreen);
-        if (!isMobile || all.length <= size || keepTogether(all)) return [all];
+        if ((!isMobile && !splitOnDesktop) || all.length <= size || keepTogether(all)) return [all];
         const chunks = [];
         for (let i = 0; i < all.length; i += size) {
             chunks.push(all.slice(i, i + size));
