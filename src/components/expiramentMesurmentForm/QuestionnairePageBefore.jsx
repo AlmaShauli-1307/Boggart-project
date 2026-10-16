@@ -263,7 +263,8 @@ const QuestionnairePageBefore = () => {
                 if (isPercent) {
                     const min = parseInt(minStr);
                     const max = parseInt(maxStr);
-                    for (let i = min; i <= max; i += 10) options.push(`${i}%`);
+                    // BPI item 8: saved as a number (0–100); the '%' is only in the label
+                    for (let i = min; i <= max; i += 10) options.push({ value: i, label: `${i}%` });
                 } else {
                     for (let i = q.scale_min; i <= q.scale_max; i++) options.push(i);
                 }
