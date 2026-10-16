@@ -87,18 +87,32 @@ function generatePainDescription(answers, intensityFromForm1) {
         console.log("🔧 Server - intensityFromForm1 received:", intensityFromForm1);
         console.log("🔧 Server - All received answers:", answers);
 
-        const location = answers[63] || ["general body"];
+        // Question IDs of the current Second_Questionnaire.csv (they used to be
+        // 63–77; the questionnaire was renumbered to 117–135, so the prompt was
+        // reading empty answers).
+        const Q = { location: 117, size: 124, depth: 125, color: 126, shape: 127, border: 128,
+            textureTouch: 129, textureStroke: 130, textureHold: 131 };
+        // Scale ranges of the size / depth questions in the CSV — update if the CSV changes.
+        const SIZE_MAX = 10;
+        const DEPTH_MAX = 10;
+
+        // Body-map answers arrive as { painAreas: [...] } or as a plain array of keys
+        const rawLocation = answers[Q.location];
+        const areas = Array.isArray(rawLocation) ? rawLocation : (rawLocation?.painAreas || []);
+        const location = areas.length
+            ? areas.map(a => String(a).replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase())
+            : ["general body"];
         const locationText = Array.isArray(location) ? location.join(", ") : location;
 
-        const duration = answers[66];
-        const depth = answers[71];
-        const colorAnswer = answers[72];
+        const duration = answers[Q.size];
+        const depth = answers[Q.depth];
+        const colorAnswer = answers[Q.color];
         let color = colorAnswer?.name || colorAnswer || "red";
-        const shape = answers[73];
-        const border = answers[74];
-        const textureTouch = answers[75];
-        const textureStroke = answers[76];
-        const textureHold = answers[77];
+        const shape = answers[Q.shape];
+        const border = answers[Q.border];
+        const textureTouch = answers[Q.textureTouch];
+        const textureStroke = answers[Q.textureStroke];
+        const textureHold = answers[Q.textureHold];
 
         const intensityRaw = intensityFromForm1 || 5;
         const intensity = Math.min(10, Math.max(0, Math.round(intensityRaw)));
@@ -115,8 +129,8 @@ function generatePainDescription(answers, intensityFromForm1) {
             9: "angry", 10: "furious"
         };
         const intensityDesc = intensityLevels[intensity] || "unknown";
-        const size = duration <= 5 ? "short" : "tall";
-        const thickness = depth <= 5 ? "thin" : "thick";
+        const size = Number(duration) <= SIZE_MAX / 2 ? "short" : "tall";
+        const thickness = Number(depth) <= DEPTH_MAX / 2 ? "thin" : "thick";
 
         const shapes = {
             1: "rounded", 2: "soft", 3: "nothing", 4: "defined", 5: "sharp"

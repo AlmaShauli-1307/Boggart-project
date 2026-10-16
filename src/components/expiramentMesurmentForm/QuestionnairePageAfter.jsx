@@ -248,7 +248,8 @@ const QuestionnairePageAfter = () => {
                 const maxStr = String(q.scale_max);
                 const isPercent = minStr.includes('%') || maxStr.includes('%');
                 if (isPercent) {
-                    for (let i = parseInt(minStr); i <= parseInt(maxStr); i += 10) options.push(`${i}%`);
+                    // BPI item 8: saved as a number (0–100); the '%' is only in the label
+                    for (let i = parseInt(minStr); i <= parseInt(maxStr); i += 10) options.push({ value: i, label: `${i}%` });
                 } else {
                     for (let i = q.scale_min; i <= q.scale_max; i++) options.push(i);
                 }
