@@ -9,11 +9,11 @@
 4,,,,124,Is it short or long in size?,האם הוא קצר או ארוך בגודלו?,scale,1,10,Short,קצר,ארוך,Long,,,,,pain detalis
 4,,,,125,"Is it deep, or shallow?",האם הוא עמוק או שטחי?,scale,1,10,Shallow,רדוד,עמוק,Deep,,,,,pain detalis
 4,,,,126,"If you could visually see your pain, which color best describes it?","אם היית יכול/ה לראות את הכאב שלך, באיזה צבע היית מתאר/ת אותו?",color_select,,,,,,,,,,,pain detalis
-5,,,,127,Is your pain's shape sharp or round?,האם הצורה של הכאב שלך חדה או עגולה?,scale,1,5,Round,עגול,חד,Sharp,,,,,pain detalis
-5,,,,128,Is your pain's boundary defined or blurry?,האם הגבול של הכאב שלך מוגדר או מטושטש?,scale,1,5,Defined,מוגדר,מטושטש,Blurry,,,,,pain detalis
-5,,,,129,"If you could run your finger through it, would this texture be thick or diluted?","אם היית מעביר/ה דרכו אצבע, האם המרקם שלו סמיך או דליל?",scale,1,5,Diluted,מדולל,עבה,Thick,,,,,pain detalis
-5,,,,130,"If you could pet your pain, would it have a smooth or rough feel?","אם היית יכול/ה ללטף את הכאב שלך, האם הוא היה חלק או מחוספס?",scale,1,5,Smooth,חלק,מחוספס,Rough,,,,,pain detalis
-5,,,,131,"If you could hold its hand, would it be soft or hard?","אם היית מחזיק/ה את הכאב שלך ביד, האם הוא היה רך או קשה?",scale,1,5,Soft,רך,קשה,Hard,,,,,pain detalis
+5,,,,127,Is your pain's shape sharp or round?,האם הצורה של הכאב שלך חדה או עגולה?,scale,1,10,Round,עגול,חד,Sharp,,,,,pain detalis
+5,,,,128,Is your pain's boundary defined or blurry?,האם הגבול של הכאב שלך מוגדר או מטושטש?,scale,1,10,Defined,מוגדר,מטושטש,Blurry,,,,,pain detalis
+5,,,,129,"If you could run your finger through it, would this texture be thick or diluted?","אם היית מעביר/ה דרכו אצבע, האם המרקם שלו סמיך או דליל?",scale,1,10,Diluted,מדולל,עבה,Thick,,,,,pain detalis
+5,,,,130,"If you could pet your pain, would it have a smooth or rough feel?","אם היית יכול/ה ללטף את הכאב שלך, האם הוא היה חלק או מחוספס?",scale,1,10,Smooth,חלק,מחוספס,Rough,,,,,pain detalis
+5,,,,131,"If you could hold its hand, would it be soft or hard?","אם היית מחזיק/ה את הכאב שלך ביד, האם הוא היה רך או קשה?",scale,1,10,Soft,רך,קשה,Hard,,,,,pain detalis
 6,,,,132,Which option best describe how your pain alters over time:,איזו אפשרות מתארת בצורה הטובה ביותר כיצד הכאב שלך משתנה עם הזמן:,multi_choice,,,,,,,,"עקבי, מחמיר עם הזמן, משתפר עם הזמן, לסירוגין, אין דפוס (אקראי)","Consistent, Gets worse over time, Gets better over time, On-and-off, Doesn't have a pattern (random)",,pain detalis
 6,,,,133,"What worsens the pain? Are there activities, movements, or other factors which worsen/ awakens the pain? Please describe.","מה מחמיר את הכאב? האם יש פעילויות, תנועות או גורמים אחרים שמעוררים או מחמירים את הכאב? אנא תאר/י.",longText,,,,,,,,,,,pain detalis
 6,,,,134,"What helps you deal with the pain? Are there activities, movements, or other factors which ease the pain? Please describe.","מה עוזר לך להתמודד עם הכאב? האם יש פעילויות, תנועות או גורמים אחרים שמקלים על הכאב? אנא תאר/י.",longText,,,,,,,,,,,pain detalis

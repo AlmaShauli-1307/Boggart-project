@@ -108,11 +108,20 @@ function generatePainDescription(answers, intensityFromForm1) {
         const depth = answers[Q.depth];
         const colorAnswer = answers[Q.color];
         let color = colorAnswer?.name || colorAnswer || "red";
-        const shape = answers[Q.shape];
-        const border = answers[Q.border];
-        const textureTouch = answers[Q.textureTouch];
-        const textureStroke = answers[Q.textureStroke];
-        const textureHold = answers[Q.textureHold];
+        // Questions 127–131 are answered on a 1–10 scale (saved as-is in the DB).
+        // The image rules below were written for 1–5, so the answer is mapped
+        // to 1–5 only here: 1–2→1, 3–4→2, 5–6→3, 7–8→4, 9–10→5.
+        const DESCRIPTION_SCALE_MAX = 10;
+        const to5 = (v) => {
+            const n = Number(v);
+            if (!Number.isFinite(n) || v === null || v === '') return undefined;
+            return Math.min(5, Math.max(1, Math.ceil(n * 5 / DESCRIPTION_SCALE_MAX)));
+        };
+        const shape = to5(answers[Q.shape]);
+        const border = to5(answers[Q.border]);
+        const textureTouch = to5(answers[Q.textureTouch]);
+        const textureStroke = to5(answers[Q.textureStroke]);
+        const textureHold = to5(answers[Q.textureHold]);
 
         const intensityRaw = intensityFromForm1 || 5;
         const intensity = Math.min(10, Math.max(0, Math.round(intensityRaw)));
