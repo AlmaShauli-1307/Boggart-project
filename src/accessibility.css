@@ -78,3 +78,24 @@
     margin-top: 12px;
     padding-top: 16px;
 }
+
+/* Phones: Next (or Submit) on top, Previous under it, both full width —
+   the main action is the one closest to the questions and to the thumb. */
+@media (max-width: 600px) {
+    .form-page .navigation {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .form-page .navigation .primary-button {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+    }
+
+    .form-page .navigation .previous-button {
+        order: 2;
+    }
+}

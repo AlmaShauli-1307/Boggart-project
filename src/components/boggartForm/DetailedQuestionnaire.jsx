@@ -16,6 +16,7 @@ import InputQuestion from "../generalComponents/InputQuestion";
 import ColorWheelQuestion from "./ColorWheelQuestion";
 import CheckboxQuestion from "../generalComponents/CheckboxQuestion";
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useSavedProgress, clearProgress, setResumePoint } from '../generalComponents/savedProgress';
 
 const DetailedQuestionnairePage = () => {
     const navigate = useNavigate();
@@ -41,6 +42,29 @@ const DetailedQuestionnairePage = () => {
         keepTogether: () => false,
     });
     const { showErrors, tryAdvance } = useQuestionnaireNav(`${currentPage}-${screens.subPage}`);
+
+    // Leaving in the middle keeps the answers and the screen (see savedProgress.js).
+    // Not in demo mode.
+    const realForm1Id = !isDemo && form1Id && form1Id !== 'demo' ? form1Id : null;
+    useEffect(() => {
+        if (realForm1Id) setResumePoint(location.pathname + location.search);
+    }, [realForm1Id, location.pathname, location.search]);
+
+    useSavedProgress({
+        name: realForm1Id ? `form2:${realForm1Id}` : null,
+        ready: questions.length > 0,
+        data: { responses, others, currentPage, subPage: screens.subPage, selectedBodyParts },
+        onRestore: (saved) => {
+            const pages = questions.map(q => Number(q.Page)).filter(Number.isFinite);
+            const page = Math.min(Math.max(1, Number(saved.currentPage) || 1), Math.max(...pages));
+            setResponses(saved.responses || {});
+            setOthers(saved.others || {});
+            setSelectedBodyParts(saved.selectedBodyParts || []);
+            setCurrentPage(page);
+            updatePageData(questions, page);
+            screens.goToSubPage(saved.subPage);
+        },
+    });
 
     useEffect(() => {
         if (isDemo) {
@@ -253,6 +277,7 @@ const DetailedQuestionnairePage = () => {
             console.log('✅ Form2 - Response from server:', data);
 
             if (response.ok) {
+                clearProgress(`form2:${form1Id}`);
                 if (data.prompt) {
                     startImageGeneration(data.prompt, form1Id);
                 }

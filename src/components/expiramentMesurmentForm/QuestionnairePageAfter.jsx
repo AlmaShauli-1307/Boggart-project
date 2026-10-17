@@ -17,6 +17,7 @@ import PainScaleQuestion from './PainScaleQuestion';
 import EmotionScalePage from './EmotionScalePage';
 import BodyMapQuestionnaire from '../boggartForm/BodyMapQuestionnaire';
 import InputQuestion from '../generalComponents/InputQuestion';
+import { useSavedProgress, clearProgress } from '../generalComponents/savedProgress';
 
 const YES_NO_QUESTION_ID = 101;
 const BODY_MAP_QUESTION_ID = 102;
@@ -50,6 +51,24 @@ const QuestionnairePageAfter = () => {
         perScreen: (qs) => (qs.some(q => Number(q.question_ID) >= 103) ? 2 : 3),
     });
     const { showErrors, tryAdvance } = useQuestionnaireNav(`${currentPage}-${screens.subPage}`);
+
+    // Leaving in the middle keeps the answers and the screen (see savedProgress.js).
+    // Saved per form1Id, so another participant on the same device starts fresh.
+    useSavedProgress({
+        name: form1Id ? `after:${form1Id}` : null,
+        ready: questions.length > 0,
+        data: { responses, currentPage, subPage: screens.subPage, selectedBodyParts, mostPainfulPart },
+        onRestore: (saved) => {
+            const lastPage = Math.max(...questions.map(q => Number(q.Page)));
+            const page = Math.min(Math.max(1, Number(saved.currentPage) || 1), lastPage);
+            setResponses(saved.responses || {});
+            setSelectedBodyParts(saved.selectedBodyParts || []);
+            setMostPainfulPart(saved.mostPainfulPart ?? null);
+            setCurrentPage(page);
+            updatePageData(questions, page);
+            screens.goToSubPage(saved.subPage);
+        },
+    });
 
     useEffect(() => {
         const id = location.state?.form1Id || null;
@@ -216,6 +235,7 @@ const QuestionnairePageAfter = () => {
             });
             const data = await response.json();
             if (response.ok) {
+                clearProgress(`after:${form1Id}`);
                 navigate('/home-login');
             } else {
                 throw new Error(data.message || 'Form 3 submission failed');

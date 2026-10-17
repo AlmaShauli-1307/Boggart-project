@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext';
 import LanguageToggle from '../LanguageButton';
 import { getNames } from 'country-list';
@@ -12,6 +12,7 @@ import QuestionShell from '../generalComponents/QuestionShell';
 import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
 import ScrollHint from '../generalComponents/ScrollHint';
 import CustomStyledSelect from "../generalComponents/CustomStyledSelect";
+import { useSavedProgress, clearProgress, setResumePoint, clearResumePoint } from '../generalComponents/savedProgress';
 
 const PersonalQuestionnaire = () => {
     const navigate = useNavigate();
@@ -24,6 +25,23 @@ const PersonalQuestionnaire = () => {
     const location = useLocation();
     const form1Id = location.state?.form1Id || null;
     const promptText = location.state?.prompt || "";
+
+    // Leaving in the middle keeps the answers (see savedProgress.js).
+    // The password is never saved — it has to be typed again.
+    useEffect(() => {
+        if (form1Id) setResumePoint('/questionnaire-personal', location.state);
+    }, [form1Id, location.state]);
+
+    const { password, ...responsesToSave } = responses;
+    useSavedProgress({
+        name: form1Id ? `personal:${form1Id}` : null,
+        ready: true,
+        data: { responses: responsesToSave, currentStep },
+        onRestore: (saved) => {
+            setResponses(saved.responses || {});
+            setCurrentStep(saved.currentStep === 2 ? 2 : 1);
+        },
+    });
 
     const languageNames = languages.getAllNames();
 
@@ -256,6 +274,9 @@ const PersonalQuestionnaire = () => {
 
             if (response.ok) {
                 console.log('✅ Form personal - Saved successfully:', data);
+                // the first-visit questionnaires are done — nothing left to resume
+                clearProgress(`personal:${form1Id}`);
+                clearResumePoint();
                 navigate('/meet-your-pain', {
                     state: {
                         form1Id: form1Id,
