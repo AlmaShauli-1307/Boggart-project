@@ -16,7 +16,6 @@ import PainScaleQuestion from './PainScaleQuestion';
 import EmotionScalePage from './EmotionScalePage';
 import BodyMapQuestionnaire from '../boggartForm/BodyMapQuestionnaire';
 import InputQuestion from '../generalComponents/InputQuestion';
-import { useSavedProgress, clearProgress, setResumePoint } from '../generalComponents/savedProgress';
 
 const YES_NO_QUESTION_ID = 101;
 const BODY_MAP_QUESTION_ID = 102;
@@ -55,26 +54,7 @@ const QuestionnairePageBefore = () => {
             navigate('/introduction');
             return;
         }
-        // the landing page can bring the participant back here
-        setResumePoint('/questionnaire-before', { introData });
     }, [introData, navigate]);
-
-    // Leaving in the middle keeps the answers and the screen (see savedProgress.js)
-    useSavedProgress({
-        name: introData ? 'before' : null,
-        ready: questions.length > 0,
-        data: { responses, currentPage, subPage: screens.subPage, selectedBodyParts, mostPainfulPart },
-        onRestore: (saved) => {
-            const lastPage = Math.max(...questions.map(q => Number(q.Page)));
-            const page = Math.min(Math.max(1, Number(saved.currentPage) || 1), lastPage);
-            setResponses(saved.responses || {});
-            setSelectedBodyParts(saved.selectedBodyParts || []);
-            setMostPainfulPart(saved.mostPainfulPart ?? null);
-            setCurrentPage(page);
-            updatePageData(questions, page);
-            screens.goToSubPage(saved.subPage);
-        },
-    });
 
     useEffect(() => {
         fetch(`/First_Questionnaire.csv`)
@@ -246,7 +226,6 @@ const QuestionnairePageBefore = () => {
             const data = await response.json();
 
             if (data.form1Id) {
-                clearProgress('before');
                 navigate(`/form2?form1Id=${data.form1Id}&intensity=${responses[24]}`);
             } else {
                 alert('Form 1 submitted but no ID received');

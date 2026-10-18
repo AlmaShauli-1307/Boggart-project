@@ -195,30 +195,3 @@ body {
         padding: 0 20px;
     }
 }
-/* "You have an unfinished questionnaire" (saved progress on this device) */
-.resume-box {
-    max-width: 520px;
-    margin: -36px auto 8px;
-    padding: 14px 18px;
-    border: 2px solid #5F6E68;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.7);
-    text-align: center;
-}
-
-.resume-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 4px;
-}
-
-.resume-text {
-    font-size: 16px;
-    margin: 0;
-}
-
-@media (max-width: 600px) {
-    .resume-box {
-        margin: -36px 16px 8px;
-    }
-}

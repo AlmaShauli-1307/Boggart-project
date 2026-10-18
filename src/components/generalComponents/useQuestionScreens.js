@@ -74,8 +74,6 @@ const useQuestionScreens = ({
         prevSubPage: () => setSubPage(s => s - 1),
         // after moving to another questionnaire page
         enterPage: (page, fromEnd = false) => setSubPage(fromEnd ? screensOf(page).length - 1 : 0),
-        // restoring a saved questionnaire (clamped automatically if the screen size changed)
-        goToSubPage: (n) => setSubPage(Math.max(0, Number(n) || 0)),
     };
 };
 

@@ -15,10 +15,6 @@ const translations = {
     welcomeDescription: 'הפרויקט מהווה חלק ממחקר אקדמי, ובמהלכו תתבקשו תחילה למלא סדרת שאלונים שיסייעו לנו להעמיק את ההבנה בנושא כאב כרוני. בהמשך, תשתתפו בחוויה אינטראקטיבית ייחודית, שנועדה לחקור את חוויית הכאב הכרוני שלכם ולבחון דרכים חדשניות להתמודדות עמו.',
     letsStart: 'בואו נתחיל',
     login: 'כניסה',
-    resumeTitle: 'יש לך שאלון שלא הסתיים',
-    resumeText: 'התשובות שלך נשמרו במכשיר הזה. אפשר להמשיך מאיפה שעצרת.',
-    resumeContinue: 'המשך מאיפה שעצרתי',
-    startOver: 'התחל מחדש',
 
     // Login Page
     loginTitle: 'כניסה',
@@ -219,10 +215,6 @@ const translations = {
     welcomeDescription: 'As part of a research study, you will first complete a series of questionnaires that will contribute to our understanding of chronic pain. Following this, you will experience an interactive session designed to explore and address your chronic pain in a unique and innovative way',
     letsStart: "Let's Start",
     login: 'Login',
-    resumeTitle: 'You have an unfinished questionnaire',
-    resumeText: 'Your answers were saved on this device. You can continue where you left off.',
-    resumeContinue: 'Continue where I left off',
-    startOver: 'Start over',
 
     // Login Page
     loginTitle: 'Login',
