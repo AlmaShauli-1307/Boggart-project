@@ -85,7 +85,7 @@ const PersonalQuestionnaire = () => {
             questionType: "password",
         },
         { id: 136, text: t('name'), options: [], questionType: "shortText" },
-        { id: 137, text: t('date'), options: [], questionType: "date" },
+        { id: 137, text: t('birthDate'), options: [], questionType: "date" },
         { id: 138, text: t('age'), options: [], questionType: "number" },
         {
             id: 139,
@@ -371,6 +371,10 @@ const PersonalQuestionnaire = () => {
                             {t('personalInfoInstructions')}
                         </p>
                     </div>
+
+                    {currentStep === 1 && (
+                        <p className="account-note">{t('accountNote')}</p>
+                    )}
 
                     <div className="questionnaire">
                         <div className="question-grid">

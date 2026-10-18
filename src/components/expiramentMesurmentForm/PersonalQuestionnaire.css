@@ -220,10 +220,36 @@ body {
     font-weight: 500;
 }
 
+/* Why a username and password are needed (pain diary) */
+.account-note {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 24px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border-inline-start: 4px solid #295A4B;
+    background-color: #FFFFFF;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #000000;
+    text-align: start;
+}
+
+/* Grid items may shrink below their content width (a long dropdown option
+   used to make the column wider than the phone, cutting the fields off on
+   the left in Hebrew). */
+.question-grid {
+    width: 100%;
+}
+
+.question-grid > * {
+    min-width: 0;
+}
+
 /* Responsive */
 @media (max-width: 700px) {
     .question-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 18px;
     }
 }

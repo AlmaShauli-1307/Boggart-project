@@ -34,8 +34,13 @@ const LandingPage = () => {
                 </section>
 
                 <section className="cta-section landing-cta">
-                    <PrimaryButton text={t('letsStart')} onClick={handleStartClick} />
-                    <PrimaryButton text={t('login')} onClick={handleLoginClick} />
+                    {/* main action: start the study; secondary: returning participants */}
+                    <PrimaryButton text={t('startStudy')} onClick={handleStartClick} />
+                    <PrimaryButton
+                        text={t('painDiaryLogin')}
+                        onClick={handleLoginClick}
+                        className="secondary-button"
+                    />
                 </section>
             </div>
         </main>

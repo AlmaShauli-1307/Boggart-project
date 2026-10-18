@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&family=Heebo&family=Playpen+Sans+Hebrew&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&family=Heebo&family=Fredoka:wght@400;500;600&display=swap');
 
 * {
     margin: 0;
@@ -53,7 +53,7 @@
 }
 
 [lang="he"] .completion-title {
-    font-family: 'Playpen Sans Hebrew', sans-serif !important;
+    font-family: 'Fredoka', sans-serif !important;
 }
 
 .completion-message {

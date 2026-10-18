@@ -309,7 +309,12 @@ const MeetYourPain = () => {
                         )}
                     </section>
 
+                    {/* one under the other, same width; the main action first */}
                     <section className="cta-meet-boggart-section">
+                        <PrimaryButton
+                            text={t('thatMyPain')}
+                            onClick={handleNextClick}
+                        />
                         <PrimaryButton
                             text={t('regenerate')}
                             onClick={nextImage}
@@ -318,10 +323,6 @@ const MeetYourPain = () => {
                             text={t('download')}
                             onClick={handleDownloadImage}
                             className="download-button"
-                        />
-                        <PrimaryButton
-                            text={t('thatMyPain')}
-                            onClick={handleNextClick}
                         />
                     </section>
                 </div>

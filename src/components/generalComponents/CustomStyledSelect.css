@@ -9,7 +9,8 @@
     font-size: 16px !important;
     line-height: 130% !important;
     background-color: #FFFBFB !important;
-    width: 410px !important;
+    /* never wider than the screen (was a fixed 410px, which overflowed phones) */
+    width: min(410px, 100%) !important;
     height: 52px !important;
     min-height: unset !important;
 }
@@ -64,4 +65,8 @@
 .custom-react-select__menu-list {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+}
+/* In the personal-details grid the dropdown is as wide as the text fields */
+.question-grid .custom-react-select__control {
+    width: 100% !important;
 }

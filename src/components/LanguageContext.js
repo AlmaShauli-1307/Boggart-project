@@ -15,6 +15,8 @@ const translations = {
     welcomeDescription: 'הפרויקט מהווה חלק ממחקר אקדמי, ובמהלכו תתבקשו תחילה למלא סדרת שאלונים שיסייעו לנו להעמיק את ההבנה בנושא כאב כרוני. בהמשך, תשתתפו בחוויה אינטראקטיבית ייחודית, שנועדה לחקור את חוויית הכאב הכרוני שלכם ולבחון דרכים חדשניות להתמודדות עמו.',
     letsStart: 'בואו נתחיל',
     login: 'כניסה',
+    startStudy: 'בואו נתחיל במחקר',
+    painDiaryLogin: 'כניסה ליומן כאב',
 
     // Login Page
     loginTitle: 'כניסה',
@@ -117,6 +119,8 @@ const translations = {
     // PersonalQuestionnaire
     personalInfoTitle: 'מידע אישי',
     personalInfoInstructions: 'אנו מזמינים אותך לענות על מספר שאלות לגבי הפרטים האישיים שלך:',
+    accountNote: 'בחר/י שם משתמש וסיסמה. איתם תיכנס/י לאתר בשבועיים הקרובים כדי למלא את יומן הכאב — כדאי לרשום אותם במקום שקל למצוא.',
+    birthDate: 'תאריך לידה',
     name: 'שם',
     date: 'תאריך',
     age: 'גיל',
@@ -215,6 +219,8 @@ const translations = {
     welcomeDescription: 'As part of a research study, you will first complete a series of questionnaires that will contribute to our understanding of chronic pain. Following this, you will experience an interactive session designed to explore and address your chronic pain in a unique and innovative way',
     letsStart: "Let's Start",
     login: 'Login',
+    startStudy: "Let's start the study",
+    painDiaryLogin: 'Log in to the pain diary',
 
     // Login Page
     loginTitle: 'Login',
@@ -318,6 +324,8 @@ const translations = {
     // PersonalQuestionnaire
     personalInfoTitle: 'Personal info',
     personalInfoInstructions: 'We invite you to answer a few questions about your personal details:',
+    accountNote: "Choose a username and password. You'll use them to log in over the next two weeks to fill in your pain diary, so write them down somewhere easy to find.",
+    birthDate: 'Date of birth',
 
     // Questions
     name: 'Name',

@@ -38,3 +38,14 @@
         padding: 12px 20px;
     }
 }
+/* Secondary action: outlined, so the main action stands out */
+.primary-button.secondary-button {
+    background-color: transparent;
+    color: #295A4B;
+    border: 2px solid #295A4B;
+}
+
+.primary-button.secondary-button:hover:not(:disabled) {
+    background-color: rgba(41, 90, 75, 0.08);
+    opacity: 1;
+}
