@@ -12,6 +12,7 @@ import QuestionShell from '../generalComponents/QuestionShell';
 import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
 import ScrollHint from '../generalComponents/ScrollHint';
 import CustomStyledSelect from "../generalComponents/CustomStyledSelect";
+import PartBand, { partClassName } from '../generalComponents/PartBand';
 
 const PersonalQuestionnaire = () => {
     const navigate = useNavigate();
@@ -359,13 +360,14 @@ const PersonalQuestionnaire = () => {
     };
 
     return (
-        <div className="form-page" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
+        <div className={`form-page ${partClassName(3)}`} dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
             <LanguageToggle />
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
             </header>
             <div className="form-container">
                 <main className="form-content">
+                    <PartBand part={3} />
                     <div className="instructions">
                         <p className="instructions-text">
                             {t('personalInfoInstructions')}

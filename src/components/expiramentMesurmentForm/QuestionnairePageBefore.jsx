@@ -7,6 +7,7 @@ import './QuestionnairePage.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
 import ProgressIndicator from '../generalComponents/ProgressIndicator';
+import PartBand, { partClassName } from '../generalComponents/PartBand';
 import QuestionShell from '../generalComponents/QuestionShell';
 import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
 import ScrollHint from '../generalComponents/ScrollHint';
@@ -226,7 +227,8 @@ const QuestionnairePageBefore = () => {
             const data = await response.json();
 
             if (data.form1Id) {
-                navigate(`/form2?form1Id=${data.form1Id}&intensity=${responses[24]}`);
+                // short 'part 1 done → part 2' screen, then the boggart questionnaire
+                navigate('/next-part', { state: { part: 2, next: `/form2?form1Id=${data.form1Id}&intensity=${responses[24]}` } });
             } else {
                 alert('Form 1 submitted but no ID received');
                 navigate('/landing-boggart');
@@ -308,13 +310,14 @@ const QuestionnairePageBefore = () => {
     );
 
     return (
-        <div className="form-page" lang={language}>
+        <div className={`form-page ${partClassName(1)}`} lang={language}>
             <LanguageToggle />
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
             </header>
             <div className="form-container">
                 <main className="form-content">
+                    <PartBand part={1} />
                     {!isSAM && pageData.instructions && (
                         <div className="instructions">
                             <p className="instructions-text">{pageData.instructions}</p>

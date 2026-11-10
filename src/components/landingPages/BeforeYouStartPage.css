@@ -107,3 +107,8 @@
     width: 100%;
     max-width: 340px;
 }
+
+/* each part's number in its own colour, as in the part band (PartBand.css) */
+.before-start-parts li:nth-child(1)::before { background: #295A4B; }
+.before-start-parts li:nth-child(2)::before { background: #6E549C; }
+.before-start-parts li:nth-child(3)::before { background: #95562A; }

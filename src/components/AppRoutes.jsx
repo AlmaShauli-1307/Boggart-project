@@ -13,6 +13,7 @@ import QuestionnairePageAfter from "./expiramentMesurmentForm/QuestionnairePageA
 import QuestionnairePageBefore from "./expiramentMesurmentForm/QuestionnairePageBefore";
 import IntroductionPage from "./landingPages/IntroductionPage";
 import BeforeYouStartPage from "./landingPages/BeforeYouStartPage";
+import PartTransitionPage from "./landingPages/PartTransitionPage";
 import LoginPage from "./landingPages/LoginPage";
 import HomeLoginPage from "./landingPages/HomePageLogin";
 import MyCreature from "./loginPages/MyCreature";
@@ -34,6 +35,7 @@ function AppRoutes() {
                     <Route path="/MonthlySummary" element={<MonthlySummary />} />
                     <Route path="/before-you-start" element={<BeforeYouStartPage />} />
                     <Route path="/introduction" element={<IntroductionPage />} />
+                    <Route path="/next-part" element={<PartTransitionPage />} />
                     <Route path="/questionnaire-before" element={<QuestionnairePageBefore />} />
                     <Route path="/form1" element={<QuestionnairePage csvName="form1" />} />
                     <Route path="/form2" element={<DetailedQuestionnaire />} />

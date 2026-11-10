@@ -87,6 +87,23 @@ const translations = {
     dialogue: 'דיאלוג',
     missingEntry: 'אין תיעוד',
 
+    // Parts of the first visit (band at the top + screens between parts)
+    partOf: 'חלק {n} מתוך {total}',
+    part1Title: 'שאלונים',
+    part1Subtitle: 'שאלות על הכאב ועל ההרגשה שלך',
+    part2Title: 'יצירת הבוגארט',
+    part2Subtitle: 'איך הכאב שלך נראה ומרגיש',
+    part3Title: 'פרטים אישיים',
+    part3Subtitle: 'כמעט סיימנו!',
+    partDone1Title: 'סיימת את השאלונים!',
+    partDone1Text: 'כל הכבוד, החלק הארוך מאחוריך.',
+    partDone2Title: 'סיימת לתאר את הכאב!',
+    partDone2Text: 'נשאר עוד חלק קצר אחד.',
+    nextPartLabel: 'החלק הבא · {n} מתוך {total}',
+    part2Intro: 'עכשיו ניצור יחד דמות שמייצגת את הכאב שלך — איך הוא נראה, איזה צבע וצורה יש לו.',
+    part3Intro: 'כמה פרטים אישיים ובחירת שם משתמש וסיסמה ליומן הכאב. בינתיים הבוגארט שלך כבר נוצר.',
+    continueToNextPart: 'בואו נמשיך',
+
     // Before you start (before the consent form)
     beforeStartTitle: 'לפני שמתחילים',
     beforeStartLead: 'תודה שבחרת להשתתף במחקר! כדאי לדעת מה מחכה לך:',
@@ -307,6 +324,23 @@ const translations = {
     ability: 'Ability',
     dialogue: 'Dialogue',
     missingEntry: 'No entry',
+
+    // Parts of the first visit (band at the top + screens between parts)
+    partOf: 'Part {n} of {total}',
+    part1Title: 'Questionnaires',
+    part1Subtitle: 'Questions about your pain and how you feel',
+    part2Title: 'Creating your Boggart',
+    part2Subtitle: 'How your pain looks and feels',
+    part3Title: 'Personal details',
+    part3Subtitle: 'Almost done!',
+    partDone1Title: 'You finished the questionnaires!',
+    partDone1Text: 'Well done, the longest part is behind you.',
+    partDone2Title: "You've described your pain!",
+    partDone2Text: 'Just one more short part.',
+    nextPartLabel: 'Next part · {n} of {total}',
+    part2Intro: "Now we'll create a character together that represents your pain — how it looks, its colour and shape.",
+    part3Intro: 'A few personal details and choosing a username and password for your pain diary. Meanwhile, your Boggart is being created.',
+    continueToNextPart: "Let's continue",
 
     // Before you start (before the consent form)
     beforeStartTitle: 'Before you start',

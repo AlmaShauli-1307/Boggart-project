@@ -6,6 +6,7 @@ import './DetailedQuestionnaire.css';
 import logo from '../../images/logo.png';
 import PrimaryButton from '../generalComponents/PrimaryButton';
 import ProgressIndicator from '../generalComponents/ProgressIndicator';
+import PartBand, { partClassName } from '../generalComponents/PartBand';
 import QuestionShell from '../generalComponents/QuestionShell';
 import useQuestionnaireNav, { isAnswered } from '../generalComponents/useQuestionnaireNav';
 import ScrollHint from '../generalComponents/ScrollHint';
@@ -257,11 +258,16 @@ const DetailedQuestionnairePage = () => {
                     startImageGeneration(data.prompt, form1Id);
                 }
 
-                navigate('/questionnaire-personal', {
+                // short 'part 2 done → part 3' screen, then personal details
+                navigate('/next-part', {
                     state: {
-                        form1Id: form1Id,
-                        prompt: data.prompt || "",
-                        detailedAnswers: responses
+                        part: 3,
+                        next: '/questionnaire-personal',
+                        nextState: {
+                            form1Id: form1Id,
+                            prompt: data.prompt || "",
+                            detailedAnswers: responses
+                        }
                     }
                 });
             } else {
@@ -363,13 +369,14 @@ const DetailedQuestionnairePage = () => {
     );
 
     return (
-        <div className="form-page" lang={language}>
+        <div className={`form-page ${partClassName(2)}`} lang={language}>
             < LanguageToggle />
             <header className="form-header">
                 <img src={logo} alt="Boggart" className="logo-image" />
             </header>
             <div className="form-container">
                 <main className="form-content">
+                    <PartBand part={2} />
                     {/* Show instructions if available */}
                     {pageData.instructions && (
                         <div className="instructions">
