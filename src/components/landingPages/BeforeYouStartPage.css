@@ -1,0 +1,109 @@
+/* "Before you start" page — uses the consent page layout (IntroductionPage.css) */
+
+.before-start {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: start;
+    /* the consent layout puts a large gap between children; this page is a
+       short read, so its sections sit closer together */
+    gap: 0;
+    align-items: stretch;
+}
+
+.before-start .intro-title {
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+.before-start-lead {
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+
+.before-start-parts {
+    list-style: none;
+    counter-reset: part;
+    padding: 0;
+    margin: 0 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.before-start-parts li {
+    counter-increment: part;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    column-gap: 14px;
+    align-items: start;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.before-start-parts li::before {
+    content: counter(part);
+    grid-row: span 2;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #295A4B;
+    color: #FFFFFF;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.before-start-parts li strong {
+    font-size: 17px;
+}
+
+.before-start-time {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+.before-start-tips {
+    border-inline-start: 4px solid #295A4B;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 28px;
+}
+
+.before-start-tips-title {
+    font-weight: 700;
+    font-size: 17px;
+    margin: 0 0 8px;
+}
+
+.before-start-tips ul {
+    margin: 0;
+    padding-inline-start: 20px;
+}
+
+.before-start-tips li {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+.before-start-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.before-start .before-start-actions .primary-button {
+    width: 100%;
+    max-width: 340px;
+}

@@ -11,7 +11,7 @@ const LandingPage = () => {
     const { t } = useLanguage();
 
     const handleStartClick = () => {
-        navigate('/introduction');
+        navigate('/before-you-start');
     };
 
     const handleLoginClick = () => {

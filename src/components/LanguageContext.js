@@ -87,6 +87,23 @@ const translations = {
     dialogue: 'דיאלוג',
     missingEntry: 'אין תיעוד',
 
+    // Before you start (before the consent form)
+    beforeStartTitle: 'לפני שמתחילים',
+    beforeStartLead: 'תודה שבחרת להשתתף במחקר! כדאי לדעת מה מחכה לך:',
+    beforeStartPart1Title: 'שאלונים',
+    beforeStartPart1Text: 'כ-115 שאלות קצרות על הכאב ועל ההרגשה שלך. זה החלק הארוך.',
+    beforeStartPart2Title: 'יצירת הבוגארט',
+    beforeStartPart2Text: 'שאלות על איך הכאב שלך נראה ומרגיש, ואחריהן תיווצר דמות שמייצגת אותו.',
+    beforeStartPart3Title: 'פרטים אישיים',
+    beforeStartPart3Text: 'כמה פרטים, ובחירת שם משתמש וסיסמה ליומן הכאב בשבועיים הקרובים.',
+    beforeStartTime: 'התהליך כולו נמשך בערך {minutes} דקות.',
+    beforeStartTipsTitle: 'כדאי לדעת',
+    beforeStartTip1: 'מומלץ למלא במקום שקט, בפעם אחת.',
+    beforeStartTip2: 'אם סוגרים את הדף באמצע, התשובות לא נשמרות וצריך להתחיל מההתחלה.',
+    beforeStartTip3: 'אפשר לעצור להפסקה קצרה בכל שלב, כל עוד הדף נשאר פתוח.',
+    beforeStartContinue: 'הבנתי, אפשר להתחיל',
+    beforeStartBack: 'חזרה לדף הבית',
+
     // Introduction page
     introTitle: 'טופס הסכמה מדעת',
     researchTopic: 'נושא המחקר:',
@@ -290,6 +307,23 @@ const translations = {
     ability: 'Ability',
     dialogue: 'Dialogue',
     missingEntry: 'No entry',
+
+    // Before you start (before the consent form)
+    beforeStartTitle: 'Before you start',
+    beforeStartLead: "Thank you for taking part in the study! Here's what to expect:",
+    beforeStartPart1Title: 'Questionnaires',
+    beforeStartPart1Text: 'About 115 short questions about your pain and how you feel. This is the longest part.',
+    beforeStartPart2Title: 'Creating your Boggart',
+    beforeStartPart2Text: 'Questions about how your pain looks and feels, followed by a character created to represent it.',
+    beforeStartPart3Title: 'Personal details',
+    beforeStartPart3Text: 'A few details, and choosing a username and password for your pain diary over the next two weeks.',
+    beforeStartTime: 'The whole process takes about {minutes} minutes.',
+    beforeStartTipsTitle: 'Good to know',
+    beforeStartTip1: 'Find a quiet place and try to complete it in one go.',
+    beforeStartTip2: "If you close the page in the middle, your answers aren't saved and you'll need to start over.",
+    beforeStartTip3: 'You can take a short break at any point, as long as the page stays open.',
+    beforeStartContinue: "Got it, let's start",
+    beforeStartBack: 'Back to home page',
 
     // Introduction page
     introTitle: 'Informed Consent Form',

@@ -12,6 +12,7 @@ import MeetYourPainRate from "./boggartForm/MeetYourPainRate";
 import QuestionnairePageAfter from "./expiramentMesurmentForm/QuestionnairePageAfter";
 import QuestionnairePageBefore from "./expiramentMesurmentForm/QuestionnairePageBefore";
 import IntroductionPage from "./landingPages/IntroductionPage";
+import BeforeYouStartPage from "./landingPages/BeforeYouStartPage";
 import LoginPage from "./landingPages/LoginPage";
 import HomeLoginPage from "./landingPages/HomePageLogin";
 import MyCreature from "./loginPages/MyCreature";
@@ -31,6 +32,7 @@ function AppRoutes() {
                     <Route path="/change-background" element={<ChangeBackground />} />
                     <Route path="/WeeklySummary" element={<WeeklySummary />} />
                     <Route path="/MonthlySummary" element={<MonthlySummary />} />
+                    <Route path="/before-you-start" element={<BeforeYouStartPage />} />
                     <Route path="/introduction" element={<IntroductionPage />} />
                     <Route path="/questionnaire-before" element={<QuestionnairePageBefore />} />
                     <Route path="/form1" element={<QuestionnairePage csvName="form1" />} />
